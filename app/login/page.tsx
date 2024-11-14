@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Cookies from 'js-cookie'
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,20 @@ export default function LoginPage() {
     console.log("Email:", email);
     console.log("Password:", password);
     console.log("Remember me:", rememberMe);
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      Cookies.set('token', data.token, { expires: 1 });
+    } else {
+      const errorData = await response.json();
+      console.error('Error logging in:', errorData.error);
+    }
   };
 
   return (

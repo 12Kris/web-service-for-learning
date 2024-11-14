@@ -1,6 +1,7 @@
-'use client'
+"use client"
 
 import { useState } from 'react'
+import Cookies from 'js-cookie'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,7 +12,7 @@ import { Facebook, Twitter } from 'lucide-react'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    fullname: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -35,6 +36,23 @@ export default function RegisterPage() {
     }
     console.log("Form data:", formData);
     console.log("Remember me:", rememberMe);
+
+    const response = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: formData.email, password: formData.password, confirmPassword: formData.confirmPassword, name: formData.name }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem('token', data.token);
+      Cookies.set('token', data.token, { expires: 1 });
+      console.log('Registration successful!');
+    } else {
+      const errorData = await response.json();
+      setError(errorData.error);
+      console.error('Error registering:', errorData.error);
+    }
   }
 
   return (
@@ -49,9 +67,9 @@ export default function RegisterPage() {
               <Label htmlFor="fullname" className="sr-only">Full Name</Label>
               <Input
                 id="fullname"
-                name="fullname"
+                name="name"
                 placeholder="fullname"
-                value={formData.fullname}
+                value={formData.name}
                 onChange={handleChange}
                 required
               />
