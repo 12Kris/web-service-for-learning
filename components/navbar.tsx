@@ -29,7 +29,7 @@ export function Navbar() {
       <div className="flex items-center justify-between mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16">
         <div className="flex items-center">
           <Link href="/" className="text-xl text-foreground font-bold">
-            Logo
+            Memoria
           </Link>
         </div>
         <div className="hidden md:flex items-center space-x-4">
