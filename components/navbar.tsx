@@ -25,7 +25,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-none bg-background sticky top-0 z-50 md:py-4">
+    <nav className="border-none bg-[--background] sticky top-0 z-50 md:py-4">
       <div className="flex items-center justify-between mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16">
         <div className="flex items-center">
           <Link href="/" className="text-2xl text-[--neutral] font-light">
@@ -70,7 +70,7 @@ export function Navbar() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-[--background]">
               <SheetHeader>
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
@@ -89,12 +89,12 @@ export function Navbar() {
                     {item.name}
                   </Link>
                 ))}
-                <Button variant="ghost" asChild className="justify-start">
+                <Button variant="ghost" asChild className="justify-start text-[--accent] hover:text-[--accent-foreground] px-6 py-2  border-2 border-[--accent] border-solid rounded-full">
                   <Link href="/login" onClick={() => setIsOpen(false)}>
                     Login
                   </Link>
                 </Button>
-                <Button asChild className="justify-start">
+                <Button asChild className="justify-start text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary]/80 shadow-none rounded-full">
                   <Link href="/signup" onClick={() => setIsOpen(false)}>
                     Sign Up
                   </Link>
