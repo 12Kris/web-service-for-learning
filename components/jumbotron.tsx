@@ -29,7 +29,7 @@ export function Jumbotron({
           <Button className="text-[--neutral] hover:text-[--neutral-foreground] px-6 py-2  border-2 border-[--neutral] border-solid rounded-full" asChild size="lg">
             <Link href={primaryButtonLink}>{primaryButtonText}</Link>
           </Button>
-          <Button className="text-white bg-[--accent] px-6 py-2 hover:text-white hover:bg-[--accent-foreground]/80 shadow-none rounded-full" asChild variant="outline" size="lg">
+          <Button className="text-white border-2 border-[--accent] bg-[--accent] px-6 py-2 hover:text-white hover:bg-[--accent-foreground]/80 shadow-none rounded-full" asChild variant="outline" size="lg">
             <Link href={secondaryButtonLink}>{secondaryButtonText}</Link>
           </Button>
         </div>
