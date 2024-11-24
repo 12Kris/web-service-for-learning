@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getCourses } from '@/lib/courses/actions';
+import { getUserCourses} from '@/lib/courses/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ export default function CoursesPage() {
 
     useEffect(() => {
         async function fetchCourses() {
-            const data = await getCourses();
+            const data = await getUserCourses();
             if (Array.isArray(data)) {
                 setCourses(data);
             } else {
