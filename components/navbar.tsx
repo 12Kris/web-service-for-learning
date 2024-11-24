@@ -1,35 +1,35 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
-import { Menu } from 'lucide-react'
+} from "@/components/ui/sheet";
+import { Menu } from "lucide-react";
 
 const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'About', href: '/about' },
-  { name: 'Services', href: '/services' },
-  { name: 'Contact', href: '/contact' },
-]
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Catalog", href: "/catalog" },
+  { name: "How it works", href: "/how-it-works" },
+];
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
-    <nav className="border-b bg-background sticky top-0 z-50">
+    <nav className="border-none bg-[--background] sticky top-0 z-50 md:py-4">
       <div className="flex items-center justify-between mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16">
         <div className="flex items-center">
-          <Link href="/" className="text-xl text-foreground font-bold">
-            Logo
+          <Link href="/" className="text-2xl text-[--neutral] font-light">
+            Memoria
           </Link>
         </div>
         <div className="hidden md:flex items-center space-x-4">
@@ -37,10 +37,10 @@ export function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm ${
+              className={`text-sm font-medium p-2 px-6 rounded-2xl ${
                 pathname === item.href
-                  ? 'text-primary font-medium'
-                  : 'text-muted-foreground hover:text-primary'
+                  ? "text-[--neutral] bg-[--primary]"
+                  : "text-[--neutral]"
               }`}
             >
               {item.name}
@@ -48,10 +48,17 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
+          <Button
+            className="text-[--accent] hover:text-[--accent-foreground] px-6 py-2  border-2 border-[--accent] border-solid rounded-full"
+            variant="ghost"
+            asChild
+          >
+            <Link href="/login">Log in</Link>
           </Button>
-          <Button asChild>
+          <Button
+            className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary]/80 shadow-none rounded-full"
+            asChild
+          >
             <Link href="/signup">Sign Up</Link>
           </Button>
         </div>
@@ -63,7 +70,7 @@ export function Navbar() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] bg-[--background]">
               <SheetHeader>
                 <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
@@ -74,19 +81,23 @@ export function Navbar() {
                     href={item.href}
                     className={`text-sm ${
                       pathname === item.href
-                        ? 'text-primary font-medium'
-                        : 'text-muted-foreground hover:text-primary'
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground hover:text-primary"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >
                     {item.name}
                   </Link>
                 ))}
-                <Button variant="ghost" asChild className="justify-start">
-                  <Link href="/login" onClick={() => setIsOpen(false)}>Login</Link>
+                <Button variant="ghost" asChild className="justify-start text-[--accent] hover:text-[--accent-foreground] px-6 py-2  border-2 border-[--accent] border-solid rounded-full">
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    Login
+                  </Link>
                 </Button>
-                <Button asChild className="justify-start">
-                  <Link href="/signup" onClick={() => setIsOpen(false)}>Sign Up</Link>
+                <Button asChild className="justify-start text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary]/80 shadow-none rounded-full">
+                  <Link href="/signup" onClick={() => setIsOpen(false)}>
+                    Sign Up
+                  </Link>
                 </Button>
               </div>
             </SheetContent>
@@ -94,5 +105,5 @@ export function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
