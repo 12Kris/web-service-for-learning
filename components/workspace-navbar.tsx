@@ -18,7 +18,7 @@ interface NavbarProps {
 }
 
 export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
-  const [isSearching, setIsSearching] = React.useState(false)
+  // const [isSearching, setIsSearching] = React.useState(false)
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
