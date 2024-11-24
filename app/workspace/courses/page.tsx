@@ -2,8 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Users, BookOpen } from 'lucide-react'
-import { getCourses } from '@/app/lib/data'
-import { Course } from '@/app/lib/definitions'
+import { getCourses } from '@/lib/data'
+import { Course } from '@/lib/definitions'
 
 export default async function CoursesPage() {
   const courses = await getCourses()

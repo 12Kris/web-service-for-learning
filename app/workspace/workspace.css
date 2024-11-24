@@ -5,8 +5,7 @@
 
 @layer base {
   :root {
-    --background: #FEF9F2;
-    --workspace-background: #ffffff;
+    --background: #ffffff;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
@@ -63,7 +62,7 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  /* background-color: var(--background); */
+  background-color: var(--background);
 }
 
 
@@ -72,6 +71,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply text-foreground;
+    @apply bg-background text-foreground;
   }
 }

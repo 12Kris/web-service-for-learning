@@ -36,8 +36,11 @@ export default function Home() {
       />
 
       <div className="flex flex-col items-center mt-10 justify-center">
-        <Link href="/courses">
-          <Button>Courses (To Check DB Connection)</Button>
+        <Link href="/workspace/courses">
+          <Button className="mb-4">Courses (To Check DB Connection)</Button>
+        </Link>
+        <Link href="/workspace/courses">
+          <Button>Workspace</Button>
         </Link>
       </div>
     </div>
