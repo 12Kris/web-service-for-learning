@@ -20,15 +20,36 @@ export async function getCourseById(courseId) {
 export async function getCourses() {
     const { data, error } = await supabase
         .from('courses')
-        .select('*');
+        .select('id, title, therms_count, description, author, topics(name)');
 
     if (error) {
         console.error("Error fetching courses:", error);
         return [];
     }
 
-    return data;
+    const courses = data.map(course => ({
+        ...course,
+        topic: course.topics.name,
+    }));
+
+    return courses;
 }
+
+export async function isCourseAddedToUser(userId, courseId) {
+    const { data, error } = await supabase
+        .from('user_courses')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('course_id', courseId);
+
+    if (error) {
+        console.error("Error checking if course is added:", error);
+        return false;
+    }
+
+    return data.length > 0;
+}
+
 
 export async function getUserCourses() {
     try {
