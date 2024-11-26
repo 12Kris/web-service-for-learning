@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { CourseCard } from "@/components/course-card/course-card"
+import Link from "next/link";
 
 interface Course {
   id: string
@@ -77,14 +78,16 @@ export function CourseCarousel({ title, courses }: CourseCarouselProps) {
                 'w-full'
               }`}
             >
-              <CourseCard
-                title={course.title}
-                topic={course.topic}
-                thermsCount={course.thermsCount}
-                description={course.description}
-                author={course.author}
-                onLike={() => console.log(`Liked course: ${course.id}`)}
-              />
+              <Link href={`workspace/${course.id}`}>
+                <CourseCard
+                    title={course.title}
+                    topic={course.topic}
+                    thermsCount={course.thermsCount}
+                    description={course.description}
+                    author={course.author}
+                    onLike={() => console.log(`Liked course: ${course.id}`)}
+                />
+              </Link>
             </div>
           ))}
         </div>
