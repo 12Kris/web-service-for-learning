@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { loginUser } from "@/lib/authActions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,18 +13,21 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [isPending, startTransition] = useTransition();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    try {
-      const token = await loginUser(email, password);
-      console.log("Login successful, token:", token);
-    } catch (err) {
-      setError(err.message);
-      console.error("Login failed:", err);
-    }
+    startTransition(async () => {
+      try {
+        const token = await loginUser(email, password);
+        console.log("Login successful, token:", token);
+      } catch (err) {
+        setError((err as Error).message);
+        console.error("Login failed:", err);
+      }
+    });
   };
 
   return (
@@ -64,7 +67,9 @@ export default function LoginPage() {
                 />
                 <Label htmlFor="rememberMe">Remember me</Label>
               </div>
-              <Button type="submit">Login</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Logging in..." : "Login"}
+              </Button>
             </form>
           </CardContent>
         </Card>

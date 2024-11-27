@@ -2,7 +2,7 @@
 import { supabase } from '@/lib/supabaseClient';
 import { getUser } from "@/lib/authActions";
 
-export async function getCourseById(courseId) {
+export async function getCourseById(courseId: string) {
     const { data, error } = await supabase
         .from("courses")
         .select("*")
@@ -19,15 +19,14 @@ export async function getCourseById(courseId) {
 
 export async function getCourses() {
     const { data, error } = await supabase
-        .from('courses')
-        .select('id, title, therms_count, description, author, topics(name)');
-
+        .from("courses")
+        .select("id, title, therms_count, description, author, topics(name)");
     if (error) {
         console.error("Error fetching courses:", error);
         return [];
     }
 
-    const courses = data.map(course => ({
+    const courses = data.map((course) => ({
         ...course,
         topic: course.topics.name,
     }));
@@ -35,12 +34,12 @@ export async function getCourses() {
     return courses;
 }
 
-export async function isCourseAddedToUser(userId, courseId) {
+export async function isCourseAddedToUser(userId: string, courseId: string) {
     const { data, error } = await supabase
-        .from('user_courses')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('course_id', courseId);
+        .from("user_courses")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("course_id", courseId);
 
     if (error) {
         console.error("Error checking if course is added:", error);
@@ -49,7 +48,6 @@ export async function isCourseAddedToUser(userId, courseId) {
 
     return data.length > 0;
 }
-
 
 export async function getUserCourses() {
     try {
@@ -86,7 +84,7 @@ export async function getUserCourses() {
     }
 }
 
-export async function addCourseToUser(courseId) {
+export async function addCourseToUser(courseId: string) {
     try {
         const user = await getUser();
 
