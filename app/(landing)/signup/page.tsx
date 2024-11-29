@@ -29,7 +29,7 @@ export default function RegisterPage() {
       await registerUser(name, email, password, confirmPassword);
       console.log("Registration successful!");
     } catch (err) {
-      setError(err.message);
+      setError((err as Error).message);
       console.error("Registration failed:", err);
     }
   };

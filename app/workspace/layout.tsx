@@ -16,9 +16,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className={`${inter.className} bg-white flex flex-col min-h-screen md:flex-row`}>
+    <div className={`${inter.className} bg-white flex w-full flex-col min-h-screen md:flex-row`}>
         <DesktopMenu />
-        <div className="">
+        <div className="flex flex-col w-full">
         <Navbar />
 
           <main className="flex-1 mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">

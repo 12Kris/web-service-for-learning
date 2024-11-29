@@ -1,20 +1,21 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getUserCourses} from '@/lib/courses/actions';
+import { getCourses } from '@/lib/courses/actions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users, BookOpen } from 'lucide-react';
 import Link from "next/link";
+import { Course } from "@/lib/definitions";
 
 export default function CoursesPage() {
-    const [courses, setCourses] = useState([]);
+    const [courses, setCourses] = useState<Course[]>([]);
 
     useEffect(() => {
         async function fetchCourses() {
-            const data = await getUserCourses();
+            const data = await getCourses();
             if (Array.isArray(data)) {
-                setCourses(data);
+                setCourses(data as Course[]);
             } else {
                 console.error("Expected array, but got", data);
             }

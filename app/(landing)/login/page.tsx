@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
-
+  const router = useRouter();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -22,6 +23,7 @@ export default function LoginPage() {
     startTransition(async () => {
       try {
         const token = await loginUser(email, password);
+        router.push("/workspace");
         console.log("Login successful, token:", token);
       } catch (err) {
         setError((err as Error).message);

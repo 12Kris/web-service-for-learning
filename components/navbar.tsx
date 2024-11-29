@@ -24,7 +24,7 @@ const navItems = [
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
-    const [token, setToken] = useState(null);
+    const [token, setToken] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
