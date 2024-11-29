@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getCourseById, isCourseAddedToUser } from "@/lib/courses/actions";
-// import { Button } from "@/components/ui/button";
+import {addCourseToUser, getCourseById, isCourseAddedToUser} from "@/lib/courses/actions";
+import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/authActions";
 import {use} from 'react';
+import Link from "next/link";
 
 interface Course {
     id: string;
@@ -14,7 +15,7 @@ interface Course {
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const [course, setCourse] = useState<Course | null>(null);
-    // const [isCourseAdded, setIsCourseAdded] = useState(false);
+    const [isCourseAdded, setIsCourseAdded] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
     const { id } = use(params);
 
@@ -44,7 +45,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
             if (userId && id) {
                 const result = await isCourseAddedToUser(userId, id);
                 console.log(result)
-                // setIsCourseAdded(result);
+                setIsCourseAdded(result);
             }
         }
 
@@ -55,12 +56,12 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
         return <div>Loading...</div>;
     }
 
-    // const handleAddCourse = async () => {
-    //     if (!userId || !course.id) return;
-    //     await addCourseToUser(course.id, userId);
-    //     alert("Course added to your account!");
-    //     setIsCourseAdded(true);
-    // };
+    const handleAddCourse = async () => {
+        if (!userId || !course.id) return;
+        await addCourseToUser(course.id, userId);
+        alert("Course added to your account!");
+        setIsCourseAdded(true);
+    };
 
     return (
         <div className="container mx-auto py-10 px-4">
@@ -70,9 +71,11 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
                 <span className="font-bold">Instructor:</span> {course.instructor_name}
             </div>
             <div className="my-4">
-                {/* <Button onClick={handleAddCourse} disabled={isCourseAdded}>
+                <Button onClick={handleAddCourse} disabled={isCourseAdded}>
                     {isCourseAdded ? "Course Added" : "Add this course to my account"}
-                </Button> */}
+                </Button>
+
+                <Link href={`/workspace/${course.id}/cards`}>Пройти тест</Link>
             </div>
         </div>
     );

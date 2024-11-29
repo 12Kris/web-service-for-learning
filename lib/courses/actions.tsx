@@ -18,6 +18,20 @@ export async function getCourseById(courseId: string) {
   return data;
 }
 
+export async function getCardsByBlock(blockId: string) {
+  const { data, error } = await supabase
+      .from("Card")
+      .select("*")
+      .eq("block_id", blockId);
+
+  if (error) {
+    console.error("Error fetching cards:", error);
+    return [];
+  }
+
+  return data;
+}
+
 
 export async function getCourses(): Promise<Course[]> {
   const { data, error } = await supabase.from("Course").select(`
@@ -88,7 +102,7 @@ export async function getUserCourses() {
   }
 }
 
-export async function addCourseToUser(courseId: string) {
+export async function addCourseToUser(courseId: string, userId: string) {
   try {
     const user = await getUser();
 
