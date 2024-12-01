@@ -17,6 +17,49 @@ export async function getCourseById(courseId: string) {
 
   return data;
 }
+export async function getTestQuestions(testId: string) {
+  const { data, error } = await supabase
+      .from("Test")
+      .select("*")
+      .eq("id", testId);
+
+  if (error) {
+    console.error("Error fetching test questions:", error);
+    return [];
+  }
+
+  return data;
+}
+export async function saveTestResults(userId: string, testId: string, answers: { questionId: string; answer: string; isCorrect: boolean }[]) {
+  const { data: result, error: resultError } = await supabase
+      .from("user_test_results")
+      .insert([{ user_id: userId, test_id: testId, score: answers.filter(a => a.isCorrect).length }])
+      .select("id")
+      .single();
+
+  if (resultError) {
+    console.error("Error saving test result:", resultError);
+    return null;
+  }
+
+  const { error: answersError } = await supabase
+      .from("test_answers")
+      .insert(
+          answers.map(answer => ({
+            user_test_result_id: result.id,
+            question_id: answer.questionId,
+            answer: answer.answer,
+            is_correct: answer.isCorrect
+          }))
+      );
+
+  if (answersError) {
+    console.error("Error saving test answers:", answersError);
+    return null;
+  }
+
+  return result;
+}
 
 export async function getCardsByBlock(blockId: string) {
   const { data, error } = await supabase
