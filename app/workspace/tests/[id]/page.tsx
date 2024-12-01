@@ -12,28 +12,17 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [score, setScore] = useState(0);
 
     const { id: testId } = use(params);
-    const router = useRouter();
 
     useEffect(() => {
         async function fetchQuestions() {
             try {
                 const data = await getTestQuestions(testId);
-                console.log('Fetched questions:', data);
-
                 if (Array.isArray(data) && data.length > 0) {
-                    const questionsWithOptions = data.map((question) => ({
-                        ...question,
-                        options: [question.answer, 'Option 2', 'Option 3'],
-                        correctAnswer: question.answer,
-                    }));
-
-                    setQuestions(questionsWithOptions);
+                    setQuestions(data);
                 } else {
-                    console.warn('No questions found');
                     setQuestions([]);
                 }
             } catch (error) {
-                console.error('Error fetching questions:', error);
                 setQuestions([]);
             }
         }
@@ -41,9 +30,18 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         fetchQuestions();
     }, [testId]);
 
+    const handleAnswer = (questionId, selectedAnswerIndex) => {
+        const isCorrect = selectedAnswerIndex === questions[currentQuestion]?.correct_index;
 
-    const handleAnswer = (questionId, answer, isCorrect) => {
-        setAnswers((prev) => [...prev, { questionId, answer, isCorrect }]);
+        if (isCorrect) {
+            setScore((prevScore) => prevScore + 1);
+        }
+
+        setAnswers((prev) => [
+            ...prev,
+            { questionId, answer: selectedAnswerIndex, isCorrect },
+        ]);
+
         if (currentQuestion + 1 === questions.length) {
             setIsTestComplete(true);
         } else {
@@ -51,12 +49,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         }
     };
 
+
     const handleSaveResults = async () => {
         try {
-            const result = await saveTestResults('user-id', testId, answers);
-            if (result) {
-                setScore(result.score);
-            }
+            const result = await saveTestResults(testId, answers);
         } catch (error) {
             console.error('Error saving results:', error);
         }
@@ -74,20 +70,16 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
     return (
         <div>
-            {questions.length > 0 && questions[currentQuestion]?.options?.length > 0 && (
+            {questions.length > 0 && (
                 <div>
-                    <h3>{questions[currentQuestion].question}</h3>
-                    {questions[currentQuestion].options.map((option, index) => (
+                    <h3>{questions[currentQuestion]?.question}</h3>
+                    {questions[currentQuestion]?.answers.map((option, index) => (
                         <div key={index}>
                             <input
                                 type="radio"
                                 name="answer"
                                 onClick={() =>
-                                    handleAnswer(
-                                        questions[currentQuestion].id,
-                                        option,
-                                        option === questions[currentQuestion].correctAnswer
-                                    )
+                                    handleAnswer(questions[currentQuestion]?.id, index)
                                 }
                             />
                             <label>{option}</label>
