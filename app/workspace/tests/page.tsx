@@ -1,12 +1,12 @@
-import { getTestsWithCourses } from "@/lib/courses/actions";
+import { getTests } from "@/lib/courses/actions";
 import Link from "next/link";
 
 export default async function Page() {
-    const tests = await getTestsWithCourses();
+    const tests = await getTests();
 
     return (
         <main className="container mx-auto py-8 space-y-12">
-            <h1 className="text-2xl font-bold">Tests</h1>
+            <h1 className="text-2xl font-bold">All Tests</h1>
             <ul>
                 {tests.map((test) => (
                     <li key={test.id} className="mb-4">

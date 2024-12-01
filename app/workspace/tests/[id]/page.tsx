@@ -1,58 +1,68 @@
 'use client';
 
-import { use, useEffect, useState } from 'react';
-import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
-import { useRouter } from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {getTestQuestions, saveTestResults} from '@/lib/courses/actions';
+import {use} from 'react';
 
-export default function TestPage({ params }: { params: Promise<{ id: string }> }) {
+export default function TestPage({params}: { params: Promise<{ id: string }> }) {
+    const {id: testId} = use(params);
+
     const [questions, setQuestions] = useState([]);
-    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState([]);
     const [isTestComplete, setIsTestComplete] = useState(false);
     const [score, setScore] = useState(0);
-
-    const { id: testId } = use(params);
+    const [attempts, setAttempts] = useState(1);
 
     useEffect(() => {
         async function fetchQuestions() {
-            try {
-                const data = await getTestQuestions(testId);
-                if (Array.isArray(data) && data.length > 0) {
-                    setQuestions(data);
-                } else {
-                    setQuestions([]);
-                }
-            } catch (error) {
-                setQuestions([]);
-            }
+            const data = await getTestQuestions(testId);
+            setQuestions(data);
         }
 
         fetchQuestions();
     }, [testId]);
 
-    const handleAnswer = (questionId, selectedAnswerIndex) => {
-        const isCorrect = selectedAnswerIndex === questions[currentQuestion]?.correct_index;
+    const handleAnswer = (selectedAnswerId: string) => {
+        const currentQuestion = questions[currentQuestionIndex];
+
+        const correctAnswer = currentQuestion.answers[currentQuestion.correct_index];
+
+        const isCorrect = selectedAnswerId === correctAnswer.id;
 
         if (isCorrect) {
-            setScore((prevScore) => prevScore + 1);
+            setScore((prev) => prev + 1);
         }
 
         setAnswers((prev) => [
             ...prev,
-            { questionId, answer: selectedAnswerIndex, isCorrect },
+            {
+                questionId: currentQuestion.id,
+                answerId: selectedAnswerId,
+                isCorrect,
+            },
         ]);
 
-        if (currentQuestion + 1 === questions.length) {
+        if (currentQuestionIndex + 1 === questions.length) {
             setIsTestComplete(true);
         } else {
-            setCurrentQuestion((prev) => prev + 1);
+            setCurrentQuestionIndex((prev) => prev + 1);
         }
     };
 
 
+    useEffect(() => {
+        console.log(answers);
+    }, [answers])
+
     const handleSaveResults = async () => {
         try {
             const result = await saveTestResults(testId, answers);
+            if (result?.error) {
+                console.error('Error saving results:', result.error);
+            } else {
+                alert('Results saved successfully!');
+            }
         } catch (error) {
             console.error('Error saving results:', error);
         }
@@ -60,32 +70,39 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
     if (isTestComplete) {
         return (
-            <div>
+            <div className="text-center">
                 <h2>Test Complete!</h2>
-                <p>Your Score: {score}</p>
-                <button onClick={handleSaveResults}>Save Results</button>
+                <p>Your Score: {score}/{questions.length}</p>
+                <p>Attempts: {attempts}</p>
+                <button
+                    className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+                    onClick={handleSaveResults}
+                >
+                    Save Results
+                </button>
             </div>
         );
     }
 
     return (
-        <div>
-            {questions.length > 0 && (
+        <div className="text-center">
+            {questions.length > 0 ? (
                 <div>
-                    <h3>{questions[currentQuestion]?.question}</h3>
-                    {questions[currentQuestion]?.answers.map((option, index) => (
-                        <div key={index}>
-                            <input
-                                type="radio"
-                                name="answer"
-                                onClick={() =>
-                                    handleAnswer(questions[currentQuestion]?.id, index)
-                                }
-                            />
-                            <label>{option}</label>
-                        </div>
-                    ))}
+                    <h3>Question {currentQuestionIndex + 1}/{questions.length}</h3>
+                    <p>{questions[currentQuestionIndex].question}</p>
+                    <ul className="mt-4">
+                        {questions[currentQuestionIndex].answers.map((answer: any, index: number) => (
+                            <li key={index}>
+                                <button className="mt-2 bg-gray-200 py-2 px-4 rounded"
+                                        onClick={() => handleAnswer(answer.id)}>
+                                    {answer.answer}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
+            ) : (
+                <p>Loading questions...</p>
             )}
         </div>
     );

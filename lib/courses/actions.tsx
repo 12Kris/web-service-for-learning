@@ -18,7 +18,7 @@ export async function getCourseById(courseId: string) {
     return data;
 }
 
-export async function getTestsWithCourses() {
+export async function getTests() {
     const {data, error} = await supabase
         .from("Test")
         .select(`
@@ -34,18 +34,24 @@ export async function getTestsWithCourses() {
         `);
 
     if (error) {
-        console.error("Error fetching tests with courses:", error);
+        console.error("Error fetching tests:", error);
         return [];
     }
 
     return data;
 }
 
+
 export async function getTestQuestions(testId: string) {
     const {data, error} = await supabase
-        .from("Test")
-        .select("id, question, answers, correct_index")
-        .eq("id", testId);
+        .from("TestQuestions")
+        .select(`
+            id,
+            question,
+            correct_index,
+            answers:TestAnswers(id, answer)
+        `)
+        .eq("test_id", testId);
 
     if (error) {
         console.error("Error fetching test questions:", error);
@@ -55,46 +61,67 @@ export async function getTestQuestions(testId: string) {
     return data;
 }
 
-export async function saveTestResults(testId: string, answers: {
-    questionId: string;
-    answer: string;
-    isCorrect: boolean
-}[]) {
+
+export async function saveTestResults(
+    testId: string,
+    answers: { questionId: string; answer: number; isCorrect: boolean }[]
+) {
     try {
         const user = await getUser();
         if (!user) {
-            throw new Error("User not authenticated");
+            throw new Error('User not authenticated');
         }
+
         const userId = user.id;
 
-        const { data: result, error: resultError } = await supabase
-            .from("user_test_results")
-            .insert([{ user_id: userId, test_id: testId, score: answers.filter(a => a.isCorrect).length }])
-            .select("id")
-            .single();
+        const {data: previousAttempts, error: attemptsError} = await supabase
+            .from('user_test_results')
+            .select('id')
+            .eq('user_id', userId)
+            .eq('test_id', testId);
 
-        if (resultError) {
-            throw new Error(`Error saving test result: ${resultError.message}`);
+        if (attemptsError) {
+            throw new Error(`Error fetching attempts: ${attemptsError.message}`);
         }
 
-        const { error: answersError } = await supabase
-            .from("test_answers")
+        const attemptNumber = (previousAttempts?.length || 0) + 1;
+
+        const {data: testResult, error: testResultError} = await supabase
+            .from('user_test_results')
+            .insert([
+                {
+                    user_id: userId,
+                    test_id: testId,
+                    score: answers.filter((a) => a.isCorrect).length,
+                    attempt_number: attemptNumber,
+                },
+            ])
+            .select('id')
+            .single();
+
+        if (testResultError) {
+            throw new Error(`Error saving test result: ${testResultError.message}`);
+        }
+
+        const {error: answersError} = await supabase
+            .from('test_answers')
             .insert(
-                answers.map(answer => ({
-                    user_test_result_id: result.id,
+                answers.map((answer) => ({
+                    user_test_result_id: testResult.id,
                     question_id: answer.questionId,
-                    answer: answer.answer,
-                    is_correct: answer.isCorrect
+                    answer: answer.answerId,
+                    is_correct: answer.isCorrect,
                 }))
             );
 
         if (answersError) {
-            throw new Error(`Error saving test answers: ${answersError.message}`);
+            throw new Error(`Error saving answers: ${answersError.message}`);
         }
 
-        return result;
+        return testResult;
     } catch (error) {
-        return { error: error.message };
+        console.error('Error saving test results:', error);
+        return {error: error.message};
     }
 }
 
