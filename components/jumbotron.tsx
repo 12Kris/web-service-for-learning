@@ -26,7 +26,7 @@ export function Jumbotron({
         <h1 className="text-5xl font-bold mb-4 text-[--neutral]">{title}</h1>
         <p className="text-lg mb-6 text-[--neutral]">{description}</p>
         <div className="flex justify-center md:justify-start gap-4">
-          <Button className="text-[--neutral] hover:text-[--neutral-foreground] px-6 py-2  border-2 border-[--neutral] border-solid rounded-full" asChild size="lg">
+          <Button className="text-[--neutral] bg-transparent hover:text-[--neutral-foreground] px-6 py-2  border-2 border-[--neutral] border-solid rounded-full" asChild size="lg">
             <Link href={primaryButtonLink}>{primaryButtonText}</Link>
           </Button>
           <Button className="text-white border-2 border-[--accent] bg-[--accent] px-6 py-2 hover:text-white hover:bg-[--accent-foreground]/80 shadow-none rounded-full" asChild variant="outline" size="lg">
