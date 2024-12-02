@@ -11,6 +11,7 @@ export interface User {
     description?: string;
     type?: string;
     creator_id: string;
+    creator?: User;
     last_completion_date?: string;
     users?: User;
   }

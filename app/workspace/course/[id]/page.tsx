@@ -5,13 +5,7 @@ import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/authActions";
 import {use} from 'react';
 import Link from "next/link";
-
-interface Course {
-    id: string;
-    title: string;
-    description: string;
-    instructor_name: string;
-}
+import { Course } from "@/lib/definitions";
 
 export default function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const [course, setCourse] = useState<Course | null>(null);
@@ -58,24 +52,24 @@ export default function CourseDetailPage({ params }: { params: Promise<{ id: str
 
     const handleAddCourse = async () => {
         if (!userId || !course.id) return;
-        await addCourseToUser(course.id, userId);
+        await addCourseToUser(course.id.toString(), userId);
         alert("Course added to your account!");
         setIsCourseAdded(true);
     };
 
     return (
         <div className="container mx-auto py-10 px-4">
-            <h1 className="text-3xl font-bold mb-6">{course.title}</h1>
+            <h1 className="text-3xl font-bold mb-6">{course.name}</h1>
             <div className="mb-6">{course.description}</div>
             <div>
-                <span className="font-bold">Instructor:</span> {course.instructor_name}
+                <span className="font-bold">Instructor:</span> {course.creator?.full_name}
             </div>
             <div className="my-4">
                 <Button onClick={handleAddCourse} disabled={isCourseAdded}>
                     {isCourseAdded ? "Course Added" : "Add this course to my account"}
                 </Button>
 
-                <Link href={`/workspace/${course.id}/cards`}>Пройти тест</Link>
+                <Link href={`/workspace/course/${course.id}/cards`}>Пройти тест</Link>
             </div>
         </div>
     );

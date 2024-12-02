@@ -73,7 +73,7 @@ export default function UserProfile() {
         <main className="flex-1">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid sticky top-[75px] z-10 w-full grid-cols-2 h-13 mb-8">
-              <TabsTrigger value="created" className="text-lg py-2">Courses Created</TabsTrigger>
+              <TabsTrigger value="created" className="text-lg py-2 ">Courses Created</TabsTrigger>
               <TabsTrigger value="studying" className="text-lg py-2">Courses Studying</TabsTrigger>
             </TabsList>
             <TabsContent value="created">

@@ -5,8 +5,8 @@ import { Course } from "@/lib/definitions";
 
 export async function getCourseById(courseId: string) {
   const { data, error } = await supabase
-    .from("courses")
-    .select("*")
+    .from("Course")
+    .select("*, creator:creator_id (id, email, full_name)")
     .eq("id", courseId)
     .single();
 

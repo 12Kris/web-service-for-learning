@@ -4,6 +4,8 @@ import * as React from "react"
 import { Menu, Plus, Search, Filter, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+
 import { Input } from "@/components/ui/input"
 import {
   Sheet,
@@ -19,6 +21,9 @@ interface NavbarProps {
 
 export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
   // const [isSearching, setIsSearching] = React.useState(false)
+  const pathname = usePathname()
+  const showAddButton = pathname === "/workspace"
+
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -46,15 +51,17 @@ export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
               </nav>
             </SheetContent>
           </Sheet>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onAdd}
-            className="shrink-0 ml-4 bg-[--neutral] hover:bg-[--neutral]/80 hover:text-white text-white"
-          >
-            <Plus className="h-5 w-5" />
-            <span className="sr-only">Add new</span>
-          </Button>
+          {showAddButton && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onAdd}
+              className="shrink-0 ml-4 bg-[--neutral] hover:bg-[--neutral]/80 hover:text-white text-white"
+            >
+              <Plus className="h-5 w-5" />
+              <span className="sr-only">Add new</span>
+            </Button>
+          )}
         </div>
 
         <div className="flex flex-1 items-center gap-4 px-2 md:px-4">
