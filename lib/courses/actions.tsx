@@ -105,6 +105,7 @@ export async function getUserCourses() {
 export async function addCourseToUser(courseId: string, userId: string) {
   try {
     const user = await getUser();
+    console.log(userId)
 
     if (!user) {
       throw new Error("User not authenticated");
