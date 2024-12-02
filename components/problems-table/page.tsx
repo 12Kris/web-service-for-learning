@@ -1,4 +1,5 @@
-import { problems } from "@/app/lib/problems";
+import { problems } from "@/lib/problems";
+
 import Image from "next/image";
 
 export default function InfoTable() {

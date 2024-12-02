@@ -2,7 +2,7 @@ import { Jumbotron } from "@/components/jumbotron";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { MetricsShowcase } from "@/components/metrics-showcase";
-
+import ProblemsTable from "@/components/problems-table/page";
 export default function Home() {
   const metrics = [
     {
@@ -29,7 +29,7 @@ export default function Home() {
         secondaryButtonText="Learn More"
         secondaryButtonLink="/about"
       />
-
+      <ProblemsTable />
       <MetricsShowcase
         title="Our numbers tell more about us"
         metrics={metrics}
