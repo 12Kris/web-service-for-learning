@@ -1,6 +1,7 @@
 import { Jumbotron } from "@/components/jumbotron";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import ProblemsTable from "@/components/problems-table/page";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
           <Button>Courses (To Check DB Connection)</Button>
         </Link>
       </div>
+        <ProblemsTable />
     </div>
   );
 }
