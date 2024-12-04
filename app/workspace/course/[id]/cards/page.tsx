@@ -7,13 +7,22 @@ import { getCardsByBlock } from '@/lib/courses/actions';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 
+import { deleteCourse } from '@/lib/courses/actions';
+
+
 export default function FlashcardPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [cards, setCards] = useState<{ question: string; answer: string }[]>([]);
   const [currentCard, setCurrentCard] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
 
+
   const { id } = use(params);
+
+
+  if (cards.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   useEffect(() => {
     async function fetchCards() {
@@ -33,10 +42,6 @@ export default function FlashcardPage({ params }: { params: Promise<{ id: string
     fetchCards();
   }, [id, router]);
 
-  if (cards.length === 0) {
-    return <div>Loading...</div>;
-  }
-
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
   };
@@ -50,6 +55,8 @@ export default function FlashcardPage({ params }: { params: Promise<{ id: string
     setIsFlipped(false);
     setCurrentCard((prev) => (prev - 1 + cards.length) % cards.length);
   };
+
+
 
   return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -77,6 +84,8 @@ export default function FlashcardPage({ params }: { params: Promise<{ id: string
             <ChevronRight size={24} />
           </button>
         </div>
+
+
       </div>
   );
 }
