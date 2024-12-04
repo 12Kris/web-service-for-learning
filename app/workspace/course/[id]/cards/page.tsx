@@ -7,7 +7,6 @@ import { getCardsByBlock } from '@/lib/courses/actions';
 import { useRouter } from 'next/navigation';
 import { use } from 'react';
 
-import { deleteCourse } from '@/lib/courses/actions';
 
 
 export default function FlashcardPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,12 +17,7 @@ export default function FlashcardPage({ params }: { params: Promise<{ id: string
 
 
   const { id } = use(params);
-
-
-  if (cards.length === 0) {
-    return <div>Loading...</div>;
-  }
-
+  
   useEffect(() => {
     async function fetchCards() {
       try {
@@ -41,6 +35,12 @@ export default function FlashcardPage({ params }: { params: Promise<{ id: string
 
     fetchCards();
   }, [id, router]);
+
+  if (cards.length === 0) {
+    return <div>Loading...</div>;
+  }
+
+
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);

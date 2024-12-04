@@ -11,7 +11,6 @@ import { use } from "react";
 import Link from "next/link";
 import { Course } from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
-import { useRouter } from "next/navigation";
 
 import {
   AlertDialog,
