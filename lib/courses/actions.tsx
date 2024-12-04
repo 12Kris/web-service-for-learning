@@ -20,9 +20,9 @@ export async function getCourseById(courseId: string) {
 
 export async function getCardsByBlock(blockId: string) {
   const { data, error } = await supabase
-      .from("Card")
-      .select("*")
-      .eq("block_id", blockId);
+    .from("Card")
+    .select("*")
+    .eq("block_id", blockId);
 
   if (error) {
     console.error("Error fetching cards:", error);
@@ -30,26 +30,6 @@ export async function getCardsByBlock(blockId: string) {
   }
 
   return data;
-}
-
-
-export async function getCourses(): Promise<Course[]> {
-  const { data, error } = await supabase.from("Course").select(`
-        *,
-        users:creator_id (
-          id,
-          email,
-          full_name
-        )
-      `);
-
-  if (error) {
-    console.error("Error fetching courses:", error);
-    return [];
-  }
-
-  console.log(data);
-  return data as Course[];
 }
 
 export async function isCourseAddedToUser(userId: string, courseId: string) {
@@ -105,7 +85,7 @@ export async function getUserCourses() {
 export async function addCourseToUser(courseId: string, userId: string) {
   try {
     const user = await getUser();
-    console.log(userId)
+    console.log(userId);
 
     if (!user) {
       throw new Error("User not authenticated");
@@ -124,5 +104,105 @@ export async function addCourseToUser(courseId: string, userId: string) {
     throw new Error(
       (error as Error).message || "An error occurred while adding the course"
     );
+  }
+}
+
+export async function getCourses(): Promise<Course[]> {
+  const { data, error } = await supabase.from("Course").select(`
+        *,
+        users:creator_id (
+          id,
+          email,
+          full_name
+        )
+      `);
+
+  if (error) {
+    console.error("Error fetching courses:", error);
+    return [];
+  }
+
+  console.log(data);
+  return data as Course[];
+}
+
+export async function createCourse(
+  courseData: Omit<Course, "id" | "creator_id" | "creator">
+): Promise<Course | null> {
+  try {
+    const user = await getUser();
+
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const { data, error } = await supabase
+      .from("Course")
+      .insert({
+        ...courseData,
+        creator_id: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating course:", error);
+      throw new Error(`Failed to create course: ${error.message}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in createCourse:", error);
+    throw new Error(
+      (error as Error).message || "An error occurred while creating the course"
+    );
+  }
+}
+
+export async function deleteCourse(
+  courseId: string
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const user = await getUser();
+
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    const { data: course, error: fetchError } = await supabase
+      .from("Course")
+      .select("creator_id")
+      .eq("id", courseId)
+      .single();
+
+    if (fetchError) {
+      throw new Error("Failed to fetch course");
+    }
+
+    if (course.creator_id !== user.id) {
+      throw new Error("You don't have permission to delete this course");
+    }
+
+    const { error: deleteError } = await supabase
+      .from("Course")
+      .delete()
+      .eq("id", courseId);
+
+    if (deleteError) {
+      throw new Error(`Failed to delete course: ${deleteError.message}`);
+    }
+
+    return {
+      success: true,
+      message: "Course and all related data deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error in deleteCourse:", error);
+    return {
+      success: false,
+      message:
+        (error as Error).message ||
+        "An error occurred while deleting the course",
+    };
   }
 }

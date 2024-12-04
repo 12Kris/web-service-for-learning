@@ -1,29 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Menu, Plus, Search, Filter, User } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import * as React from "react";
+import { Menu, Plus, Search, Filter, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { Input } from "@/components/ui/input"
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 interface NavbarProps {
-  onSearch?: (term: string) => void
-  onFilter?: () => void
-  onAdd?: () => void
+  onSearch?: (term: string) => void;
+  onFilter?: () => void;
+  onAdd?: () => void;
 }
 
 export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
-  // const [isSearching, setIsSearching] = React.useState(false)
-  const pathname = usePathname()
-  const showAddButton = pathname === "/workspace"
-
+  const pathname = usePathname();
+  const showAddButton = pathname === "/workspace";
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -52,15 +46,17 @@ export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
             </SheetContent>
           </Sheet>
           {showAddButton && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onAdd}
-              className="shrink-0 ml-4 bg-[--neutral] hover:bg-[--neutral]/80 hover:text-white text-white"
-            >
-              <Plus className="h-5 w-5" />
-              <span className="sr-only">Add new</span>
-            </Button>
+            <Link href="/workspace/course/create">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onAdd}
+                className="shrink-0 ml-4 bg-[--neutral] hover:bg-[--neutral]/80 hover:text-white text-white"
+              >
+                <Plus className="h-5 w-5" />
+                <span className="sr-only">Add new</span>
+              </Button>
+            </Link>
           )}
         </div>
 
@@ -83,19 +79,18 @@ export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
             filter
           </Button>
           <Link href="/workspace/profile">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="shrink-0"
-            // onClick={onUserMenu}
-          >
-            <User className="h-5 w-5" />
-            <span className="sr-only">User menu</span>
-          </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              // onClick={onUserMenu}
+            >
+              <User className="h-5 w-5" />
+              <span className="sr-only">User menu</span>
+            </Button>
           </Link>
         </div>
       </div>
     </nav>
-  )
+  );
 }
-
