@@ -31,78 +31,44 @@ export default function CourseDetailPage({
 }) {
   const [course, setCourse] = useState<Course | null>(null);
   const [isCourseAdded, setIsCourseAdded] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
   const { id } = use(params);
 
   const [isCreator, setIsCreator] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchCourse() {
+    async function fetchData() {
       if (!id) return;
-      const courseData = await getCourseById(id);
-      setCourse(courseData);
-    }
+      setIsLoading(true);
 
-    fetchCourse();
-  }, [id]);
+      try {
+        const courseData = await getCourseById(id);
+        setCourse(courseData);
 
-  useEffect(() => {
-    async function fetchUser() {
-      const user = await getUser();
-      if (user) {
-        setUserId(user.id);
-        setIsCreator(user.id === course?.creator_id);
-      }
-    }
+        const user = await getUser();
+        if (user && courseData) {
+          setIsCreator(user.id.toString() === courseData.creator_id.toString());
+        }
 
-    fetchUser();
-  }, [course]);
-
-  useEffect(() => {
-    async function fetchCourse() {
-      if (!id) return;
-      const courseData = await getCourseById(id);
-      setCourse(courseData);
-    }
-
-    fetchCourse();
-  }, [id]);
-
-  useEffect(() => {
-    async function fetchUser() {
-      const user = await getUser();
-      if (user) {
-        setUserId(user.id);
-      }
-    }
-
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
-    async function checkCourse() {
-      if (userId && id) {
-        const result = await isCourseAddedToUser(userId, id);
-        console.log(result);
+        const result = await isCourseAddedToUser(id);
         setIsCourseAdded(result);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     }
 
-    checkCourse();
-  }, [userId, id]);
+    fetchData();
+  }, [id]);
 
-  if (!course) {
-    return <div>Loading...</div>;
+  async function handleAddCourse() {
+    if (!id) return;
+    await addCourseToUser(id);
+    setIsCourseAdded(true);
   }
 
-  const handleAddCourse = async () => {
-    if (!userId || !course.id) return;
-    await addCourseToUser(course.id.toString(), userId);
-    alert("Course added to your account!");
-    setIsCourseAdded(true);
-  };
-
-  const handleDeleteCourse = async () => {
+  async function handleDeleteCourse() {
     if (!id) return;
     const result = await deleteCourse(id);
     if (result.success) {
@@ -110,24 +76,28 @@ export default function CourseDetailPage({
     } else {
       alert(`Failed to delete course: ${result.message}`);
     }
-  };
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto py-10 px-4 flex w-full gap-4">
       <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
-        <h1 className="text-3xl font-bold mb-6">{course.name}</h1>
-        <div className="mb-6">{course.description}</div>
+        <h1 className="text-3xl font-bold mb-6">{course?.name}</h1>
+        <div className="mb-6">{course?.description}</div>
         <div>
           <span className="font-bold">Instructor:</span>{" "}
-          {course.creator?.full_name}
+          {course?.creator?.full_name}
         </div>
         <div className="my-4">
           <Button onClick={handleAddCourse} disabled={isCourseAdded}>
-            {isCourseAdded ? "Course Added" : "Add this course to my account"}
+            {isCourseAdded ? "Subscribed" : "Subscribe"}
           </Button>
 
-          <Link className="ml-4" href={`/workspace/course/${course.id}/cards`}>
-            Пройти тест
+          <Link className="ml-4" href={`/workspace/course/${course?.id}/cards`}>
+            <Button>Take the test</Button>
           </Link>
         </div>
       </div>

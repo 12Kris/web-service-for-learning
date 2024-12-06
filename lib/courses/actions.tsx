@@ -32,11 +32,16 @@ export async function getCardsByBlock(blockId: string) {
   return data;
 }
 
-export async function isCourseAddedToUser(userId: string, courseId: string) {
+export async function isCourseAddedToUser(courseId: string) {
+  const user = await getUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
   const { data, error } = await supabase
-    .from("user_courses")
+    .from("UserCourse")
     .select("*")
-    .eq("user_id", userId)
+    .eq("user_id", user.id)
     .eq("course_id", courseId);
 
   if (error) {
@@ -56,7 +61,7 @@ export async function getUserCourses() {
     }
 
     const { data, error } = await supabase
-      .from("user_courses")
+      .from("UserCourse")
       .select("course_id")
       .eq("user_id", user.id);
 
@@ -82,28 +87,81 @@ export async function getUserCourses() {
   }
 }
 
-export async function addCourseToUser(courseId: string, userId: string) {
+// export async function addCourseToUser(courseId: string, userId: string) {
+//   try {
+//     const user = await getUser();
+//     console.log(userId);
+
+//     if (!user) {
+//       throw new Error("User not authenticated");
+//     }
+//     const { data, error } = await supabase
+//       .from("user_courses")
+//       .insert([{ user_id: user.id, course_id: courseId }]);
+
+//     if (error) {
+//       throw new Error(`Failed to add course: ${error.message}`);
+//     }
+
+//     return data;
+//   } catch (error) {
+//     console.error("Error adding course to user:", error);
+//     throw new Error(
+//       (error as Error).message || "An error occurred while adding the course"
+//     );
+//   }
+// }
+
+export async function addCourseToUser(
+  courseId: string
+): Promise<{ success: boolean; message: string }> {
   try {
     const user = await getUser();
-    console.log(userId);
 
     if (!user) {
       throw new Error("User not authenticated");
     }
-    const { data, error } = await supabase
-      .from("user_courses")
-      .insert([{ user_id: user.id, course_id: courseId }]);
 
-    if (error) {
-      throw new Error(`Failed to add course: ${error.message}`);
+    // Check if the course exists
+    const { data: course, error: courseError } = await supabase
+      .from("Course")
+      .select("id")
+      .eq("id", courseId)
+      .single();
+
+    if (courseError || !course) {
+      throw new Error("Course not found");
     }
 
-    return data;
+    // Check if the user has already added this course
+    const { data: existingUserCourse, error: existingError } = await supabase
+      .from("UserCourse")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("course_id", courseId)
+      .single();
+
+    if (existingUserCourse) {
+      return { success: false, message: "You have already added this course" };
+    }
+
+    // Add the course to the user
+    const { error: insertError } = await supabase
+      .from("UserCourse")
+      .insert({ user_id: user.id, course_id: courseId });
+
+    if (insertError) {
+      throw new Error(`Failed to add course: ${insertError.message}`);
+    }
+
+    return { success: true, message: "Course added successfully" };
   } catch (error) {
     console.error("Error adding course to user:", error);
-    throw new Error(
-      (error as Error).message || "An error occurred while adding the course"
-    );
+    return {
+      success: false,
+      message:
+        (error as Error).message || "An error occurred while adding the course",
+    };
   }
 }
 
@@ -122,7 +180,6 @@ export async function getCourses(): Promise<Course[]> {
     return [];
   }
 
-  console.log(data);
   return data as Course[];
 }
 
