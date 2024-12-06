@@ -134,7 +134,7 @@ export async function addCourseToUser(
     }
 
     // Check if the user has already added this course
-    const { data: existingUserCourse, error: existingError } = await supabase
+    const { data: existingUserCourse } = await supabase
       .from("UserCourse")
       .select("*")
       .eq("user_id", user.id)
