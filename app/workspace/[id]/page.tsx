@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getBlocksByCourseId, getMaterialsByBlockId, getCourseProgress } from "@/lib/courses/actions";
+import {getBlocksByCourseId, getMaterialsByBlockId, getCourseProgress, getTestsByBlockId} from "@/lib/courses/actions";
 import { addCourseToUser, getCourseById, isCourseAddedToUser } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { Course, LearningBlock, LearningMaterial } from "@/lib/courses/types";
 import { getUser } from "@/lib/authActions";
+import {Test} from "@/lib/courses/types";
 
 interface Params {
     params: Promise<{ id: number }>;
@@ -18,8 +19,10 @@ export default function CourseDetailPage({ params }: Params) {
     const [progress, setProgress] = useState<number>(0);
     const [isCourseAdded, setIsCourseAdded] = useState(false);
     const [userId, setUserId] = useState<string | null>(null);
+    const [tests, setTests] = useState<Record<number, Test[]>>({});
 
     const { id } = React.use(params);
+
 
     useEffect(() => {
         async function fetchData() {
@@ -43,10 +46,15 @@ export default function CourseDetailPage({ params }: Params) {
             setBlocks(blocksData);
 
             const materialsData: Record<number, LearningMaterial[]> = {};
+            const testsData: Record<number, Test[]> = {};
+
             for (const block of blocksData) {
                 materialsData[block.id] = await getMaterialsByBlockId(block.id);
+                testsData[block.id] = await getTestsByBlockId(block.id);
             }
+
             setMaterials(materialsData);
+            setTests(testsData);
         }
 
         fetchData();
@@ -73,9 +81,18 @@ export default function CourseDetailPage({ params }: Params) {
             {blocks.map((block) => (
                 <div key={block.id} className="my-6">
                     <h2 className="text-2xl font-bold">{block.title}</h2>
+
+                    {tests[block.id]?.map((test) => (
+                        <div key={test.id} className="ml-4 my-2">
+                            <h3 className="text-lg font-semibold">TEST: {test.question}</h3>
+                        </div>
+                    ))}
+
+                    <hr/>
+
                     {materials[block.id]?.map((material) => (
                         <div key={material.id} className="ml-4 my-2">
-                            <h3 className="text-lg font-semibold">{material.title}</h3>
+                            <h3 className="text-lg font-semibold">MATERIAL: {material.title}</h3>
                             <p>{material.content}</p>
                         </div>
                     ))}

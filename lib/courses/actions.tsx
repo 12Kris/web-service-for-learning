@@ -276,6 +276,19 @@ export async function getUserCourses(): Promise<Course[]> {
     }
 }
 
+export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
+    const { data, error } = await supabase
+        .from("Test")
+        .select("id, question")
+        .eq("block_id", blockId);
+
+    if (error) {
+        console.error("Error fetching tests by block:", error);
+        return [];
+    }
+
+    return data as Test[];
+}
 
 export async function getBlocksByCourseId(courseId: number): Promise<LearningBlock[]> {
     const {data, error} = await supabase
