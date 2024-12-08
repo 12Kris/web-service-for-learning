@@ -2,23 +2,38 @@
 
 import { supabase } from "@/lib/supabaseClient";
 import { cookies } from 'next/headers';
+import {User} from "@/lib/courses/types";
 
 export async function getToken() {
     const token = (await cookies()).get('token')?.value;
     return token || null;
 }
 
-export async function getUser() {
+export async function getUser(): Promise<User | null> {
     const token = await getToken();
     if (!token) {
         return null;
     }
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    if (error || !user) {
-        throw new Error("Failed to fetch user");
+
+    const { data, error } = await supabase.auth.getUser(token);
+
+    if (error || !data?.user) {
+        console.error("Failed to fetch user:", error?.message);
+        return null;
     }
-    return user;
+
+    const { id, email, user_metadata, created_at } = data.user;
+
+    return {
+        id: id,
+        email: email || "",
+        full_name: user_metadata?.full_name || "",
+        avatar: user_metadata?.avatar || "",
+        role: user_metadata?.role || "user",
+        joinDate: created_at || "",
+    };
 }
+
 
 export async function registerUser(name: string, email: string, password: string, confirmPassword: string) {
     if (password !== confirmPassword) {

@@ -1,34 +1,40 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {getTestQuestions, saveTestResults} from '@/lib/courses/actions';
-import {use} from 'react';
+import {TestQuestion, UserTestAnswer} from '@/lib/courses/types';
 
-export default function TestPage({params}: { params: Promise<{ id: string }> }) {
-    const {id: testId} = use(params);
+interface Params {
+    params: Promise<{
+        id: string;
+    }>;
+}
 
-    const [questions, setQuestions] = useState([]);
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState([]);
-    const [isTestComplete, setIsTestComplete] = useState(false);
-    const [score, setScore] = useState(0);
-    const [attempts, setAttempts] = useState(1);
+export default function TestPage({params}: Params) {
+    const {id: testId} = React.use(params);
+
+    const [questions, setQuestions] = useState<TestQuestion[]>([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+    const [answers, setAnswers] = useState<UserTestAnswer[]>([]);
+    const [isTestComplete, setIsTestComplete] = useState<boolean>(false);
+    const [score, setScore] = useState<number>(0);
+    const [attempts, setAttempts] = useState<number>(1);
 
     useEffect(() => {
         async function fetchQuestions() {
             const data = await getTestQuestions(testId);
-            setQuestions(data);
+            if (data) {
+                setQuestions(data);
+            }
         }
 
         fetchQuestions();
     }, [testId]);
 
-    const handleAnswer = (selectedAnswerId: string) => {
+    const handleAnswer = (selectedAnswerId: number) => {
         const currentQuestion = questions[currentQuestionIndex];
-
-        const correctAnswer = currentQuestion.answers[currentQuestion.correct_index];
-
-        const isCorrect = selectedAnswerId === correctAnswer.id;
+        const selectedAnswer = currentQuestion.answers.find((answer) => answer.id === selectedAnswerId);
+        const isCorrect = selectedAnswer?.correct;
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
@@ -39,7 +45,7 @@ export default function TestPage({params}: { params: Promise<{ id: string }> }) 
             {
                 questionId: currentQuestion.id,
                 answerId: selectedAnswerId,
-                isCorrect,
+                isCorrect: isCorrect ?? false,
             },
         ]);
 
@@ -49,11 +55,6 @@ export default function TestPage({params}: { params: Promise<{ id: string }> }) 
             setCurrentQuestionIndex((prev) => prev + 1);
         }
     };
-
-
-    useEffect(() => {
-        console.log(answers);
-    }, [answers])
 
     const handleSaveResults = async () => {
         try {
@@ -72,7 +73,9 @@ export default function TestPage({params}: { params: Promise<{ id: string }> }) 
         return (
             <div className="text-center">
                 <h2>Test Complete!</h2>
-                <p>Your Score: {score}/{questions.length}</p>
+                <p>
+                    Your Score: {score}/{questions.length}
+                </p>
                 <p>Attempts: {attempts}</p>
                 <button
                     className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
@@ -88,13 +91,17 @@ export default function TestPage({params}: { params: Promise<{ id: string }> }) 
         <div className="text-center">
             {questions.length > 0 ? (
                 <div>
-                    <h3>Question {currentQuestionIndex + 1}/{questions.length}</h3>
+                    <h3>
+                        Question {currentQuestionIndex + 1}/{questions.length}
+                    </h3>
                     <p>{questions[currentQuestionIndex].question}</p>
                     <ul className="mt-4">
-                        {questions[currentQuestionIndex].answers.map((answer: any, index: number) => (
-                            <li key={index}>
-                                <button className="mt-2 bg-gray-200 py-2 px-4 rounded"
-                                        onClick={() => handleAnswer(answer.id)}>
+                        {questions[currentQuestionIndex].answers.map((answer) => (
+                            <li key={answer.id}>
+                                <button
+                                    className="mt-2 bg-gray-200 py-2 px-4 rounded"
+                                    onClick={() => handleAnswer(answer.id)}
+                                >
                                     {answer.answer}
                                 </button>
                             </li>
