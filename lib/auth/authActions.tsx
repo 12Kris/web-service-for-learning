@@ -41,7 +41,9 @@ export async function registerUser(
   const { data: signUpData, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { name } },
+    options: {
+      data: { displayName: name },
+    },
   });
   if (error) {
     throw new Error(error.message);
@@ -50,7 +52,11 @@ export async function registerUser(
   if (!user) {
     throw new Error("User registration failed");
   }
-  return { id: user.id, email: user.email, name: user.user_metadata.name };
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.user_metadata.displayName,
+  };
 }
 
 export async function loginUser(email: string, password: string) {

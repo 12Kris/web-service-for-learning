@@ -6,7 +6,7 @@ import {
   isCourseAddedToUser,
 } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/lib/authActions";
+import { getUser } from "@/lib/auth/authActions";
 import { use } from "react";
 import Link from "next/link";
 import { Course } from "@/lib/definitions";
@@ -88,9 +88,13 @@ export default function CourseDetailPage({
         <h1 className="text-3xl font-bold mb-6">{course?.name}</h1>
         <div className="mb-6">{course?.description}</div>
         <div>
+          <span className="font-bold">Type:</span> {course?.type}
+        </div>
+        <div>
           <span className="font-bold">Instructor:</span>{" "}
           {course?.creator?.full_name}
         </div>
+
         <div className="my-4">
           <Button onClick={handleAddCourse} disabled={isCourseAdded}>
             {isCourseAdded ? "Subscribed" : "Subscribe"}
@@ -101,32 +105,39 @@ export default function CourseDetailPage({
           </Link>
         </div>
       </div>
+      <div className="flex flex-col gap-2">
+        {isCreator && (
+          <Link href={`/workspace/course/${course?.id}/edit`}>
+            <Button className="w-full">Edit</Button>
+          </Link>
+        )}
+        {isCreator && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete Course</Button>
+            </AlertDialogTrigger>
 
-      {isCreator && (
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">Delete Course</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent className="bg-white">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the
-                course and remove the data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className="bg-red-500 hover:bg-red-600"
-                onClick={handleDeleteCourse}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
+            <AlertDialogContent className="bg-white">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  course and remove the data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className="bg-red-500 hover:bg-red-600"
+                  onClick={handleDeleteCourse}
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </div>
     </div>
   );
 }

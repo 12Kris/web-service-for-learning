@@ -1,6 +1,6 @@
 "use server";
 import { supabase } from "@/lib/supabaseClient";
-import { getUser } from "@/lib/authActions";
+import { getUser } from "@/lib/auth/authActions";
 import { Course } from "@/lib/definitions";
 
 export async function getCourseById(courseId: string) {
@@ -261,5 +261,39 @@ export async function deleteCourse(
         (error as Error).message ||
         "An error occurred while deleting the course",
     };
+  }
+}
+
+export async function updateCourse(
+  courseId: string,
+  courseData: Partial<Course>
+) {
+  try {
+    const user = await getUser();
+
+    if (!user) {
+      throw new Error("User not authenticated");
+    }
+
+    if (courseData.creator_id !== user.id) {
+      throw new Error("You don't have permission to update this course");
+    }
+
+    const { data, error } = await supabase
+      .from("Course")
+      .update(courseData)
+      .eq("id", courseId);
+
+    if (error) {
+      console.error("Error updating course:", error);
+      throw new Error(`Failed to update course: ${error.message}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error in updateCourse:", error);
+    throw new Error(
+      (error as Error).message || "An error occurred while updating the course"
+    );
   }
 }
