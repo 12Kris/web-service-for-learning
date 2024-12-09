@@ -75,9 +75,10 @@ export async function loginUser(email: string, password: string) {
   cookieStore.set({
     name: "token",
     value: token,
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
+    // httpOnly: true,
+    secure: false,
+    // domain: "localhost",
+    sameSite: "lax",
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
