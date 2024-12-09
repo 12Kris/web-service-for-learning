@@ -1,14 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Menu, Plus, Search, Filter, User } from "lucide-react";
+import { Menu, Plus, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
+import { AccountDropdown } from "./account-dropdown";
 interface NavbarProps {
   onSearch?: (term: string) => void;
   onFilter?: () => void;
@@ -78,17 +78,8 @@ export function Navbar({ onSearch, onFilter, onAdd }: NavbarProps) {
             <Filter className="mr-2 h-4 w-4" />
             filter
           </Button>
-          <Link href="/workspace/profile">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="shrink-0"
-              // onClick={onUserMenu}
-            >
-              <User className="h-5 w-5" />
-              <span className="sr-only">User menu</span>
-            </Button>
-          </Link>
+
+          <AccountDropdown />
         </div>
       </div>
     </nav>
