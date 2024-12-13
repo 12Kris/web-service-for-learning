@@ -76,7 +76,7 @@ export function CourseCarousel({ title, courses }: CourseCarouselProps) {
                     topic={course.type || ''}
                     thermsCount={0}
                     description={course.description || ''}
-                    author={course.users?.full_name || ''}
+                    author={course.creator?.full_name || ''}
                     onLike={() => console.log(`Liked course: ${course.id}`)}
                 />
               </Link>

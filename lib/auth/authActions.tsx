@@ -1,6 +1,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabaseClient";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 export async function getToken() {
@@ -11,6 +12,8 @@ export async function getToken() {
 export async function logoutUser() {
   const cookieStore = await cookies();
   cookieStore.delete("token");
+  revalidatePath("/login");
+  return true;
 }
 
 export async function getUser() {

@@ -1,5 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 import {
   addCourseToUser,
   getCourseById,
@@ -34,12 +37,10 @@ export default function CourseDetailPage({
   const { id } = use(params);
 
   const [isCreator, setIsCreator] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       if (!id) return;
-      setIsLoading(true);
 
       try {
         const courseData = await getCourseById(id);
@@ -54,8 +55,6 @@ export default function CourseDetailPage({
         setIsCourseAdded(result);
       } catch (err) {
         console.error(err);
-      } finally {
-        setIsLoading(false);
       }
     }
 
@@ -78,21 +77,24 @@ export default function CourseDetailPage({
     }
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="container mx-auto py-10 px-4 flex w-full gap-4">
+    <div className="container  mx-auto py-10 px-4 flex flex-col md:flex-row w-full gap-4">
       <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
-        <h1 className="text-3xl font-bold mb-6">{course?.name}</h1>
-        <div className="mb-6">{course?.description}</div>
+        <h1 className="text-3xl font-bold mb-6">
+          {course?.name || <Skeleton count={1} />}
+        </h1>
+        <div className="mb-6">
+          {course?.description || <Skeleton count={3} />}
+        </div>
         <div>
-          <span className="font-bold">Type:</span> {course?.type}
+          <span className="font-bold">Type:</span>{" "}
+          {course?.type || <Skeleton width={130} inline={true} count={1} />}
         </div>
         <div>
           <span className="font-bold">Instructor:</span>{" "}
-          {course?.creator?.full_name}
+          {course?.creator?.full_name || (
+            <Skeleton width={130} inline={true} count={1} />
+          )}
         </div>
 
         <div className="my-4">

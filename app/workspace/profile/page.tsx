@@ -29,7 +29,7 @@ export default function UserProfile() {
 
         setUser({
           id: currentUser.id,
-          email: currentUser.email,
+          email: currentUser.email || "",
           full_name: currentUser.user_metadata?.name || "Unknown User",
           name: currentUser.user_metadata?.name || "Unknown User",
           avatar: currentUser.user_metadata?.avatar_url || "/placeholder.svg",

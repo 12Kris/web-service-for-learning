@@ -15,6 +15,11 @@ import {
   Users,
 } from "lucide-react";
 
+import { logoutUser } from "@/lib/auth/authActions";
+import { useRouter } from "next/navigation";
+
+
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -32,6 +37,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function AccountDropdown() {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      logoutUser();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -114,8 +131,8 @@ export function AccountDropdown() {
           <span>API</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <LogOut />
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut  />
           <span>Log out</span>
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
