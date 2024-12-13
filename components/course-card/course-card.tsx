@@ -22,6 +22,8 @@ export function CourseCard({ title, topic, thermsCount, description, author, onL
     onLike()
   }
 
+  console.log(author)
+
   return (
     <Card className="w-full h-full flex flex-col justify-between">
       <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 ">

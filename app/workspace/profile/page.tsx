@@ -31,7 +31,7 @@ export default function UserProfile() {
           id: currentUser.id,
           email: currentUser.email || "",
           full_name: currentUser.user_metadata?.name || "Unknown User",
-          name: currentUser.user_metadata?.name || "Unknown User",
+          name: currentUser.user_metadata?.displayName || "Unknown User",
           avatar: currentUser.user_metadata?.avatar_url || "/placeholder.svg",
           role: "Instructor & Student",
           created_at: currentUser.created_at,

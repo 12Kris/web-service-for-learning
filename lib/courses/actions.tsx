@@ -196,7 +196,7 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
 export async function getCourses(): Promise<Course[]> {
     const {data, error} = await supabase.from("Course").select(`
         *,
-        users:creator_id (
+        creator:creator_id (
           id,
           email,
           full_name
