@@ -1,34 +1,36 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import {getTestQuestions, saveTestResults} from '@/lib/courses/actions';
-import {use} from 'react';
+import { useEffect, useState } from 'react';
+import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
+import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/definitions';
 
-export default function TestPage({params}: { params: Promise<{ id: string }> }) {
-    const {id: testId} = use(params);
+interface TestPageProps {
+    params: { id: string };
+}
+// TODO: сделать edit,update ? для тестов материалов блоков и блоки еще нельзя добавлять, сделай это все ( не забывай связи, для тестов чтобы еще вопросы редактировать и тд.. с каждым
+//  чтобы еще ссыдка была workspace/{block,material,test}/{id}
+export default function TestPage({ params }: TestPageProps) {
+    const { id: testId } = params;
 
-    const [questions, setQuestions] = useState([]);
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [answers, setAnswers] = useState([]);
-    const [isTestComplete, setIsTestComplete] = useState(false);
-    const [score, setScore] = useState(0);
-    const [attempts, setAttempts] = useState(1);
+    const [questions, setQuestions] = useState<TestQuestion[]>([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+    const [answers, setAnswers] = useState<UserTestAnswer[]>([]);
+    const [isTestComplete, setIsTestComplete] = useState<boolean>(false);
+    const [score, setScore] = useState<number>(0);
+    const [attempts, setAttempts] = useState<number>(1);
 
     useEffect(() => {
         async function fetchQuestions() {
-            const data = await getTestQuestions(testId);
+            const data: TestQuestion[] = await getTestQuestions(testId);
             setQuestions(data);
         }
 
         fetchQuestions();
     }, [testId]);
 
-    const handleAnswer = (selectedAnswerId: string) => {
+    const handleAnswer = (selectedAnswerId: number) => {
         const currentQuestion = questions[currentQuestionIndex];
-
-        const correctAnswer = currentQuestion.answers[currentQuestion.correct_index];
-
-        const isCorrect = selectedAnswerId === correctAnswer.id;
+        const isCorrect = selectedAnswerId === currentQuestion.correct_answer;
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
@@ -50,14 +52,9 @@ export default function TestPage({params}: { params: Promise<{ id: string }> }) 
         }
     };
 
-
-    useEffect(() => {
-        console.log(answers);
-    }, [answers])
-
     const handleSaveResults = async () => {
         try {
-            const result = await saveTestResults(testId, answers);
+            const result: SaveTestResult = await saveTestResults(testId, answers);
             if (result?.error) {
                 console.error('Error saving results:', result.error);
             } else {
@@ -91,8 +88,8 @@ export default function TestPage({params}: { params: Promise<{ id: string }> }) 
                     <h3>Question {currentQuestionIndex + 1}/{questions.length}</h3>
                     <p>{questions[currentQuestionIndex].question}</p>
                     <ul className="mt-4">
-                        {questions[currentQuestionIndex].answers.map((answer: any, index: number) => (
-                            <li key={index}>
+                        {questions[currentQuestionIndex].answers.map((answer) => (
+                            <li key={answer.id}>
                                 <button className="mt-2 bg-gray-200 py-2 px-4 rounded"
                                         onClick={() => handleAnswer(answer.id)}>
                                     {answer.answer}

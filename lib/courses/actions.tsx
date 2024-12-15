@@ -1,9 +1,17 @@
 "use server";
 import {supabase} from "@/lib/supabaseClient";
 import {getUser} from "@/lib/auth/authActions";
-import {Course, CourseWithStudents} from "@/lib/definitions";
+import {
+    Block,
+    Course,
+    CourseWithStudents,
+    LearningMaterial,
+    SaveTestResult,
+    Test, TestQuestion,
+    UserTestAnswer
+} from "@/lib/definitions";
 
-export async function getCourseById(courseId: string) {
+export async function getCourseById(courseId: string | Array<string>) {
     const {data, error} = await supabase
         .from("Course")
         .select("*, creator:creator_id (id, email, full_name)")
@@ -32,7 +40,7 @@ export async function getCardsByBlock(blockId: string) {
     return data;
 }
 
-export async function isCourseAddedToUser(courseId: string) {
+export async function isCourseAddedToUser(courseId: string | Array<string>) {
     const user = await getUser();
     if (!user) {
         throw new Error("User not authenticated");
@@ -72,7 +80,7 @@ export async function getUserCourses() {
         const courseIds = data.map((item) => item.course_id);
 
         const {data: courses, error: courseError} = await supabase
-            .from("courses")
+            .from("Course")
             .select("*")
             .in("id", courseIds);
 
@@ -113,7 +121,7 @@ export async function getUserCourses() {
 // }
 
 export async function addCourseToUser(
-    courseId: string
+    courseId: string | Array<string>
 ): Promise<{ success: boolean; message: string }> {
     try {
         const user = await getUser();
@@ -122,7 +130,6 @@ export async function addCourseToUser(
             throw new Error("User not authenticated");
         }
 
-        // Check if the course exists
         const {data: course, error: courseError} = await supabase
             .from("Course")
             .select("id")
@@ -133,7 +140,6 @@ export async function addCourseToUser(
             throw new Error("Course not found");
         }
 
-        // Check if the user has already added this course
         const {data: existingUserCourse} = await supabase
             .from("UserCourse")
             .select("*")
@@ -145,7 +151,6 @@ export async function addCourseToUser(
             return {success: false, message: "You have already added this course"};
         }
 
-        // Add the course to the user
         const {error: insertError} = await supabase
             .from("UserCourse")
             .insert({user_id: user.id, course_id: courseId});
@@ -166,31 +171,31 @@ export async function addCourseToUser(
 }
 
 export async function getUserCreatedCourses(): Promise<Course[]> {
-  try {
-    const user = await getUser();
-    if (!user) throw new Error("User not authenticated");
+    try {
+        const user = await getUser();
+        if (!user) throw new Error("User not authenticated");
 
-    const {data, error} = await supabase
-        .from("Course")
-        .select("*, student_count: user_courses(count)")
-        .eq("creator_id", user.id);
+        const {data, error} = await supabase
+            .from("Course")
+            .select("*, student_count: user_courses(count)")
+            .eq("creator_id", user.id);
 
-    if (error) {
-      console.error("Error fetching courses from Supabase:", error);
-      return [];
+        if (error) {
+            console.error("Error fetching courses from Supabase:", error);
+            return [];
+        }
+
+        if (!data) return [];
+
+        return data.map((course) => ({
+            ...course,
+            student_count: course.student_count ? course.student_count[0]?.count || 0 : 0
+        })) as CourseWithStudents[];
+
+    } catch (error) {
+        console.error("Error fetching user created courses:", error);
+        return [];
     }
-
-    if (!data) return [];
-
-    return data.map((course) => ({
-      ...course,
-      student_count: course.student_count ? course.student_count[0]?.count || 0 : 0
-    })) as CourseWithStudents[];
-
-  } catch (error) {
-    console.error("Error fetching user created courses:", error);
-    return [];
-  }
 }
 
 export async function getCourses(): Promise<Course[]> {
@@ -209,6 +214,185 @@ export async function getCourses(): Promise<Course[]> {
     }
 
     return data as Course[];
+}
+
+export async function getTests(courseId: number): Promise<Test[]> {
+    const {data, error} = await supabase
+        .from('Test')
+        .select(`
+            id,
+            question,
+            block_id,
+            Block:Block!Test_block_id_fkey (
+                id,
+                name,
+                Course:Course!Block_course_id_fkey (
+                    id,
+                    name
+                )
+            )
+        `)
+        .eq('Block.course_id', courseId);
+
+    if (error) {
+        console.error('Error fetching tests:', error);
+        return [];
+    }
+
+    return data.map((item: any) => ({
+        id: item.id,
+        question: item.question,
+        block_id: item.block_id,
+        Block: {
+            id: item.Block.id,
+            name: item.Block.name,
+            Course: {
+                id: item.Block.Course.id,
+                name: item.Block.Course.name,
+            },
+        },
+    }));
+}
+
+export async function getBlocksByCourseId(courseId: string | Array<string>): Promise<Block[]> {
+    const { data, error } = await supabase
+        .from("Block")
+        .select("id, course_id, name")
+        .eq("course_id", courseId);
+
+    if (error) {
+        console.error("Error fetching blocks:", error);
+        return [];
+    }
+
+    return data as Block[];
+}
+
+export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
+    const {data, error} = await supabase
+        .from("Test")
+        .select("id, block_id, question")
+        .eq("block_id", blockId);
+
+    if (error) {
+        console.error("Error fetching tests:", error);
+        return [];
+    }
+
+    return data as Test[];
+}
+
+export async function getTestQuestions(testId: string): Promise<TestQuestion[]> {
+    const { data, error } = await supabase
+        .from('TestQuestions')
+        .select(`
+            id,
+            question,
+            correct_id:TestAnswers!TestQuestions_correct_id_fkey(id),
+            answers:TestAnswers!TestAnswers_question_id_fkey (
+                id,
+                answer
+            )
+        `)
+        .eq('test_id', testId);
+
+    if (error) {
+        console.error("Error fetching test questions:", error);
+        return [];
+    }
+
+    return data.map((item: any) => {
+        const answersWithCorrect = item.answers.map((answer: any) => ({
+            ...answer,
+            correct: answer.id === item.correct_id,
+        }));
+
+        return {
+            id: item.id,
+            question: item.question,
+            correct_answer: item.correct_id,
+            answers: answersWithCorrect,
+        };
+    });
+}
+
+export async function saveTestResults(
+    testId: string,
+    answers: UserTestAnswer[]
+): Promise<SaveTestResult> {
+    try {
+        const user = await getUser();
+        if (!user) {
+            throw new Error('User not authenticated');
+        }
+
+        const userId = user.id;
+
+        const { data: previousAttempts, error: attemptsError } = await supabase
+            .from('user_test_results')
+            .select('id')
+            .eq('user_id', userId)
+            .eq('test_id', testId);
+
+        if (attemptsError) {
+            throw new Error(`Error fetching attempts: ${attemptsError.message}`);
+        }
+
+        const attemptNumber = (previousAttempts?.length || 0) + 1;
+
+        const { data: testResult, error: testResultError } = await supabase
+            .from('user_test_results')
+            .insert([
+                {
+                    user_id: userId,
+                    test_id: testId,
+                    score: answers.filter((a) => a.isCorrect).length,
+                    attempt_number: attemptNumber,
+                },
+            ])
+            .select('id')
+            .single();
+
+        if (testResultError) {
+            throw new Error(`Error saving test result: ${testResultError.message}`);
+        }
+
+        const { error: answersError } = await supabase
+            .from('test_answers')
+            .insert(
+                answers.map((answer) => ({
+                    user_test_result_id: testResult.id,
+                    question_id: answer.questionId,
+                    answer: answer.answerId,
+                    is_correct: answer.isCorrect,
+                }))
+            );
+
+        if (answersError) {
+            throw new Error(`Error saving answers: ${answersError.message}`);
+        }
+
+        return { id: testResult.id };
+    } catch (error) {
+        console.error('Error saving test results:', error);
+        return { error: (error as Error).message };
+    }
+}
+
+
+export async function getMaterialsByBlockId(blockId: number): Promise<LearningMaterial[]> {
+    const {data, error} = await supabase
+        .from("LearningMaterial")
+        .select("id, title, content, material_type, order_number")
+        .eq("block_id", blockId)
+        .order("order_number", {ascending: true});
+
+    if (error) {
+        console.error("Error fetching learning materials:", error);
+        return [];
+    }
+
+    return data as LearningMaterial[];
 }
 
 export async function createCourse(
@@ -245,7 +429,7 @@ export async function createCourse(
 }
 
 export async function deleteCourse(
-    courseId: string
+    courseId: string | Array<string>
 ): Promise<{ success: boolean; message: string }> {
     try {
         const user = await getUser();

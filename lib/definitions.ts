@@ -15,6 +15,7 @@ export interface User {
     joinDate?: string;
     user_metadata: UserMetadata;
 }
+
 export interface Course {
     id: number;
     name: string;
@@ -60,6 +61,42 @@ export interface Test {
     id: number;
     block_id: number;
     question: string;
-    answer: string;
-    correct: boolean;
 }
+
+export interface TestQuestion {
+    id: number;
+    question: string;
+    correct_answer: number;
+    answers: TestAnswer[];
+}
+
+export interface TestAnswer {
+    id: number;
+    answer: string;
+    correct?: boolean;
+}
+
+export interface UserTestAnswer {
+    questionId: number;
+    answerId: number;
+    isCorrect: boolean;
+}
+
+export interface SaveTestResult {
+    id?: number;
+    error?: string;
+}
+
+export type LearningBlock = {
+    id: number;
+    title: string;
+    order_number: number;
+};
+
+export type LearningMaterial = {
+    id: number;
+    title: string;
+    content: string;
+    material_type: string;
+    order_number: number;
+};
