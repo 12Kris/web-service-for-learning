@@ -131,7 +131,6 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
         } else {
             await createBlock(id, blockName)
         }
-
         // await fetchData();
         handleCloseModal();
     };
@@ -192,9 +191,7 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
         if (currentTest) {
             await updateTest(currentTest.id, testData);
         } else {
-            console.log("Creating test...", testData)
-            const res = await createTest(testData);
-            console.log(res)
+            await createTest(testData);
         }
         setIsTestModalOpen(false);
         const updatedTests = {...tests};
@@ -218,6 +215,7 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
 
             const formattedAnswers = Array.isArray(answersData[0]?.answers)
                 ? answersData[0]?.answers.map((ans: any) => ({
+                    id: ans.id,
                     text: ans.answer,
                     correct: ans.id === answersData[0]?.correctAnswer?.id
                 }))
@@ -232,10 +230,6 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
             setCurrentTest(formattedTest);
         } else {
             setCurrentTest(null)
-            // setCurrentTest({
-            //     question: "",
-            //     answers: [{text: "", correct: false}, {text: "", correct: false}],
-            // });
         }
 
         setIsTestModalOpen(true);
@@ -349,9 +343,7 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
                         ))}
                     </div>
                 )}
-
             </div>
-
             <div className="my-4">
                 <Button onClick={() => handleOpenModal()} className="w-full">Create Block</Button>
             </div>

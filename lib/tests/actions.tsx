@@ -20,7 +20,7 @@ export async function getBlockById(blockId: number): Promise<Block | null> {
 export async function createBlock(course_id: number, name: string): Promise<Block | null> {
     const {data, error} = await supabase
         .from("Block")
-        .insert([{course_id, name}]) // передаем массив объектов
+        .insert([{course_id, name}])
 
     if (error) {
         throw new Error(`Error creating block: ${error.message}`);
@@ -123,9 +123,7 @@ export async function createTest(testData: {
         });
 
         const answers = await Promise.all(answerPromises);
-        return [answers, correctAnswerText];
         const correctAnswer = answers.find((answer) => answer?.answer === correctAnswerText);
-        // TODO: correct_id
         if (correctAnswer) {
             await supabase
                 .from("TestQuestions")

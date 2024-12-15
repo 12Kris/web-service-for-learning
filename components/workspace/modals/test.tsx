@@ -12,53 +12,39 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function TestModal({
-                              isOpen,
-                              onClose,
-                              onSave,
-                              currentTest,
-                              blockId,
-                          }: {
-    isOpen: boolean;
-    onClose: () => void;
-    onSave: (testData: any) => void;
-    currentTest: any;
-    blockId: number;
-}) {
-    // Обеспечиваем, чтобы answers всегда был массивом, даже если currentTest пуст
+export function TestModal({isOpen, onClose, onSave, currentTest, blockId}: { isOpen: boolean; onClose: () => void; onSave: (testData: any) => void; currentTest: any; blockId: number; }) {
     const [question, setQuestion] = useState<string>(currentTest?.question || "");
-    const [answers, setAnswers] = useState<{ text: string; correct: boolean }[]>(
-        currentTest?.answers || [{ text: "", correct: false }, { text: "", correct: false }]
-    );
+    const [answers, setAnswers] = useState<{ id: string; text: string; correct: boolean }[]>(currentTest?.answers || [
+        { id: "1", text: "", correct: false },
+        { id: "2", text: "", correct: false }
+    ]);
 
-    const [correctAnswer, setCorrectAnswer] = useState<any>(
-        currentTest?.answers && Array.isArray(currentTest.answers)
-            ? currentTest.answers.find((answer: any) => answer.correct) || null
-            : null
+    const [correctAnswerId, setCorrectAnswerId] = useState<string | null>(
+        currentTest?.answers?.find((answer: any) => answer.correct)?.id || null
     );
 
     useEffect(() => {
         setQuestion(currentTest?.question || "");
-        setAnswers(currentTest?.answers || [{ text: "", correct: false }, { text: "", correct: false }]);
-        setCorrectAnswer(
-            currentTest?.answers && Array.isArray(currentTest.answers)
-                ? currentTest.answers.find((answer: any) => answer.correct) || null
-                : null
-        );
+        setAnswers(currentTest?.answers || [
+            { id: "1", text: "", correct: false },
+            { id: "2", text: "", correct: false }
+        ]);
+        setCorrectAnswerId(currentTest?.answers?.find((answer: any) => answer.correct)?.id || null);
     }, [currentTest]);
 
-    const handleAnswerChange = (index: number, text: string) => {
-        const newAnswers = [...answers];
-        newAnswers[index].text = text;
+    const handleAnswerChange = (id: string, text: string) => {
+        const newAnswers = answers.map((answer) =>
+            answer.id === id ? { ...answer, text } : answer
+        );
         setAnswers(newAnswers);
     };
 
-    const handleCorrectAnswerChange = (index: number) => {
-        const newAnswers = answers.map((answer, idx) => ({
-            ...answer,
-            correct: idx === index,
-        }));
+    const handleCorrectAnswerChange = (id: string) => {
+        const newAnswers = answers.map((answer) =>
+            answer.id === id ? { ...answer, correct: true } : { ...answer, correct: false }
+        );
         setAnswers(newAnswers);
+        setCorrectAnswerId(id);
     };
 
     const handleSubmit = () => {
@@ -95,18 +81,18 @@ export function TestModal({
                     </div>
                     <div>
                         <label>Answers</label>
-                        {answers.map((answer, index) => (
-                            <div key={index}>
+                        {answers.map((answer) => (
+                            <div key={answer.id}>
                                 <input
                                     type="radio"
                                     name="correctAnswer"
-                                    checked={correctAnswer?.id === answer.id} // TODO: answer_id not defined in arr
-                                    onChange={() => handleCorrectAnswerChange(index)}
+                                    checked={correctAnswerId === answer.id}
+                                    onChange={() => handleCorrectAnswerChange(answer.id)}
                                 />
                                 <input
                                     type="text"
                                     value={answer.text}
-                                    onChange={(e) => handleAnswerChange(index, e.target.value)}
+                                    onChange={(e) => handleAnswerChange(answer.id, e.target.value)}
                                 />
                             </div>
                         ))}
