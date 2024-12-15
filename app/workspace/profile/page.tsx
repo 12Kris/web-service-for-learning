@@ -10,7 +10,7 @@ import {Badge} from "@/components/ui/badge";
 import {Progress} from "@/components/ui/progress";
 import {Book, Users, Clock, Award} from 'lucide-react';
 import {getUserCourses, getUserCreatedCourses} from '@/lib/courses/actions';
-import {getUser} from '@/lib/auth/authActions';
+import {getUser} from '@/lib/auth/actions';
 import {Course, User} from "@/lib/definitions";
 
 export default function UserProfile() {

@@ -1,5 +1,3 @@
-
-
 export interface UserMetadata {
   name?: string;
   avatar_url?: string;
@@ -71,4 +69,11 @@ export interface MenuItems {
   name: string;
   icon: string;
   href: string;
+}
+
+export interface Problem {
+  id: string
+  title: string
+  description: string
+  imageUrl: string
 }

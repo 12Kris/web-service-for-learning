@@ -9,7 +9,7 @@ import {
   isCourseAddedToUser,
 } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/lib/auth/authActions";
+import { getUser } from "@/lib/auth/actions";
 import { use } from "react";
 import Link from "next/link";
 import { Course } from "@/lib/definitions";

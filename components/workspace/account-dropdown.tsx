@@ -15,7 +15,7 @@ import {
   Users,
 } from "lucide-react";
 
-import { logoutUser } from "@/lib/auth/authActions";
+import { logoutUser } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
 
 

@@ -1,6 +1,6 @@
 "use server";
 import {supabase} from "@/lib/supabaseClient";
-import {getUser} from "@/lib/auth/authActions";
+import {getUser} from "@/lib/auth/actions";
 import {Course, CourseWithStudents} from "@/lib/definitions";
 
 export async function getCourseById(courseId: string) {

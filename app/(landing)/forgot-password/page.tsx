@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
         // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000))
 
-        console.log("Reset password for:", email)
+        // console.log("Reset password for:", email)
         setMessage("If an account exists with this email, you will receive a password reset link.")
 
         setIsLoading(false)

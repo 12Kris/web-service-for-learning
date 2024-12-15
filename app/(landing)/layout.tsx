@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Web Service For Learning is a web service for learning',
 }
 
-export default function RootLayout({
+export default function LandingLayout({
   children,
 }: {
   children: React.ReactNode

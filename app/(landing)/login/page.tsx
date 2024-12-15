@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { loginUser } from "@/lib/auth/authActions";
+import { loginUser } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,9 +22,9 @@ export default function LoginPage() {
 
     startTransition(async () => {
       try {
-        const token = await loginUser(email, password);
+        await loginUser(email, password);
         router.push("/workspace");
-        console.log("Login successful, token:", token);
+        // console.log("Login successful, token:", token);
       } catch (err) {
         setError((err as Error).message);
         console.error("Login failed:", err);

@@ -41,6 +41,7 @@ export function Jumbotron({
           width={400}
           height={400}
           className="mx-auto"
+          
         />
       </div>
     </div>

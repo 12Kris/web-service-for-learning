@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import { getToken, logoutUser } from "@/lib/auth/authActions";
+import { getToken, logoutUser } from "@/lib/auth/actions";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -79,14 +79,14 @@ export function Navbar() {
           ) : (
             <>
               <Button
-                className="text-[--accent] hover:text-[--accent-foreground] px-6 py-2  border-2 border-[--accent] border-solid rounded-full"
-                variant="ghost"
+                className=""
+                variant="accent"
                 asChild
               >
                 <Link href="/login">Log in</Link>
               </Button>
               <Button
-                className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary]/80 shadow-none rounded-full"
+                className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary] shadow-none rounded-full"
                 asChild
               >
                 <Link href="/signup">Sign Up</Link>

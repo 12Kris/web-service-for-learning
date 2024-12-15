@@ -112,7 +112,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
                   variant="default"
                   size="sm"
                   onClick={onAdd}
-                  className="hidden sm:flex"
+                  className="flex"
                 >
                   <Plus className="mr-0 h-4 w-4" />
                   Add New

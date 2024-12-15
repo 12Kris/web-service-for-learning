@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: "Workspace for learning",
 };
 
-export default function RootLayout({
+export default function WorkspaceLayout({
   children,
 }: {
   children: React.ReactNode;
