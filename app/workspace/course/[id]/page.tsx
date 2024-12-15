@@ -1,137 +1,3 @@
-// "use client";
-// import { useEffect, useState } from "react";
-// import {
-//     addCourseToUser,
-//     getCourseById,
-//     isCourseAddedToUser,
-//     getMaterialsByBlockId,
-//     deleteCourse,
-//     getBlocksByCourseId,
-//     getTestsByBlockId,
-// } from "@/lib/courses/actions";
-// import { Button } from "@/components/ui/button";
-// import { getUser } from "@/lib/auth/authActions";
-// import Link from "next/link";
-// import { Course, Block, LearningMaterial, Test } from "@/lib/definitions";
-// import {useParams} from "next/navigation";
-// interface CourseDetailPage {
-//     params: { id: number };
-// }
-//
-// export default function CourseDetailPage({ params }: CourseDetailPage) {
-//     const [course, setCourse] = useState<Course | null>(null);
-//     const [blocks, setBlocks] = useState<Block[]>([]);
-//     const [materials, setMaterials] = useState<{ [key: number]: LearningMaterial[] }>({});
-//     const [tests, setTests] = useState<{ [key: number]: Test[] }>({});
-//     const [isCourseAdded, setIsCourseAdded] = useState<boolean>(false);
-//     const [isCreator, setIsCreator] = useState<boolean>(false);
-//     const [isLoading, setIsLoading] = useState<boolean>(true);
-//
-//     const { id } = useParams();
-//
-//     useEffect(() => {
-//         async function fetchData() {
-//             if (!id) return;
-//             setIsLoading(true);
-//
-//             try {
-//                 const courseData: Course = await getCourseById(id);
-//                 setCourse(courseData);
-//
-//                 const user = await getUser();
-//                 if (user && courseData) {
-//                     setIsCreator(user.id.toString() === courseData.creator_id?.toString());
-//                 }
-//
-//                 const result = await isCourseAddedToUser(id);
-//                 setIsCourseAdded(result);
-//
-//                 const fetchedBlocks: Block[] = await getBlocksByCourseId(id);
-//                 setBlocks(fetchedBlocks);
-//
-//                 const fetchedMaterials: { [key: number]: LearningMaterial[] } = {};
-//                 const fetchedTests: { [key: number]: Test[] } = {};
-//
-//                 for (const block of fetchedBlocks) {
-//                     fetchedMaterials[block.id] = await getMaterialsByBlockId(block.id);
-//                     fetchedTests[block.id] = await getTestsByBlockId(block.id);
-//                 }
-//
-//                 setMaterials(fetchedMaterials);
-//                 setTests(fetchedTests);
-//             } catch (err) {
-//                 console.error("Error fetching data:", err);
-//             } finally {
-//                 setIsLoading(false);
-//             }
-//         }
-//
-//         fetchData();
-//     }, [id]);
-//
-//     async function handleAddCourse() {
-//         if (!id) return;
-//         await addCourseToUser(id);
-//         setIsCourseAdded(true);
-//     }
-//
-//     async function handleDeleteCourse() {
-//         if (!id) return;
-//         const result = await deleteCourse(id);
-//         if (result.success) {
-//             window.location.href = "/workspace/";
-//         } else {
-//             alert(`Failed to delete course: ${result.message}`);
-//         }
-//     }
-//
-//     if (isLoading) {
-//         return <div>Loading...</div>;
-//     }
-//
-//     return (
-//         <div className="container mx-auto py-10 px-4 flex w-full gap-4">
-//             <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
-//                 <h1 className="text-3xl font-bold mb-6">{course?.name}</h1>
-//                 <div className="mb-6">{course?.description}</div>
-//                 <div>
-//                     <span className="font-bold">Type:</span> {course?.type}
-//                 </div>
-//
-//                 <div className="my-4">
-//                     <Button onClick={handleAddCourse} disabled={isCourseAdded}>
-//                         {isCourseAdded ? "Subscribed" : "Subscribe"}
-//                     </Button>
-//                     <Link className="ml-4" href={`/workspace/course/${course?.id}/cards`}>
-//                         <Button>Take the test</Button>
-//                     </Link>
-//                 </div>
-//             </div>
-//             <div className="flex-3 bg-zinc-100 rounded-3xl p-6">
-//                 Test
-//             </div>
-//
-//             <div>
-//                 {blocks.map((block) => (
-//                     <div key={block.id} className="my-6">
-//                         <h2 className="text-2xl font-bold">{block.name}</h2>
-//
-//                         {tests[block.id]?.length > 0 && (
-//                             <div className="mt-4">
-//                                 <h3 className="font-semibold">Tests:</h3>
-//                                 {tests[block.id].map((test) => (
-//                                     <div key={test.id} className="ml-4 my-2">
-//                                         <a href={`/workspace/tests/${test.id}`}>{test.question}</a>
-//                                     </div>
-//                                 ))}
-//                             </div>
-//                         )}
-//                     </div>
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// }
 "use client";
 import {useEffect, useState} from "react";
 import Skeleton from "react-loading-skeleton";
@@ -161,14 +27,18 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {BlockModal} from "@/components/workspace/modals/block";
-import {createBlock, createMaterial, deleteBlock, updateBlock} from "@/lib/tests/actions";
+import {
+    createBlock,
+    createMaterial, createTest,
+    deleteBlock,
+    deleteMaterial, deleteTest, getTestAnswers,
+    updateBlock,
+    updateMaterial, updateTest
+} from "@/lib/tests/actions";
 import {MaterialModal} from "@/components/workspace/modals/material";
+import {TestModal} from "@/components/workspace/modals/test";
 
-export default function CourseDetailPage({
-                                             params,
-                                         }: {
-    params: Promise<{ id: string }>;
-}) {
+export default function CourseDetailPage({params,}: { params: Promise<{ id: string }>; }) {
     const [course, setCourse] = useState<Course | null>(null);
     const [isCourseAdded, setIsCourseAdded] = useState(false);
     const {id} = use(params);
@@ -185,6 +55,9 @@ export default function CourseDetailPage({
     const [materialTitle, setMaterialTitle] = useState<string>("");
     const [materialContent, setMaterialContent] = useState<string>("");
     const [isMaterialModalOpen, setIsMaterialModalOpen] = useState(false);
+
+    const [currentTest, setCurrentTest] = useState<any | null>(null);
+    const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -302,6 +175,82 @@ export default function CourseDetailPage({
         await deleteMaterial(materialId);
     };
 
+    useEffect(() => {
+        const fetchTests = async () => {
+            const fetchedTests: any = {};
+            for (const block of blocks) {
+                const testsForBlock = await getTestsByBlockId(block.id);
+                fetchedTests[block.id] = testsForBlock;
+            }
+            setTests(fetchedTests);
+        };
+
+        fetchTests();
+    }, [blocks]);
+
+    const handleCreateOrEditTest = async (testData: any) => {
+        if (currentTest) {
+            await updateTest(currentTest.id, testData);
+        } else {
+            const res = await createTest(testData);
+            console.log(res)
+        }
+        setIsTestModalOpen(false);
+        const updatedTests = {...tests};
+        updatedTests[testData.block_id] = await getTestsByBlockId(testData.block_id);
+        setTests(updatedTests);
+    };
+
+    const handleDeleteTest = async (testId: number, blockId: number) => {
+        await deleteTest(testId);
+        const updatedTests = {...tests};
+        updatedTests[blockId] = updatedTests[blockId].filter((test: any) => test.id !== testId);
+        setTests(updatedTests);
+    };
+
+    const handleOpenTestModal = async (test: any = null, blockId: number) => {
+        setCurrentTest(null);
+        setCurrentBlockId(blockId);
+
+        if (test) {
+            const answersData = await getTestAnswers(test.id);
+
+            const formattedAnswers = Array.isArray(answersData[0]?.answers)
+                ? answersData[0]?.answers.map((ans: any) => ({
+                    text: ans.answer,
+                    correct: ans.id === answersData[0]?.correctAnswer?.id
+                }))
+                : [{text: "", correct: false}, {text: "", correct: false}];
+
+            const formattedTest = {
+                ...test,
+                question: answersData[0]?.question || test.question,
+                answers: formattedAnswers
+            };
+
+            setCurrentTest(formattedTest);
+        } else {
+            console.log("NOT FOUND");
+            setCurrentTest(null)
+            // setCurrentTest({
+            //     question: "",
+            //     answers: [{text: "", correct: false}, {text: "", correct: false}],
+            // });
+        }
+
+        setIsTestModalOpen(true);
+    };
+
+
+    useEffect(() => {
+        console.log(currentTest)
+    }, [currentTest])
+
+    const handleCloseTestModal = () => {
+        setIsTestModalOpen(false);
+        setCurrentTest(null);
+    };
+
     return (
         <div className="container mx-auto py-10 px-4 flex flex-col md:flex-row w-full gap-4"
              style={{display: "grid", gridTemplateColumns: "1fr 300px"}}>
@@ -335,73 +284,79 @@ export default function CourseDetailPage({
             </div>
             <div className="flex flex-col gap-2">
                 {isCreator && (
-                    <Link href={`/workspace/course/${course?.id}/edit`}>
-                        <Button className="w-full">Edit</Button>
-                    </Link>
-                )}
-                {isCreator && (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="destructive">Delete Course</Button>
-                        </AlertDialogTrigger>
+                    <div className="my-4">
+                        {blocks.map((block) => (
+                            <div key={block.id} className="my-4 flex flex-col gap-4">
+                                <div className="flex justify-between items-center">
+                                    <h2>{block.name}</h2>
+                                    <div>
+                                        <Button onClick={() => handleOpenModal(block)}>Edit</Button>
+                                        <Button onClick={() => handleDeleteBlock(block.id)} variant="destructive">
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
 
-                        <AlertDialogContent className="bg-white">
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the
-                                    course and remove the data from our servers.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                    className="bg-red-500 hover:bg-red-600"
-                                    onClick={handleDeleteCourse}
-                                >
-                                    Delete
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                                <div className="my-4">
+                                    <Button
+                                        onClick={() => handleOpenMaterialModal(null, block.id)}
+                                        className="w-full"
+                                    >
+                                        Create Material
+                                    </Button>
+                                </div>
+
+                                <div className="my-4">
+                                    <Button
+                                        onClick={() => handleOpenTestModal(null, block.id)}
+                                        className="w-full"
+                                    >
+                                        Create Test
+                                    </Button>
+                                </div>
+
+                                <div>
+                                    {tests[block.id]?.map((test: any) => (
+                                        <div key={test.id} className="my-4 flex justify-between items-center">
+                                            <h3>{test.question}</h3>
+                                            <div>
+                                                <Button
+                                                    onClick={() => handleOpenTestModal(test, block.id)}>Edit</Button>
+                                                <Button
+                                                    onClick={() => handleDeleteTest(test.id, block.id)}
+                                                    variant="destructive"
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div>
+                                    {materials[block.id]?.map((material) => (
+                                        <div key={material.id} className="my-4 flex justify-between items-center">
+                                            <h3>{material.title}</h3>
+                                            <div>
+                                                <Button
+                                                    onClick={() => handleOpenMaterialModal(material, block.id)}>Edit</Button>
+                                                <Button
+                                                    onClick={() => handleDeleteMaterial(material.id)}
+                                                    variant="destructive"
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 )}
+
             </div>
-            {/*<div className="flex-1">*/}
-            {/*    {blocks.length > 0 && (*/}
-            {/*        <div>*/}
-            {/*            {blocks.map((block) => (*/}
-            {/*                <div key={block.id} className="my-6">*/}
-            {/*                    <h2 className="text-2xl font-bold">{block.name} | {isCreator ? <div>Edit | Delete</div> : ""}</h2>*/}
 
-            {/*                    {tests[block.id]?.length > 0 && (*/}
-            {/*                        <div className="mt-4">*/}
-            {/*                            <h3 className="font-semibold">Tests:</h3>*/}
-            {/*                            {tests[block.id].map((test) => (*/}
-            {/*                                <div key={test.id} className="ml-4 my-2">*/}
-            {/*                                    <Link href={`/workspace/tests/${test.id}`}>*/}
-            {/*                                        {test.question}*/}
-            {/*                                    </Link>*/}
-            {/*                                </div>*/}
-            {/*                            ))}*/}
-            {/*                        </div>*/}
-            {/*                    )}*/}
-
-            {/*                    {materials[block.id]?.length > 0 && (*/}
-            {/*                        <div className="mt-4">*/}
-            {/*                            {materials[block.id].map((material) => (*/}
-            {/*                                <div key={material.id} className="ml-4 my-2">*/}
-            {/*                                    <h4>{material.title} | {isCreator ? <div>Edit | Delete</div> : ""}</h4>*/}
-            {/*                                    <p>{material.content}</p>*/}
-            {/*                                    <p>{material.type}</p>*/}
-            {/*                                </div>*/}
-            {/*                            ))}*/}
-            {/*                        </div>*/}
-            {/*                    )}*/}
-            {/*                </div>*/}
-            {/*            ))}*/}
-            {/*        </div>*/}
-            {/*    )}*/}
-            {/*</div>*/}
             <div className="my-4">
                 <Button onClick={() => handleOpenModal()} className="w-full">Create Block</Button>
             </div>
@@ -414,7 +369,8 @@ export default function CourseDetailPage({
                                     <h2>{block.name}</h2>
                                     <div>
                                         <Button onClick={() => handleOpenModal(block)}>Edit</Button>
-                                        <Button onClick={() => handleDeleteBlock(block.id)} variant="destructive">Delete</Button>
+                                        <Button onClick={() => handleDeleteBlock(block.id)}
+                                                variant="destructive">Delete</Button>
                                     </div>
                                 </div>
 
@@ -452,8 +408,6 @@ export default function CourseDetailPage({
                     </div>
                 )}
             </div>
-
-
             <MaterialModal
                 isOpen={isMaterialModalOpen}
                 onClose={handleCloseMaterialModal}
@@ -475,6 +429,13 @@ export default function CourseDetailPage({
                 currentBlock={currentBlock}
             />
 
+            <TestModal
+                isOpen={isTestModalOpen}
+                onClose={handleCloseTestModal}
+                onSave={handleCreateOrEditTest}
+                currentTest={currentTest}
+                blockId={currentBlockId}
+            />
         </div>
     );
 }

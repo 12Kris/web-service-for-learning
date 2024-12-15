@@ -1,16 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
 import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/definitions';
 
 interface TestPageProps {
     params: { id: string };
 }
-// TODO: сделать edit,update ? для тестов материалов блоков и блоки еще нельзя добавлять, сделай это все ( не забывай связи, для тестов чтобы еще вопросы редактировать и тд.. с каждым
-//  чтобы еще ссыдка была workspace/{block,material,test}/{id}
+
 export default function TestPage({ params }: TestPageProps) {
-    const { id: testId } = params;
+    const { id: testId } = React.use(params);
 
     const [questions, setQuestions] = useState<TestQuestion[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
@@ -30,7 +29,7 @@ export default function TestPage({ params }: TestPageProps) {
 
     const handleAnswer = (selectedAnswerId: number) => {
         const currentQuestion = questions[currentQuestionIndex];
-        const isCorrect = selectedAnswerId === currentQuestion.correct_answer;
+        const isCorrect = selectedAnswerId === currentQuestion.correct_answer.id;
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
