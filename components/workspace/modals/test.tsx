@@ -69,12 +69,6 @@ export function TestModal({
             alert("Please fill all fields.");
         }
     };
-    useEffect(() => {
-        console.log(answers)
-    },[answers])
-    useEffect(() => {
-        console.log("Correct: ", correctAnswer)
-    },[correctAnswer])
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>

@@ -192,6 +192,7 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
         if (currentTest) {
             await updateTest(currentTest.id, testData);
         } else {
+            console.log("Creating test...", testData)
             const res = await createTest(testData);
             console.log(res)
         }
@@ -230,7 +231,6 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
 
             setCurrentTest(formattedTest);
         } else {
-            console.log("NOT FOUND");
             setCurrentTest(null)
             // setCurrentTest({
             //     question: "",
@@ -240,11 +240,6 @@ export default function CourseDetailPage({params,}: { params: Promise<{ id: stri
 
         setIsTestModalOpen(true);
     };
-
-
-    useEffect(() => {
-        console.log(currentTest)
-    }, [currentTest])
 
     const handleCloseTestModal = () => {
         setIsTestModalOpen(false);

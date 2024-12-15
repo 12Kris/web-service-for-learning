@@ -24,7 +24,6 @@ export default function LoginPage() {
       try {
         const token = await loginUser(email, password);
         router.push("/workspace");
-        console.log("Login successful, token:", token);
       } catch (err) {
         setError((err as Error).message);
         console.error("Login failed:", err);

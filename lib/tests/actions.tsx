@@ -123,7 +123,7 @@ export async function createTest(testData: {
         });
 
         const answers = await Promise.all(answerPromises);
-
+        return [answers, correctAnswerText];
         const correctAnswer = answers.find((answer) => answer?.answer === correctAnswerText);
         // TODO: correct_id
         if (correctAnswer) {

@@ -15,10 +15,6 @@ export default function BlocksPage() {
         setBlocks(blocks.filter((block) => block.id !== id));
     };
 
-    useEffect(() => {
-        console.log(blocks)
-    },[blocks])
-
     return (
         <div>
             <h1>Blocks</h1>
