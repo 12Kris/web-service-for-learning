@@ -20,7 +20,7 @@ export async function getCourseById(courseId: string | Array<string>) {
 
     if (error) {
         console.error("Error fetching course:", error);
-        return null;
+        return error;
     }
 
     return data;

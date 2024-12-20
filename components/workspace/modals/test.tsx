@@ -12,13 +12,24 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function TestModal({isOpen, onClose, onSave, currentTest, blockId}: { isOpen: boolean; onClose: () => void; onSave: (testData: any) => void; currentTest: any; blockId: number; }) {
+export function TestModal({
+                              isOpen,
+                              onClose,
+                              onSave,
+                              currentTest,
+                              blockId,
+                          }: {
+    isOpen: boolean;
+    onClose: () => void;
+    onSave: (testData: any) => void;
+    currentTest: any;
+    blockId: number;
+}) {
     const [question, setQuestion] = useState<string>(currentTest?.question || "");
     const [answers, setAnswers] = useState<{ id: string; text: string; correct: boolean }[]>(currentTest?.answers || [
         { id: "1", text: "", correct: false },
         { id: "2", text: "", correct: false }
     ]);
-
     const [correctAnswerId, setCorrectAnswerId] = useState<string | null>(
         currentTest?.answers?.find((answer: any) => answer.correct)?.id || null
     );

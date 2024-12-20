@@ -24,6 +24,7 @@ export function MaterialModal({
 }) {
     const handleSave = () => {
         if (blockId !== null) {
+            console.log("Saving...")
             onSave(blockId);
         }
     };
