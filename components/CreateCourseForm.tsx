@@ -21,8 +21,8 @@ export default function CreateCourseForm() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
-  const [cards, setCards] = useState("");
-  const [test, setTests] = useState("");
+  const [cards, setCards] = useState([]);
+  const [tests, setTests] = useState([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -85,12 +85,12 @@ export default function CreateCourseForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="tests">Select tasks</Label>
+            <Label htmlFor="tests">Select tests</Label>
             <Input
               id="tests"
               type="select"
-              value={tasks}
-              options={mockTasks}
+              value={tests}
+              options={mockTests}
               onChange={(e) => setTests(e.target.value)}
             />
             <div>

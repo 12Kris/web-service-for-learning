@@ -11,9 +11,8 @@ export const mockCards = [
 ];
 
 export const mockTests = [
-  { id: 100, name: 'Task 1' },
-  { id: 200, name: 'Task 2' },
-  { id: 300, name: 'Task 3' },
-  { id: 400, name: 'Task 4' },
+  { id: 100, name: 'Test 1' },
+  { id: 200, name: 'Test 2' },
+  { id: 300, name: 'Test 3' },
+  { id: 400, name: 'Test 4' },
 ];
-ggbhghghnn
