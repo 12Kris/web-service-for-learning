@@ -95,18 +95,18 @@ export default function CreateCourseForm() {
             />
             <div>
               <Link
-                href="/tests/add/"
+                href="/workspace/tests/add"
                 key="add-tests"
-                className={cn("w-full font-semibold text-lg",)}
+                className={cn("w-full font-semibold text-lg")}
               >
-                <Button type="button" className="px-1">
+                <Button className="px-1">
                   Add tests
                 </Button>
               </Link>
               <Link
-                href="/tests/edit/"
+                href="/workspace/tests/edit"
                 key="edit-tests"
-                className={cn("w-full font-semibold text-lg",)}
+                className={cn("w-full font-semibold text-lg")}
               >
                 <Button type="button" className="px-1">
                   Edit tests
