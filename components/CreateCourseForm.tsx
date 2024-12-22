@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { createCourse } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { mockCards, mockTests } from "@/app/workspace/mock_data/mock_data";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardHeader,
@@ -18,6 +21,8 @@ export default function CreateCourseForm() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
+  const [cards, setCards] = useState("");
+  const [test, setTests] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -68,6 +73,46 @@ export default function CreateCourseForm() {
               value={type}
               onChange={(e) => setType(e.target.value)}
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="cards">Select cards</Label>
+            <Input
+              id="cards"
+              type="select"
+              value={cards}
+              options={mockCards}
+              onChange={(e) => setCards(e.target.value)}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="tests">Select tasks</Label>
+            <Input
+              id="tests"
+              type="select"
+              value={tasks}
+              options={mockTasks}
+              onChange={(e) => setTests(e.target.value)}
+            />
+            <div>
+              <Link
+                href="/tests/add/"
+                key="add-tests"
+                className={cn("w-full font-semibold text-lg",)}
+              >
+                <Button type="button" className="px-1">
+                  Add tests
+                </Button>
+              </Link>
+              <Link
+                href="/tests/edit/"
+                key="edit-tests"
+                className={cn("w-full font-semibold text-lg",)}
+              >
+                <Button type="button" className="px-1">
+                  Edit tests
+                </Button>
+              </Link>
+            </div>
           </div>
           {error && <p className="text-red-500">{error}</p>}
           <Button type="submit" className="w-full">
