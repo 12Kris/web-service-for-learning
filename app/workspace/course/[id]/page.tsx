@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import CourseDescriptionJumpotron from "@/components/workspace/course-description-jumbotron"
+import CourseDescriptionJumpotron from "@/components/workspace/course-description-jumbotron";
 import CourseInfo from "@/components/workspace/course-info";
 import CourseCurriculum from "@/components/workspace/course-curriculum";
 import MeetTutor from "@/components/workspace/meet-tutor";
@@ -19,7 +19,7 @@ import Link from "next/link";
 import { Course } from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
 
-import { Trash2, Edit, UserPlus, UserCheck, BookCheck } from 'lucide-react';
+import { Trash2, Edit, UserPlus, UserCheck, BookCheck } from "lucide-react";
 
 import {
   AlertDialog,
@@ -93,31 +93,37 @@ export default function CourseDetailPage({
 
   return (
     <div className="container  mx-auto py-10 px-4 flex flex-col w-full gap-4">
-      <CourseDescriptionJumpotron title={course?.name} description={course?.description} onEnrollNow={onEnrollNow} onLearnMore={onLearnMore} />
-      <CourseInfo course_details={[
-              "12 weeks, self-paced",
-              "24/7 online support",
-              "Certificate upon completion",
-            ]} 
-            what_you_learn={[
-              "HTML5, CSS3, and modern JavaScript",
-              "React and Next.js for frontend development",
-              "Node.js and Express for backend development",
-              "Database design with MongoDB",
-              "RESTful API development",
-              "Deployment and DevOps basics",
-            ]}
-            course_rating={4}
-            reviews={12}
-            />
+      <CourseDescriptionJumpotron
+        title={course?.name}
+        description={course?.description}
+        onEnrollNow={onEnrollNow}
+        onLearnMore={onLearnMore}
+      />
+      <CourseInfo
+        course_details={[
+          "12 weeks, self-paced",
+          "24/7 online support",
+          "Certificate upon completion",
+        ]}
+        what_you_learn={[
+          "HTML5, CSS3, and modern JavaScript",
+          "React and Next.js for frontend development",
+          "Node.js and Express for backend development",
+          "Database design with MongoDB",
+          "RESTful API development",
+          "Deployment and DevOps basics",
+        ]}
+        course_rating={4}
+        reviews={12}
+      />
 
-        <CourseCurriculum />
+      <CourseCurriculum />
 
-        <MeetTutor 
-  name="John Doe"
-  description="Custom description here"
-  imageUrl="/path-to-image.jpg"
-/>
+      <MeetTutor
+        name="John Doe"
+        description="Custom description here"
+        imageUrl="/path-to-image.jpg"
+      />
 
       <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
         <h1 className="text-3xl font-bold mb-6">
@@ -136,27 +142,36 @@ export default function CourseDetailPage({
             <Skeleton width={130} inline={true} count={1} />
           )}
         </div>
-
       </div>
       <div className="flex flex-col md:flex-row w-full gap-2">
-      <Button className="w-full" onClick={handleAddCourse} disabled={isCourseAdded}>
-            {isCourseAdded ? (
-              <>
-                <UserCheck /> Subscribed
-              </>
-            ) : (
-              <>
-                <UserPlus /> Subscribe
-              </>
-            )}
-          </Button>
+        <Button
+          className="w-full"
+          onClick={handleAddCourse}
+          disabled={isCourseAdded}
+        >
+          {isCourseAdded ? (
+            <>
+              <UserCheck /> Subscribed
+            </>
+          ) : (
+            <>
+              <UserPlus /> Subscribe
+            </>
+          )}
+        </Button>
 
-          <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
-            <Button className="w-full">            <BookCheck/>
-            Take the test</Button>
-          </Link>
+        <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
+          <Button className="w-full">
+            {" "}
+            <BookCheck />
+            Take the test
+          </Button>
+        </Link>
         {isCreator && (
-          <Link  className="w-full" href={`/workspace/course/${course?.id}/edit`}>
+          <Link
+            className="w-full"
+            href={`/workspace/course/${course?.id}/edit`}
+          >
             <Button className="w-full">
               <Edit />
               Edit
@@ -166,7 +181,10 @@ export default function CourseDetailPage({
         {isCreator && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button className="w-full" variant="destructive"><Trash2/>Delete Course</Button>
+              <Button className="w-full" variant="destructive">
+                <Trash2 />
+                Delete Course
+              </Button>
             </AlertDialogTrigger>
 
             <AlertDialogContent className="bg-white">

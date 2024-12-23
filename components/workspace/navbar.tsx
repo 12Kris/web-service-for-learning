@@ -1,13 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Menu,
-  Plus,
-  Search,
-  Filter,
-
-} from "lucide-react";
+import { Menu, Plus, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -38,7 +32,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
   const showAddButton = pathname === "/workspace";
 
   const [user, setUser] = useState<User | null>(null);
-  
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -63,11 +57,8 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
       }
     }
 
-
     fetchData();
   }, []);
-
-
 
   return (
     <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b bg-background/95 ">

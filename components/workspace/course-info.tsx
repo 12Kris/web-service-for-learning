@@ -1,5 +1,5 @@
-import { Check, Star } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Check, Star } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface CourseInfo {
   course_details: string[];
@@ -8,8 +8,12 @@ interface CourseInfo {
   reviews: number;
 }
 
-const CourseInfo: React.FC<CourseInfo> = ({ course_details, what_you_learn, course_rating, reviews }) => {
-
+const CourseInfo: React.FC<CourseInfo> = ({
+  course_details,
+  what_you_learn,
+  course_rating,
+  reviews,
+}) => {
   return (
     <div className="container mx-auto p-6">
       <div className="grid gap-6 md:grid-cols-3">
@@ -31,7 +35,9 @@ const CourseInfo: React.FC<CourseInfo> = ({ course_details, what_you_learn, cour
         {/* What You'll Learn Card */}
         <Card className="h-full">
           <CardHeader>
-            <CardTitle className="text-xl font-bold">What you'll learn</CardTitle>
+            <CardTitle className="text-xl font-bold">
+              What you will learn
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside space-y-3">
@@ -56,7 +62,9 @@ const CourseInfo: React.FC<CourseInfo> = ({ course_details, what_you_learn, cour
                   <Star
                     key={course_rating}
                     className={`h-6 w-6 ${
-                      course_rating <= 4 ? "fill-current text-primary" : "text-muted"
+                      course_rating <= 4
+                        ? "fill-current text-primary"
+                        : "text-muted"
                     }`}
                   />
                 ))}
@@ -70,7 +78,7 @@ const CourseInfo: React.FC<CourseInfo> = ({ course_details, what_you_learn, cour
         </Card>
       </div>
     </div>
-  )
+  );
 };
 
 export default CourseInfo;

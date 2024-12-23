@@ -1,24 +1,7 @@
-import {
-  Cloud,
-  CreditCard,
-  Github,
-  Keyboard,
-  LifeBuoy,
-  LogOut,
-  Mail,
-  MessageSquare,
-  Plus,
-  PlusCircle,
-  Settings,
-  User,
-  UserPlus,
-  Users,
-} from "lucide-react";
+import { Github, LifeBuoy, LogOut, Settings, User } from "lucide-react";
 
 import { logoutUser } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
-
-
 
 import { Button } from "@/components/ui/button";
 import {
@@ -27,12 +10,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -51,7 +29,6 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
       console.error("Logout failed:", error);
     }
   };
-
 
   return (
     <DropdownMenu>
@@ -74,7 +51,6 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
             <Settings />
             <span>Settings</span>
           </DropdownMenuItem>
-
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
 
@@ -88,9 +64,8 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
-          <LogOut  />
+          <LogOut />
           <span>Log out</span>
-
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

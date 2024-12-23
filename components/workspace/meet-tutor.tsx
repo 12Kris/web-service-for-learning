@@ -1,17 +1,17 @@
-import React from "react"
-import Image from "next/image"
-import Skeleton from "react-loading-skeleton"
+import React from "react";
+import Image from "next/image";
+import Skeleton from "react-loading-skeleton";
 
 interface MeetTutorProps {
-  name?: string
-  description?: string
-  imageUrl?: string
+  name?: string;
+  description?: string;
+  imageUrl?: string;
 }
 
-const MeetTutor: React.FC<MeetTutorProps> = ({ 
+const MeetTutor: React.FC<MeetTutorProps> = ({
   name = "John Doe",
   description = "John Doe is a seasoned web developer with over 10 years of experience in the industry. He has worked with startups and Fortune 500 companies, bringing a wealth of real-world knowledge to the course.",
-  imageUrl = "/placeholder.svg"
+  imageUrl = "/placeholder.svg",
 }) => {
   return (
     <section className="container mx-auto px-4 py-12">
@@ -41,8 +41,7 @@ const MeetTutor: React.FC<MeetTutorProps> = ({
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default MeetTutor
-
+export default MeetTutor;
