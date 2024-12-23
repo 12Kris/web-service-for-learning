@@ -12,6 +12,8 @@ import {Book, Users, Clock, Award} from 'lucide-react';
 import {getUserCourses, getUserCreatedCourses} from '@/lib/courses/actions';
 import {getUser} from '@/lib/auth/actions';
 import {Course, User} from "@/lib/definitions";
+import { Edit } from "lucide-react";
+
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("created");
@@ -87,7 +89,7 @@ export default function UserProfile() {
               </CardContent>
 
               <CardFooter>
-                <Button className="w-full">Edit Profile</Button>
+                <Button className="w-full"><Edit />Edit Profile</Button>
               </CardFooter>
             </Card>
           </aside>

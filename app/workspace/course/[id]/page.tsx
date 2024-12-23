@@ -2,6 +2,10 @@
 import { useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import CourseDescriptionJumpotron from "@/components/workspace/course-description-jumbotron"
+import CourseInfo from "@/components/workspace/course-info";
+import CourseCurriculum from "@/components/workspace/course-curriculum";
+import MeetTutor from "@/components/workspace/meet-tutor";
 
 import {
   addCourseToUser,
@@ -14,6 +18,8 @@ import { use } from "react";
 import Link from "next/link";
 import { Course } from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
+
+import { Trash2, Edit, UserPlus, UserCheck, BookCheck } from 'lucide-react';
 
 import {
   AlertDialog,
@@ -61,6 +67,14 @@ export default function CourseDetailPage({
     fetchData();
   }, [id]);
 
+  function onEnrollNow() {
+    console.log("Enroll now clicked");
+  }
+
+  function onLearnMore() {
+    console.log("Learn more clicked");
+  }
+
   async function handleAddCourse() {
     if (!id) return;
     await addCourseToUser(id);
@@ -78,7 +92,33 @@ export default function CourseDetailPage({
   }
 
   return (
-    <div className="container  mx-auto py-10 px-4 flex flex-col md:flex-row w-full gap-4">
+    <div className="container  mx-auto py-10 px-4 flex flex-col w-full gap-4">
+      <CourseDescriptionJumpotron title={course?.name} description={course?.description} onEnrollNow={onEnrollNow} onLearnMore={onLearnMore} />
+      <CourseInfo course_details={[
+              "12 weeks, self-paced",
+              "24/7 online support",
+              "Certificate upon completion",
+            ]} 
+            what_you_learn={[
+              "HTML5, CSS3, and modern JavaScript",
+              "React and Next.js for frontend development",
+              "Node.js and Express for backend development",
+              "Database design with MongoDB",
+              "RESTful API development",
+              "Deployment and DevOps basics",
+            ]}
+            course_rating={4}
+            reviews={12}
+            />
+
+        <CourseCurriculum />
+
+        <MeetTutor 
+  name="John Doe"
+  description="Custom description here"
+  imageUrl="/path-to-image.jpg"
+/>
+
       <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
         <h1 className="text-3xl font-bold mb-6">
           {course?.name || <Skeleton count={1} />}
@@ -97,26 +137,36 @@ export default function CourseDetailPage({
           )}
         </div>
 
-        <div className="my-4">
-          <Button onClick={handleAddCourse} disabled={isCourseAdded}>
-            {isCourseAdded ? "Subscribed" : "Subscribe"}
+      </div>
+      <div className="flex flex-col md:flex-row w-full gap-2">
+      <Button className="w-full" onClick={handleAddCourse} disabled={isCourseAdded}>
+            {isCourseAdded ? (
+              <>
+                <UserCheck /> Subscribed
+              </>
+            ) : (
+              <>
+                <UserPlus /> Subscribe
+              </>
+            )}
           </Button>
 
-          <Link className="ml-4" href={`/workspace/course/${course?.id}/cards`}>
-            <Button>Take the test</Button>
+          <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
+            <Button className="w-full">            <BookCheck/>
+            Take the test</Button>
           </Link>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
         {isCreator && (
-          <Link href={`/workspace/course/${course?.id}/edit`}>
-            <Button className="w-full">Edit</Button>
+          <Link  className="w-full" href={`/workspace/course/${course?.id}/edit`}>
+            <Button className="w-full">
+              <Edit />
+              Edit
+            </Button>
           </Link>
         )}
         {isCreator && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant="destructive">Delete Course</Button>
+              <Button className="w-full" variant="destructive"><Trash2/>Delete Course</Button>
             </AlertDialogTrigger>
 
             <AlertDialogContent className="bg-white">
