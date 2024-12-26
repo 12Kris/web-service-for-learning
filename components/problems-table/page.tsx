@@ -5,10 +5,10 @@ import Image from "next/image";
 export default function InfoTable() {
     return (
         <div className="space-y-24 mb-14">
-            <div className="text-right mb-8">
-                <h2 className="text-5xl font-bold mb-4 text-[--neutral]">
+            <div className="text-right mb-8 mt-24">
+                <h1 className="text-5xl font-bold mb-4 text-[--neutral]">
                     Problems We Solve <br /> To Make You Happier
-                </h2>
+                </h1>
             </div>
 
             <div className="space-y-8">
