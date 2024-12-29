@@ -8,6 +8,7 @@ export interface User {
   id: string;
   email: string;
   full_name: string;
+  description: string;
   name?: string;
   avatar: string;
   role: string;
@@ -15,6 +16,14 @@ export interface User {
   joinDate?: string;
   user_metadata: UserMetadata;
 }
+
+export interface Module {
+  id: number;
+  title: string;
+  description: string;
+}
+
+
 export interface Course {
   id: number;
   name: string;
@@ -27,7 +36,11 @@ export interface Course {
   lessons?: number;
   student_count?: number;
   creator?: User;
+  course_details?: string[];
+  what_w_learn?: string[];
+  curriculum?: Module[];
 }
+
 
 export interface CourseWithStudents {
   id: number;
