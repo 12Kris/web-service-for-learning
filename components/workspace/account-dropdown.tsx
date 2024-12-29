@@ -33,8 +33,12 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="shrink-0">
-          <User className="h-5 w-5" />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 border rounded-full bg-zinc-100"
+        >
+          <User className="h-5 w-5 " />
           <span className="sr-only">User menu</span>
         </Button>
       </DropdownMenuTrigger>

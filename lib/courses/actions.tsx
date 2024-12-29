@@ -6,7 +6,7 @@ import {Course, CourseWithStudents} from "@/lib/definitions";
 export async function getCourseById(courseId: string) {
     const {data, error} = await supabase
         .from("Course")
-        .select("*, creator:creator_id (id, email, full_name)")
+        .select("*, creator:creator_id (id, email, full_name, description)")
         .eq("id", courseId)
         .single();
 
@@ -31,6 +31,21 @@ export async function getCardsByBlock(blockId: string) {
 
     return data;
 }
+
+// export async function getCourseInfo(courseId: string) {
+//     const {data, error} = await supabase
+//         .from("CourseInfo")
+//         .select("*")
+//         .eq("course_id", courseId)
+//         .single();
+
+//     if (error) {
+//         console.error("Error fetching course info:", error);
+//         return null;
+//     }
+
+//     return data;
+// }
 
 export async function isCourseAddedToUser(courseId: string) {
     const user = await getUser();

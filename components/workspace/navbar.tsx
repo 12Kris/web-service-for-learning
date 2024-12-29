@@ -51,6 +51,9 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
           created_at: currentUser.created_at,
           user_metadata: currentUser.user_metadata || {},
           joinDate: new Date(currentUser.created_at).toLocaleDateString(),
+          description:
+            currentUser.user_metadata?.description ||
+            "No description available",
         });
       } catch (error) {
         console.error("Error fetching user data:", error);

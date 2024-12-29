@@ -91,38 +91,29 @@ export default function CourseDetailPage({
     }
   }
 
+
   return (
     <div className="container  mx-auto py-10 px-4 flex flex-col w-full gap-4">
       <CourseDescriptionJumpotron
         title={course?.name}
         description={course?.description}
+        type={course?.type}
         onEnrollNow={onEnrollNow}
         onLearnMore={onLearnMore}
       />
       <CourseInfo
-        course_details={[
-          "12 weeks, self-paced",
-          "24/7 online support",
-          "Certificate upon completion",
-        ]}
-        what_you_learn={[
-          "HTML5, CSS3, and modern JavaScript",
-          "React and Next.js for frontend development",
-          "Node.js and Express for backend development",
-          "Database design with MongoDB",
-          "RESTful API development",
-          "Deployment and DevOps basics",
-        ]}
+        course_details={course?.course_details || []}
+        what_you_learn={course?.what_w_learn || []}
         course_rating={4}
         reviews={12}
       />
 
-      <CourseCurriculum />
+      <CourseCurriculum modules={course?.curriculum || []} />
 
       <MeetTutor
-        name="John Doe"
-        description="Custom description here"
-        imageUrl="/path-to-image.jpg"
+        name={course?.creator?.full_name}
+        description={course?.creator?.description || undefined}
+        imageUrl=""
       />
 
       <div className="flex-1 bg-zinc-100 rounded-3xl p-6">

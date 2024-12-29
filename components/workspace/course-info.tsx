@@ -15,7 +15,7 @@ const CourseInfo: React.FC<CourseInfo> = ({
   reviews,
 }) => {
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto py-6">
       <div className="grid gap-6 md:grid-cols-3">
         {/* Course Details Card */}
         <Card className="h-full">
@@ -23,12 +23,16 @@ const CourseInfo: React.FC<CourseInfo> = ({
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {course_details.map((detail, index) => (
+            {course_details.length > 0 ? course_details.map((detail, index) => (
               <div key={index} className="flex items-center gap-2">
                 <Check className="h-5 w-5 flex-shrink-0" />
                 <span>{detail}</span>
               </div>
-            ))}
+              ))
+              : <div className="col-span-2 text-center text-gray-500">
+              No information available.
+            </div>
+            }
           </CardContent>
         </Card>
 
@@ -41,11 +45,15 @@ const CourseInfo: React.FC<CourseInfo> = ({
           </CardHeader>
           <CardContent>
             <ul className="list-inside space-y-3">
-              {what_you_learn.map((item, index) => (
+              {what_you_learn.length > 0 ? what_you_learn.map((item, index) => (
                 <li key={index} className="text-sm">
                   • {item}
                 </li>
-              ))}
+              ))
+              : <div className="col-span-2 text-center text-gray-500">
+              No information available.
+            </div>
+          }
             </ul>
           </CardContent>
         </Card>

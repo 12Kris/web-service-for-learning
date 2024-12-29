@@ -45,6 +45,9 @@ export default function UserProfile() {
           created_at: currentUser.created_at,
           user_metadata: currentUser.user_metadata || {},
           joinDate: new Date(currentUser.created_at).toLocaleDateString(),
+          description:
+            currentUser.user_metadata?.description ||
+            "No description available",
         });
         setCreatedCourses(await getUserCreatedCourses());
         setStudyingCourses(await getUserCourses());
