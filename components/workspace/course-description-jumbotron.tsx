@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import Skeleton from "react-loading-skeleton";
 
-interface CourseDescriptionJumpotronProps {
+interface CourseDescriptionJumbotronProps {
   title?: string;
   description?: string;
   type?: string;
@@ -10,7 +10,7 @@ interface CourseDescriptionJumpotronProps {
   onEnrollNow: () => void;
 }
 
-const CourseDescriptionJumpotron: React.FC<CourseDescriptionJumpotronProps> = ({
+const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   title,
   description,
   type,
@@ -18,18 +18,42 @@ const CourseDescriptionJumpotron: React.FC<CourseDescriptionJumpotronProps> = ({
   onEnrollNow,
 }) => {
   return (
-    <section className="w-full bg-slate-200 rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7">
-      <div className="flex gap-4 justify-center items-center">
-        <h1 className="text-5xl font-bold">
-          {title || <Skeleton baseColor="#e2e8f0" highlightColor="white" width={300} count={1} />}
+    <section className="w-full bg-slate-200 rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
+      <div className="flex flex-col items-center gap-2">
+        <h1 className="text-5xl font-bold text-center">
+          {title || (
+            <Skeleton
+              baseColor="#e2e8f0"
+              highlightColor="white"
+              width={300}
+              count={1}
+            />
+          )}
         </h1>
-        <p className="text-l text-center border-2 px-3 border-black border-solid rounded-full">
-          {type || <Skeleton baseColor="#e2e8f0" highlightColor="white" width={100}  count={1} />}
-        </p>
+        {type && (
+          <p className="text-sm md:text-base px-3 py-1 bg-slate-300 text-slate-700 rounded-full whitespace-nowrap">
+            {type}
+          </p>
+        )}
+        {!type && (
+          <Skeleton
+            baseColor="#e2e8f0"
+            highlightColor="white"
+            width={100}
+            count={1}
+          />
+        )}
       </div>
 
       <p className="text-xl max-w-[70%] text-center">
-        {description || <Skeleton baseColor="#e2e8f0" highlightColor="white" width={300} count={3} />}
+        {description || (
+          <Skeleton
+            baseColor="#e2e8f0"
+            highlightColor="white"
+            width={300}
+            count={3}
+          />
+        )}
       </p>
 
       <div className="flex gap-2">
@@ -44,4 +68,4 @@ const CourseDescriptionJumpotron: React.FC<CourseDescriptionJumpotronProps> = ({
   );
 };
 
-export default CourseDescriptionJumpotron;
+export default CourseDescriptionJumbotron;
