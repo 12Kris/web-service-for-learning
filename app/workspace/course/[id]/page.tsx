@@ -1,66 +1,70 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
+    addCourseToUser,
+    deleteCourse,
     getBlocksByCourseId,
     getCourseById,
-    isCourseAddedToUser,
-    deleteCourse,
     getMaterialsByBlockId,
-    getTestsByBlockId
+    getTestsByBlockId,
+    isCourseAddedToUser
 } from "@/lib/courses/actions";
-import { Button } from "@/components/ui/button";
-import { getUser } from "@/lib/auth/authActions";
+import {Button} from "@/components/ui/button";
+import {getUser} from "@/lib/auth/authActions";
 import Link from "next/link";
-import { Course } from "@/lib/definitions";
-import { deleteMaterial } from "@/lib/tests/actions";
+import {Block, Course, LearningMaterial, ModalsState, Test} from "@/lib/definitions";
 import BlockSection from "./BlockSection";
-import { MaterialModal } from "@/components/workspace/modals/material";
-import { BlockModal } from "@/components/workspace/modals/block";
-import { TestModal } from "@/components/workspace/modals/test";
+import {MaterialModal} from "@/components/workspace/modals/material";
+import {BlockModal} from "@/components/workspace/modals/block";
+import {TestModal} from "@/components/workspace/modals/test";
 import {
-    handleOpenModal,
-    handleCloseModal,
-    handleCreateOrEditBlock,
-    handleOpenMaterialModal,
     handleCloseMaterialModal,
-    handleCreateOrEditMaterial,
-    handleOpenTestModal,
+    handleCloseModal,
     handleCloseTestModal,
-    handleCreateOrEditTest
+    handleCreateOrEditBlock,
+    handleCreateOrEditMaterial,
+    handleCreateOrEditTest,
+    handleOpenMaterialModal,
+    handleOpenModal,
+    handleOpenTestModal
 } from "@/lib/tests/handlers";
 
-export default function CourseDetailPage({ params }: { params: Promise<{ courseId: number }> }) {
+interface Params {
+    id: number;
+}
+
+export default function CourseDetailPage({params}: { params: Promise<Params> }) {
     const [course, setCourse] = useState<Course | null>(null);
-    const [isCourseAdded, setIsCourseAdded] = useState(false);
-    const [isCreator, setIsCreator] = useState(false);
-    const [blocks, setBlocks] = useState([]);
-    const [tests, setTests] = useState({});
-    const [materials, setMaterials] = useState({});
-    const [modals, setModals] = useState({ block: false, material: false, test: false });
+    const [isCourseAdded, setIsCourseAdded] = useState<boolean>(false);
+    const [isCreator, setIsCreator] = useState<boolean>(false);
+    const [blocks, setBlocks] = useState<Block[]>([]);
+    const [tests, setTests] = useState<Record<number, Test[]>>({});
+    const [materials, setMaterials] = useState<Record<number, LearningMaterial[]>>({});
+    const [modals, setModals] = useState<ModalsState>({
+        block: false,
+        material: false,
+        test: false
+    });
     const [currentBlockId, setCurrentBlockId] = useState<number | null>(null);
-    const [currentBlock, setCurrentBlock] = useState<any>(null);
-    const [blockName, setBlockName] = useState("");
+    const [currentBlock, setCurrentBlock] = useState<Block | null>(null);
+    const [blockName, setBlockName] = useState<string>("");
 
-    const [currentMaterial, setCurrentMaterial] = useState<any>(null);
-    const [materialTitle, setMaterialTitle] = useState("");
-    const [materialContent, setMaterialContent] = useState("");
+    const [currentMaterial, setCurrentMaterial] = useState<LearningMaterial | null>(null);
+    const [materialTitle, setMaterialTitle] = useState<string>("");
+    const [materialContent, setMaterialContent] = useState<string>("");
 
-    const [currentTest, setCurrentTest] = useState<any>(null);
-    const [testData, setTestData] = useState({});
+    const [currentTest, setCurrentTest] = useState<Test | null>(null);
 
-    const { id } = use(params);
-
-    const handleCloseTestModal = (
-        setModals: (modals: any) => void,
-        setCurrentTest: (test: any) => void
-    ) => {
-        setModals((prev) => ({ ...prev, test: false }));
-        setCurrentTest(null); // Сброс теста при закрытии модалки
-    };
-
+    const [id, setId] = useState<number | null>(null);
+    useEffect(() => {
+        (async () => {
+            const unwrappedParams = await params;
+            setId(unwrappedParams.id);
+        })();
+    }, [params]);
 
     useEffect(() => {
         if (!id) return;
@@ -70,17 +74,17 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                 const [courseData, user, blocksData] = await Promise.all([
                     getCourseById(id),
                     getUser(),
-                    getBlocksByCourseId(id),
+                    getBlocksByCourseId(id)
                 ]);
 
                 setCourse(courseData);
-                setIsCreator(user?.id.toString() === courseData.creator_id.toString());
+                setIsCreator(user?.id.toString() === courseData.creator_id?.toString());
 
                 const isAdded = await isCourseAddedToUser(id);
                 setIsCourseAdded(isAdded);
 
-                const testsData: any = {};
-                const materialsData: any = {};
+                const testsData: Record<number, Test[]> = {};
+                const materialsData: Record<number, LearningMaterial[]> = {};
                 const blocksPromises = blocksData.map(async (block) => {
                     testsData[block.id] = await getTestsByBlockId(block.id);
                     materialsData[block.id] = await getMaterialsByBlockId(block.id);
@@ -99,27 +103,26 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
     }, [id]);
 
     const handleAddCourse = async () => {
-        await addCourseToUser(id);
+        await addCourseToUser(id!);
         setIsCourseAdded(true);
     };
 
     const handleDeleteCourse = async () => {
-        const result = await deleteCourse(id);
+        const result = await deleteCourse(id!);
         if (result.success) window.location.href = "/workspace/";
         else alert(`Failed to delete course: ${result.message}`);
     };
 
     return (
         <div className="container mx-auto py-10 px-4 grid grid-cols-[1fr_300px] gap-4">
-            {/* Course Details */}
             <div className="bg-zinc-100 rounded-3xl p-6">
-                <h1 className="text-3xl font-bold mb-6">{course?.name || <Skeleton count={1} />}</h1>
-                <p className="mb-6">{course?.description || <Skeleton count={3} />}</p>
+                <h1 className="text-3xl font-bold mb-6">{course?.name || <Skeleton count={1}/>}</h1>
+                <p className="mb-6">{course?.description || <Skeleton count={3}/>}</p>
                 <div>
-                    <strong>Type:</strong> {course?.type || <Skeleton width={130} />}
+                    <strong>Type:</strong> {course?.type || <Skeleton width={130}/>}
                 </div>
                 <div>
-                    <strong>Instructor:</strong> {course?.creator?.full_name || <Skeleton width={130} />}
+                    <strong>Instructor:</strong> {course?.creator?.full_name || <Skeleton width={130}/>}
                 </div>
                 <div className="my-4">
                     <Button onClick={handleAddCourse} disabled={isCourseAdded}>
@@ -131,7 +134,6 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                 </div>
             </div>
 
-            {/* Blocks Section */}
             {isCreator && (
                 <div className="flex flex-col gap-4">
                     {blocks.map((block) => (
@@ -144,7 +146,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                             setModals={setModals}
                             setCurrentBlockId={setCurrentBlockId}
                             currentBlockId={currentBlockId}
-                            handleOpenMaterialModal={(material) =>
+                            handleOpenMaterialModal={(material: any) =>
                                 handleOpenMaterialModal(
                                     material,
                                     block.id,
@@ -155,7 +157,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                                     setModals
                                 )
                             }
-                            handleOpenTestModal={(test) =>
+                            handleOpenTestModal={(test: any) =>
                                 handleOpenTestModal(
                                     test,
                                     block.id,
@@ -175,7 +177,6 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                 </div>
             )}
 
-            {/* Modals */}
             <BlockModal
                 isOpen={modals.block}
                 onClose={() => handleCloseModal(setModals, setCurrentBlock, setBlockName)}
@@ -194,18 +195,19 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
             />
             <MaterialModal
                 isOpen={modals.material}
-                onClose={() => handleCloseMaterialModal(setModals, setCurrentMaterial, setMaterialTitle, setMaterialContent)}
+                onClose={() =>
+                    handleCloseMaterialModal(setModals, setCurrentMaterial, setMaterialTitle, setMaterialContent)
+                }
                 onSave={() =>
                     handleCreateOrEditMaterial(
                         materialTitle,
                         materialContent,
                         currentMaterial,
-                        currentBlockId,
+                        currentBlockId!,
                         setModals,
                         setMaterials
                     )
                 }
-
                 materialTitle={materialTitle}
                 setMaterialTitle={setMaterialTitle}
                 materialContent={materialContent}

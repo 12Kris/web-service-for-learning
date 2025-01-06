@@ -1,3 +1,5 @@
+import {AwaitedReactNode} from "react";
+
 export interface UserMetadata {
     name?: string;
     avatar_url?: string;
@@ -21,6 +23,7 @@ export interface Course {
     name: string;
     description?: string;
     type?: string;
+    creator?: User
     creator_id?: string;
     last_completion_date?: string;
     progress?: number;
@@ -100,3 +103,49 @@ export type LearningMaterial = {
     material_type: string;
     order_number: number;
 };
+
+export interface Block {
+    id: number;
+    name: string;
+}
+
+export interface Test {
+    id: number;
+    question: string;
+}
+
+export interface Material {
+    id: number;
+    title: string;
+}
+
+export interface ModalsState {
+    [key: string]: boolean;
+}
+
+export interface BlockSectionProps {
+    block: Block;
+    tests: Test[];
+    materials: Material[];
+    setModals: React.Dispatch<React.SetStateAction<ModalsState>>;
+    setCurrentBlockId: React.Dispatch<React.SetStateAction<number | null>>;
+    handleOpenBlockModal: (block: Block) => void;
+    handleOpenMaterialModal: (
+        material: Material | null,
+        blockId: number,
+        setCurrentBlockId: React.Dispatch<React.SetStateAction<number>>,
+        setCurrentMaterial: React.Dispatch<React.SetStateAction<Material | null>>,
+        setMaterialTitle: React.Dispatch<React.SetStateAction<string>>,
+        setMaterialContent: React.Dispatch<React.SetStateAction<string>>,
+        setModals: React.Dispatch<React.SetStateAction<ModalsState>>
+    ) => void;
+    handleOpenTestModal: (
+        test: Test | null,
+        blockId: number | null,
+        setCurrentTest: React.Dispatch<React.SetStateAction<Test | null>>,
+        setCurrentBlockId: React.Dispatch<React.SetStateAction<number>>,
+        setModals: React.Dispatch<React.SetStateAction<ModalsState>>
+    ) => void;
+    setCurrentTest: React.Dispatch<React.SetStateAction<Test | null>>;
+    currentBlockId: number | null;
+}

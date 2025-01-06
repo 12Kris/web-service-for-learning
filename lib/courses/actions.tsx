@@ -11,7 +11,7 @@ import {
     UserTestAnswer
 } from "@/lib/definitions";
 
-export async function getCourseById(courseId: string | Array<string>) {
+export async function getCourseById(courseId: number | null) {
     const {data, error} = await supabase
         .from("Course")
         .select("*, creator:creator_id (id, email, full_name)")
@@ -40,7 +40,7 @@ export async function getCardsByBlock(blockId: string) {
     return data;
 }
 
-export async function isCourseAddedToUser(courseId: string | Array<string>) {
+export async function isCourseAddedToUser(courseId: number | null) {
     const user = await getUser();
     if (!user) {
         throw new Error("User not authenticated");
@@ -120,9 +120,7 @@ export async function getUserCourses() {
 //   }
 // }
 
-export async function addCourseToUser(
-    courseId: string | Array<string>
-): Promise<{ success: boolean; message: string }> {
+export async function addCourseToUser(courseId: number): Promise<{ success: boolean; message: string }> {
     try {
         const user = await getUser();
 
@@ -254,8 +252,8 @@ export async function getTests(courseId: number): Promise<Test[]> {
     }));
 }
 
-export async function getBlocksByCourseId(courseId: string | Array<string>): Promise<Block[]> {
-    const { data, error } = await supabase
+export async function getBlocksByCourseId(courseId: number | null): Promise<Block[]> {
+    const {data, error} = await supabase
         .from("Block")
         .select("id, course_id, name")
         .eq("course_id", courseId);
@@ -283,7 +281,7 @@ export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
 }
 
 export async function getTestQuestions(testId: string): Promise<TestQuestion[]> {
-    const { data, error } = await supabase
+    const {data, error} = await supabase
         .from('TestQuestions')
         .select(`
             id,
@@ -328,7 +326,7 @@ export async function saveTestResults(
 
         const userId = user.id;
 
-        const { data: previousAttempts, error: attemptsError } = await supabase
+        const {data: previousAttempts, error: attemptsError} = await supabase
             .from('user_test_results')
             .select('id')
             .eq('user_id', userId)
@@ -340,7 +338,7 @@ export async function saveTestResults(
 
         const attemptNumber = (previousAttempts?.length || 0) + 1;
 
-        const { data: testResult, error: testResultError } = await supabase
+        const {data: testResult, error: testResultError} = await supabase
             .from('user_test_results')
             .insert([
                 {
@@ -357,7 +355,7 @@ export async function saveTestResults(
             throw new Error(`Error saving test result: ${testResultError.message}`);
         }
 
-        const { error: answersError } = await supabase
+        const {error: answersError} = await supabase
             .from('test_answers')
             .insert(
                 answers.map((answer) => ({
@@ -372,10 +370,10 @@ export async function saveTestResults(
             throw new Error(`Error saving answers: ${answersError.message}`);
         }
 
-        return { id: testResult.id };
+        return {id: testResult.id};
     } catch (error) {
         console.error('Error saving test results:', error);
-        return { error: (error as Error).message };
+        return {error: (error as Error).message};
     }
 }
 
@@ -428,9 +426,7 @@ export async function createCourse(
     }
 }
 
-export async function deleteCourse(
-    courseId: string | Array<string>
-): Promise<{ success: boolean; message: string }> {
+export async function deleteCourse(courseId: number): Promise<{ success: boolean; message: string }> {
     try {
         const user = await getUser();
 

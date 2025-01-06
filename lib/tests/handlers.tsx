@@ -12,7 +12,6 @@ export const handleOpenModal = (
 ) => {
     setCurrentBlock(block);
     setBlockName(block?.name || "");
-    console.log(block)
     setModals((prevState) => ({
         ...prevState,
         block: true,
@@ -33,10 +32,10 @@ export const handleCloseModal = (
 export const handleCreateOrEditBlock = async (
     blockName: string,
     currentBlock: any,
-    id: string,
+    id: number | null,
     setIsModalOpen: (open: boolean) => void,
     setBlocks: (blocks: any[]) => void,
-    getBlocksByCourseId: (id: string) => Promise<any[]>
+    getBlocksByCourseId: (id: number | null) => Promise<any[]>
 ) => {
     if (!blockName) return;
 
@@ -63,7 +62,7 @@ export const handleDeleteBlock = async (
 export const handleOpenMaterialModal = (
     material: any,
     blockId: number,
-    setCurrentBlockId: React.Dispatch<React.SetStateAction<number>>,
+    setCurrentBlockId: React.Dispatch<React.SetStateAction<number | null>>,
     setCurrentMaterial: React.Dispatch<React.SetStateAction<any>>,
     setMaterialTitle: React.Dispatch<React.SetStateAction<string>>,
     setMaterialContent: React.Dispatch<React.SetStateAction<string>>,
@@ -165,7 +164,7 @@ export const handleOpenTestModal = async (
     if (test) {
         try {
             const answersData = await getTestAnswers(test.id);
-
+            if (!answersData) return;
             const formattedAnswers = Array.isArray(answersData[0]?.answers)
                 ? answersData[0]?.answers.map((ans: any) => ({
                     id: ans.id,
@@ -188,7 +187,7 @@ export const handleOpenTestModal = async (
     } else {
         setCurrentTest(null);
     }
-    setModals((prev) => ({...prev, test: true}));
+    setModals((prev: any) => ({...prev, test: true}));
 };
 
 
@@ -198,4 +197,4 @@ export const handleCloseTestModal = (
 ) => {
     setIsTestModalOpen(false);
     setCurrentTest(null);
-};
+}

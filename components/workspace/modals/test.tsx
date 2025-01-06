@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import {useEffect, useState} from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,12 +22,12 @@ export function TestModal({
     onClose: () => void;
     onSave: (testData: any) => void;
     currentTest: any;
-    blockId: number;
+    blockId: number | null;
 }) {
     const [question, setQuestion] = useState<string>(currentTest?.question || "");
     const [answers, setAnswers] = useState<{ id: string; text: string; correct: boolean }[]>(currentTest?.answers || [
-        { id: "1", text: "", correct: false },
-        { id: "2", text: "", correct: false }
+        {id: "1", text: "", correct: false},
+        {id: "2", text: "", correct: false}
     ]);
     const [correctAnswerId, setCorrectAnswerId] = useState<string | null>(
         currentTest?.answers?.find((answer: any) => answer.correct)?.id || null
@@ -37,30 +36,42 @@ export function TestModal({
     useEffect(() => {
         setQuestion(currentTest?.question || "");
         setAnswers(currentTest?.answers || [
-            { id: "1", text: "", correct: false },
-            { id: "2", text: "", correct: false }
+            {id: "1", text: "", correct: false},
+            {id: "2", text: "", correct: false}
         ]);
         setCorrectAnswerId(currentTest?.answers?.find((answer: any) => answer.correct)?.id || null);
     }, [currentTest]);
 
     const handleAnswerChange = (id: string, text: string) => {
         const newAnswers = answers.map((answer) =>
-            answer.id === id ? { ...answer, text } : answer
+            answer.id === id ? {...answer, text} : answer
         );
         setAnswers(newAnswers);
     };
 
     const handleCorrectAnswerChange = (id: string) => {
         const newAnswers = answers.map((answer) =>
-            answer.id === id ? { ...answer, correct: true } : { ...answer, correct: false }
+            answer.id === id ? {...answer, correct: true} : {...answer, correct: false}
         );
         setAnswers(newAnswers);
         setCorrectAnswerId(id);
     };
 
+    const handleAddAnswer = () => {
+        setAnswers([...answers, {id: (answers.length + 1).toString(), text: "", correct: false}]);
+    };
+
+    const handleRemoveAnswer = (id: string) => {
+        const newAnswers = answers.filter((answer) => answer.id !== id);
+        setAnswers(newAnswers);
+        if (correctAnswerId === id) {
+            setCorrectAnswerId(null);
+        }
+    };
+
     const handleSubmit = () => {
         if (question && answers.every((a) => a.text)) {
-            onSave({ block_id: blockId, question, answers });
+            onSave({block_id: blockId, question, answers});
             onClose();
         } else {
             alert("Please fill all fields.");
@@ -69,7 +80,7 @@ export function TestModal({
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogTrigger />
+            <AlertDialogTrigger/>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{currentTest ? "Edit Test" : "Create Test"}</AlertDialogTitle>
@@ -93,7 +104,7 @@ export function TestModal({
                     <div>
                         <label>Answers</label>
                         {answers.map((answer) => (
-                            <div key={answer.id}>
+                            <div key={answer.id} className="flex items-center gap-2">
                                 <input
                                     type="radio"
                                     name="correctAnswer"
@@ -104,9 +115,24 @@ export function TestModal({
                                     type="text"
                                     value={answer.text}
                                     onChange={(e) => handleAnswerChange(answer.id, e.target.value)}
+                                    className="input"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveAnswer(answer.id)}
+                                    className="btn btn-danger"
+                                >
+                                    -
+                                </button>
                             </div>
                         ))}
+                        <button
+                            type="button"
+                            onClick={handleAddAnswer}
+                            className="btn btn-primary mt-2"
+                        >
+                            +
+                        </button>
                     </div>
                 </div>
                 <AlertDialogFooter>

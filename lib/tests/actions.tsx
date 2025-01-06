@@ -17,7 +17,7 @@ export async function getBlockById(blockId: number): Promise<Block | null> {
     return data;
 }
 
-export async function createBlock(course_id: number, name: string): Promise<Block | null> {
+export async function createBlock(course_id: number | null, name: string): Promise<Block | null> {
     const {data, error} = await supabase
         .from("Block")
         .insert([{course_id, name}])
@@ -27,7 +27,7 @@ export async function createBlock(course_id: number, name: string): Promise<Bloc
     }
 }
 
-export async function updateBlock(id: number, course_id: number, name: string): Promise<void> {
+export async function updateBlock(id: number, course_id: number | null, name: string): Promise<void> {
     const {error} = await supabase.from("Block").update([{course_id, name}]).eq("id", id);
     if (error) throw new Error(`Error updating block: ${error.message}`);
 }
