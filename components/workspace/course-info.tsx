@@ -15,7 +15,7 @@ const CourseInfo: React.FC<CourseInfo> = ({
   reviews,
 }) => {
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
         {/* Course Details Card */}
         <Card className="h-full">
