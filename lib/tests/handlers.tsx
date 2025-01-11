@@ -136,6 +136,7 @@ export const handleCreateOrEditTest = async (
         setIsTestModalOpen(false);
     } catch (error) {
         console.error("Error saving test:", error);
+        console.log("Data", testData);
     }
 };
 

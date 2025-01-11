@@ -39,10 +39,36 @@ export async function deleteBlock(blockId: number): Promise<void> {
 
 
 export async function getTestById(testId: number): Promise<Test | null> {
-    const {data, error} = await supabase.from("Test").select("*").eq("id", testId).single();
-    if (error) console.error("Error fetching test:", error);
-    return data;
+    const { data, error } = await supabase
+        .from("Test")
+        .select("id, block_id, questions(id, question, answers(id, text, correct))")
+        .eq("id", testId)
+        .single();
+
+    if (error) {
+        console.error("Error fetching test:", error);
+        return null;
+    }
+
+    const transformedData = data
+        ? {
+              id: data.id,
+              blockId: data.block_id,
+              questions: data.questions.map((q: any) => ({
+                  id: q.id.toString(),
+                  question: q.question,
+                  answers: q.answers.map((a: any) => ({
+                      id: a.id.toString(),
+                      text: a.text,
+                      correct: a.correct,
+                  })),
+              })),
+          }
+        : null;
+
+    return transformedData;
 }
+
 
 export async function getTestAnswers(testId: number) {
     try {
@@ -79,56 +105,89 @@ export async function getTestAnswers(testId: number) {
         return null;
     }
 }
-
 export async function createTest(testData: {
     block_id: number;
-    question: string;
-    answers: { text: string; correct: boolean }[];
+    questions: {
+        id: string;
+        question: string;
+        answers: { id: string; text: string; correct: boolean }[];
+    }[];
 }): Promise<Test | null> {
     try {
-        const {data: testDataResponse, error: testError}: SupabaseResponse<Test> = await supabase
+        // Проверка данных
+        if (!testData.block_id) {
+            throw new Error("block_id is required.");
+        }
+        if (!testData.questions || !Array.isArray(testData.questions)) {
+            throw new Error("questions must be a valid array.");
+        }
+
+        for (const question of testData.questions) {
+            if (!question.question) {
+                throw new Error(`Each question must have a non-empty 'question' field.`);
+            }
+            if (!Array.isArray(question.answers) || question.answers.length === 0) {
+                throw new Error(`Each question must have at least one answer.`);
+            }
+            if (!question.answers.some((answer) => answer.correct)) {
+                throw new Error(`Each question must have at least one correct answer.`);
+            }
+        }
+
+        // Добавляем тест
+        const { data: testDataResponse, error: testError }: SupabaseResponse<Test> = await supabase
             .from("Test")
-            .insert({block_id: testData.block_id, question: testData.question})
+            .insert({ block_id: testData.block_id, name: testData.name })
             .select()
             .single();
 
         if (testError) throw new Error(`Error creating test: ${testError.message}`);
-
         const testId = testDataResponse?.id;
 
-        const {data: questionData, error: questionError}: SupabaseResponse<TestQuestion> = await supabase
-            .from("TestQuestions")
-            .insert({test_id: testId, question: testData.question, correct_id: null})
-            .select()
-            .single();
-
-        if (questionError) throw new Error(`Error creating test question: ${questionError.message}`);
-
-        const questionId = questionData?.id;
-
-        const correctAnswerText = testData.answers.find((answer) => answer.correct)?.text;
-
-        const answerPromises = testData.answers.map(async (answer) => {
-            const {data: answerResponse, error: answerError}: SupabaseResponse<TestAnswer> = await supabase
-                .from("TestAnswers")
+        // Добавляем вопросы и ответы
+        for (const question of testData.questions) {
+            const { data: questionData, error: questionError }: SupabaseResponse<TestQuestion> = await supabase
+                .from("TestQuestions")
                 .insert({
-                    question_id: questionId,
-                    answer: answer.text,
+                    test_id: testId,
+                    question: question.question,
+                    correct_id: null, // Временно пустое
                 })
                 .select()
                 .single();
 
-            if (answerError) throw new Error(`Error creating answer: ${answerError.message}`);
-            return answerResponse;
-        });
+            if (questionError) throw new Error(`Error creating test question: ${questionError.message}`);
+            const questionId = questionData?.id;
 
-        const answers = await Promise.all(answerPromises);
-        const correctAnswer = answers.find((answer) => answer?.answer === correctAnswerText);
-        if (correctAnswer) {
-            await supabase
-                .from("TestQuestions")
-                .update({correct_id: correctAnswer.id})
-                .eq("id", questionId);
+            // Вставляем ответы
+            const answersToInsert = question.answers.map((answer) => ({
+                question_id: questionId,
+                answer: answer.text,
+            }));
+
+            const { data: insertedAnswers, error: answersError }: SupabaseResponse<TestAnswer[]> = await supabase
+                .from("TestAnswers")
+                .insert(answersToInsert)
+                .select();
+
+            if (answersError) throw new Error(`Error creating answers: ${answersError.message}`);
+
+            // Определяем правильный ответ
+            const correctAnswer = question.answers.find((answer) => answer.correct);
+            if (correctAnswer) {
+                const correctAnswerData = insertedAnswers?.find(
+                    (insertedAnswer) => insertedAnswer.answer === correctAnswer.text
+                );
+
+                if (correctAnswerData) {
+                    const { error: updateError } = await supabase
+                        .from("TestQuestions")
+                        .update({ correct_id: correctAnswerData.id })
+                        .eq("id", questionId);
+
+                    if (updateError) throw new Error(`Error updating correct_id: ${updateError.message}`);
+                }
+            }
         }
 
         return testDataResponse;
@@ -139,75 +198,105 @@ export async function createTest(testData: {
 }
 
 
-export async function updateTest(testId: number, testData: {
-    block_id: number;
-    question: string;
-    answers: { text: string; correct: boolean }[];
-}): Promise<Test | null> {
+export async function updateTest(
+    testId: number,
+    testData: {
+        block_id: number;
+        questions: {
+            question: string;
+            answers: { text: string; correct: boolean }[];
+        }[];
+    }
+): Promise<Test | null> {
     try {
-        const {data: testDataResponse, error: testError}: SupabaseResponse<Test> = await supabase
+        // Обновляем информацию о тесте
+        const { data: testDataResponse, error: testError } = await supabase
             .from("Test")
-            .update({block_id: testData.block_id, question: testData.question})
+            .update({ block_id: testData.block_id })
             .eq("id", testId)
             .select()
             .single();
 
         if (testError) throw new Error(`Error updating test: ${testError.message}`);
 
-        const {error: deleteError} = await supabase
+        // Удаляем все старые вопросы и ответы, связанные с тестом
+        const { error: deleteQuestionsError } = await supabase
             .from("TestQuestions")
             .delete()
             .eq("test_id", testId);
 
-        if (deleteError) throw new Error(`Error deleting test questions: ${deleteError.message}`);
+        if (deleteQuestionsError) {
+            throw new Error(`Error deleting old questions: ${deleteQuestionsError.message}`);
+        }
 
-        const {data: questionData, error: questionError}: SupabaseResponse<TestQuestion> = await supabase
-            .from("TestQuestions")
-            .insert({
-                test_id: testId,
-                question: testData.question,
-                correct_id: null,
-            })
-            .select()
-            .single();
+        const { error: deleteAnswersError } = await supabase
+            .from("TestAnswers")
+            .delete()
+            .in(
+                "question_id",
+                supabase
+                    .from("TestQuestions")
+                    .select("id")
+                    .eq("test_id", testId)
+            );
 
-        if (questionError) throw new Error(`Error creating test question: ${questionError.message}`);
+        if (deleteAnswersError) {
+            throw new Error(`Error deleting old answers: ${deleteAnswersError.message}`);
+        }
 
-        const questionId = questionData.id;
-
-        const correctAnswerText = testData.answers.find((answer) => answer.correct)?.text;
-
-        const answerInsertPromises = testData.answers.map(async (answer) => {
-            const {data: answerResponse, error: answerError}: SupabaseResponse<TestAnswer> = await supabase
-                .from("TestAnswers")
+        // Добавляем новые вопросы и ответы
+        for (const question of testData.questions) {
+            const { data: questionData, error: questionError } = await supabase
+                .from("TestQuestions")
                 .insert({
-                    question_id: questionId,
-                    answer: answer.text,
+                    test_id: testId,
+                    question: question.question,
+                    correct_id: null,
                 })
                 .select()
                 .single();
 
-            if (answerError) throw new Error(`Error inserting answer: ${answerError.message}`);
-            return answerResponse;
-        });
+            if (questionError) {
+                throw new Error(`Error creating question: ${questionError.message}`);
+            }
 
-        const answers = await Promise.all(answerInsertPromises);
+            const questionId = questionData?.id;
+            const correctAnswerText = question.answers.find((a) => a.correct)?.text;
 
-        const correctAnswer = answers.find((answer) => answer?.answer === correctAnswerText);
+            const answers = await Promise.all(
+                question.answers.map(async (answer) => {
+                    const { data: answerData, error: answerError } = await supabase
+                        .from("TestAnswers")
+                        .insert({
+                            question_id: questionId,
+                            answer: answer.text,
+                        })
+                        .select()
+                        .single();
 
-        if (correctAnswer) {
-            await supabase
-                .from("TestQuestions")
-                .update({correct_id: correctAnswer.id})
-                .eq("id", questionId);
+                    if (answerError) {
+                        throw new Error(`Error creating answer: ${answerError.message}`);
+                    }
+                    return answerData;
+                })
+            );
+
+            const correctAnswer = answers.find((a) => a.answer === correctAnswerText);
+            if (correctAnswer) {
+                await supabase
+                    .from("TestQuestions")
+                    .update({ correct_id: correctAnswer.id })
+                    .eq("id", questionId);
+            }
         }
 
         return testDataResponse;
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error updating test:", error.message);
-        throw new Error("Internal server error: " + error.message);
+        throw error;
     }
 }
+
 
 
 export async function deleteTest(testId: number): Promise<void> {

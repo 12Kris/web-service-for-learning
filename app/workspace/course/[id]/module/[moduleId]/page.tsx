@@ -43,7 +43,7 @@ export default function ModulePage() {
             <h3>Tests</h3>
             <div>
                 {tests.map((test) => (
-                    <Link key={test.id} href={`/test/${test.id}`}>
+                    <Link key={test.id} href={`${moduleId}/test/${test.id}`}>
                         <Card>{test.question}</Card>
                     </Link>
                 ))}

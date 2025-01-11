@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,135 +10,258 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { getTestById } from "@/lib/tests/actions";
 
 export function TestModal({
-                              isOpen,
-                              onClose,
-                              onSave,
-                              currentTest,
-                              blockId,
-                          }: {
+    isOpen,
+    onClose,
+    onSave,
+    testId,
+    blockId,
+}: {
     isOpen: boolean;
     onClose: () => void;
     onSave: (testData: any) => void;
-    currentTest: any;
+    testId: number;
     blockId: number | null;
 }) {
-    const [question, setQuestion] = useState<string>(currentTest?.question || "");
-    const [answers, setAnswers] = useState<{ id: string; text: string; correct: boolean }[]>(currentTest?.answers || [
-        {id: "1", text: "", correct: false},
-        {id: "2", text: "", correct: false}
-    ]);
-    const [correctAnswerId, setCorrectAnswerId] = useState<string | null>(
-        currentTest?.answers?.find((answer: any) => answer.correct)?.id || null
-    );
+    const [questions, setQuestions] = useState<
+        {
+            id: string;
+            question: string;
+            answers: { id: string; text: string; correct: boolean }[];
+        }[]
+    >([]);
+
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setQuestion(currentTest?.question || "");
-        setAnswers(currentTest?.answers || [
-            {id: "1", text: "", correct: false},
-            {id: "2", text: "", correct: false}
-        ]);
-        setCorrectAnswerId(currentTest?.answers?.find((answer: any) => answer.correct)?.id || null);
-    }, [currentTest]);
+        const fetchTest = async () => {
+            setIsLoading(true);
+            const currentTest = await getTestById(testId);
+            if (currentTest?.questions) {
+                setQuestions(currentTest.questions);
+            } else {
+                setQuestions([
+                    {
+                        id: "1",
+                        question: "",
+                        answers: [
+                            { id: "1", text: "", correct: false },
+                            { id: "2", text: "", correct: false },
+                        ],
+                    },
+                ]);
+            }
+            setIsLoading(false);
+        };
 
-    const handleAnswerChange = (id: string, text: string) => {
-        const newAnswers = answers.map((answer) =>
-            answer.id === id ? {...answer, text} : answer
-        );
-        setAnswers(newAnswers);
-    };
-
-    const handleCorrectAnswerChange = (id: string) => {
-        const newAnswers = answers.map((answer) =>
-            answer.id === id ? {...answer, correct: true} : {...answer, correct: false}
-        );
-        setAnswers(newAnswers);
-        setCorrectAnswerId(id);
-    };
-
-    const handleAddAnswer = () => {
-        setAnswers([...answers, {id: (answers.length + 1).toString(), text: "", correct: false}]);
-    };
-
-    const handleRemoveAnswer = (id: string) => {
-        const newAnswers = answers.filter((answer) => answer.id !== id);
-        setAnswers(newAnswers);
-        if (correctAnswerId === id) {
-            setCorrectAnswerId(null);
+        if (isOpen) {
+            fetchTest();
         }
+    }, [isOpen, testId]);
+
+    const handleQuestionChange = (id: string, text: string) => {
+        setQuestions((prev) =>
+            prev.map((q) => (q.id === id ? { ...q, question: text } : q))
+        );
+    };
+
+    const handleAnswerChange = (questionId: string, answerId: string, text: string) => {
+        setQuestions((prev) =>
+            prev.map((q) =>
+                q.id === questionId
+                    ? {
+                          ...q,
+                          answers: q.answers.map((a) =>
+                              a.id === answerId ? { ...a, text } : a
+                          ),
+                      }
+                    : q
+            )
+        );
+    };
+
+    const handleCorrectAnswerChange = (questionId: string, answerId: string) => {
+        setQuestions((prev) =>
+            prev.map((q) =>
+                q.id === questionId
+                    ? {
+                          ...q,
+                          answers: q.answers.map((a) =>
+                              a.id === answerId
+                                  ? { ...a, correct: true }
+                                  : { ...a, correct: false }
+                          ),
+                      }
+                    : q
+            )
+        );
+    };
+
+    const handleAddAnswer = (questionId: string) => {
+        setQuestions((prev) =>
+            prev.map((q) =>
+                q.id === questionId
+                    ? {
+                          ...q,
+                          answers: [
+                              ...q.answers,
+                              { id: (q.answers.length + 1).toString(), text: "", correct: false },
+                          ],
+                      }
+                    : q
+            )
+        );
+    };
+
+    const handleRemoveAnswer = (questionId: string, answerId: string) => {
+        setQuestions((prev) =>
+            prev.map((q) =>
+                q.id === questionId
+                    ? {
+                          ...q,
+                          answers: q.answers.filter((a) => a.id !== answerId),
+                      }
+                    : q
+            )
+        );
+    };
+
+    const handleAddQuestion = () => {
+        setQuestions((prev) => [
+            ...prev,
+            {
+                id: (prev.length + 1).toString(),
+                question: "",
+                answers: [
+                    { id: "1", text: "", correct: false },
+                    { id: "2", text: "", correct: false },
+                ],
+            },
+        ]);
+    };
+
+    const handleRemoveQuestion = (id: string) => {
+        setQuestions((prev) => prev.filter((q) => q.id !== id));
     };
 
     const handleSubmit = () => {
-        if (question && answers.every((a) => a.text)) {
-            onSave({block_id: blockId, question, answers});
+        if (
+            questions.every(
+                (q) =>
+                    q.question &&
+                    q.answers.every((a) => a.text) &&
+                    q.answers.some((a) => a.correct)
+            )
+        ) {
+            onSave({ block_id: blockId, questions });
             onClose();
         } else {
-            alert("Please fill all fields.");
+            alert("Please fill in all questions and answers correctly.");
         }
     };
 
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogTrigger/>
+            <AlertDialogTrigger />
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>{currentTest ? "Edit Test" : "Create Test"}</AlertDialogTitle>
+                    <AlertDialogTitle>
+                        {questions.length > 0 ? "Edit Test" : "Create Test"}
+                    </AlertDialogTitle>
                     <AlertDialogDescription>
-                        {currentTest
-                            ? "Edit the test question and answers"
-                            : "Create a new test question"}
+                        {questions.length > 0
+                            ? "Edit the test questions and answers"
+                            : "Create a new test with multiple questions"}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex flex-col gap-4">
-                    <div>
-                        <label className="font-medium">Question</label>
-                        <input
-                            type="text"
-                            value={question}
-                            onChange={(e) => setQuestion(e.target.value)}
-                            placeholder="Enter the question"
-                            className="input"
-                        />
-                    </div>
-                    <div>
-                        <label>Answers</label>
-                        {answers.map((answer) => (
-                            <div key={answer.id} className="flex items-center gap-2">
-                                <input
-                                    type="radio"
-                                    name="correctAnswer"
-                                    checked={correctAnswerId === answer.id}
-                                    onChange={() => handleCorrectAnswerChange(answer.id)}
-                                />
+                    {questions.map((q) => (
+                        <div key={q.id} className="border p-4">
+                            <div>
+                                <label className="font-medium">Question</label>
                                 <input
                                     type="text"
-                                    value={answer.text}
-                                    onChange={(e) => handleAnswerChange(answer.id, e.target.value)}
+                                    value={q.question}
+                                    onChange={(e) =>
+                                        handleQuestionChange(q.id, e.target.value)
+                                    }
+                                    placeholder="Enter the question"
                                     className="input"
                                 />
+                            </div>
+                            <div>
+                                <label>Answers</label>
+                                {q.answers.map((answer) => (
+                                    <div
+                                        key={answer.id}
+                                        className="flex items-center gap-2"
+                                    >
+                                        <input
+                                            type="radio"
+                                            name={`correctAnswer-${q.id}`}
+                                            checked={answer.correct}
+                                            onChange={() =>
+                                                handleCorrectAnswerChange(q.id, answer.id)
+                                            }
+                                        />
+                                        <input
+                                            type="text"
+                                            value={answer.text}
+                                            onChange={(e) =>
+                                                handleAnswerChange(
+                                                    q.id,
+                                                    answer.id,
+                                                    e.target.value
+                                                )
+                                            }
+                                            className="input"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleRemoveAnswer(q.id, answer.id)
+                                            }
+                                            className="btn btn-danger"
+                                        >
+                                            -
+                                        </button>
+                                    </div>
+                                ))}
                                 <button
                                     type="button"
-                                    onClick={() => handleRemoveAnswer(answer.id)}
-                                    className="btn btn-danger"
+                                    onClick={() => handleAddAnswer(q.id)}
+                                    className="btn btn-primary mt-2"
                                 >
-                                    -
+                                    Add Answer
                                 </button>
                             </div>
-                        ))}
-                        <button
-                            type="button"
-                            onClick={handleAddAnswer}
-                            className="btn btn-primary mt-2"
-                        >
-                            +
-                        </button>
-                    </div>
+                            <button
+                                type="button"
+                                onClick={() => handleRemoveQuestion(q.id)}
+                                className="btn btn-danger mt-2"
+                            >
+                                Remove Question
+                            </button>
+                        </div>
+                    ))}
+                    <button
+                        type="button"
+                        onClick={handleAddQuestion}
+                        className="btn btn-primary"
+                    >
+                        Add Question
+                    </button>
                 </div>
                 <AlertDialogFooter>
                     <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
                     <AlertDialogAction onClick={handleSubmit}>
-                        {currentTest ? "Save" : "Create"}
+                        {questions.length > 0 ? "Save" : "Create"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
