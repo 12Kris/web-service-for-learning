@@ -14,10 +14,28 @@ import {
   CardContent,
 } from "@/components/ui/card";
 
+import { CourseDetails, Module, WhatWillLearn } from "@/lib/definitions";
+
+// interface Module {
+//   id: number;
+//   title: string;
+//   description: string;
+// }
+
 export default function CreateCourseForm() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
+  const [course_details, setCourseDetails] = useState<CourseDetails[]>([
+    { id: 1, course_detail: "" },
+  ]);
+  const [curriculum, setcurriculum] = useState<Module[]>([
+    { id: 1, title: "", description: "" },
+  ]);
+  const [what_w_learn, setWhatWillLearn] = useState<WhatWillLearn[]>([
+    { id: 1, description: "" },
+  ]
+  );
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -26,7 +44,7 @@ export default function CreateCourseForm() {
     setError(null);
 
     try {
-      const newCourse = await createCourse({ name, description, type });
+      const newCourse = await createCourse({ name, description, type, curriculum, what_w_learn, course_details });
       if (newCourse) {
         router.push(`/workspace/course/${newCourse.id}`);
       }
@@ -35,8 +53,50 @@ export default function CreateCourseForm() {
     }
   };
 
+  const addCourseDetail = () => {
+    setCourseDetails([...course_details, { id: course_details.length + 1, course_detail: "" }]);
+  };
+
+  const updateaddCourseDetail = (index: number, field: keyof CourseDetails, value: string) => {
+    const updatedcoursedetail = course_details.map((detail, i) => {
+      if (i === index) {
+        return { ...detail, [field]: value };
+      }
+      return detail;
+    });
+    setCourseDetails(updatedcoursedetail);
+  };
+
+  const addModule = () => {
+    setcurriculum([...curriculum, { id: curriculum.length + 1, title: "", description: "" }]);
+  };
+
+  const updateModule = (index: number, field: keyof Module, value: string) => {
+    const updatedcurriculum = curriculum.map((module, i) => {
+      if (i === index) {
+        return { ...module, [field]: value };
+      }
+      return module;
+    });
+    setcurriculum(updatedcurriculum);
+  };
+
+  const addWhatWillStudentLearn = () => {
+    setWhatWillLearn([...what_w_learn, { id: what_w_learn.length + 1, description: "" }]);
+  };
+
+  const updateWhatWillLearn = (index: number, field: keyof WhatWillLearn, value: string) => {
+    const updatedwhat_will_learn = what_w_learn.map((what_will_learn, i) => {
+      if (i === index) {
+        return { ...what_will_learn, [field]: value };
+      }
+      return what_will_learn;
+    });
+    setWhatWillLearn(updatedwhat_will_learn);
+  };
+
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Create New Course</CardTitle>
       </CardHeader>
@@ -69,6 +129,58 @@ export default function CreateCourseForm() {
               onChange={(e) => setType(e.target.value)}
             />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="description">Course details</Label>
+            {course_details.map((el, index) => (
+              <div key={el.id} className="space-y-2">
+                <Textarea
+                  placeholder={`Module ${el.id} Description`}
+                  value={el.course_detail}
+                  onChange={(e) => updateaddCourseDetail(index, "course_detail", e.target.value)}
+                />
+              </div>
+            ))}
+            <Button type="button" onClick={addCourseDetail} variant="outline">
+              Add
+            </Button>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="description">What student will learn</Label>
+            {what_w_learn.map((lesson, index) => (
+              <div key={lesson.id} className="space-y-2">
+                <Textarea
+                  placeholder={`Module ${lesson.id} Description`}
+                  value={lesson.description}
+                  onChange={(e) => updateWhatWillLearn(index, "description", e.target.value)}
+                />
+              </div>
+            ))}
+            <Button type="button" onClick={addWhatWillStudentLearn} variant="outline">
+              Add
+            </Button>
+
+          </div>
+         
+          <div className="space-y-4">
+            <Label>Curriculum curriculum</Label>
+            {curriculum.map((module, index) => (
+              <div key={module.id} className="space-y-2">
+                <Input
+                  placeholder={`Module ${module.id} Title`}
+                  value={module.title}
+                  onChange={(e) => updateModule(index, "title", e.target.value)}
+                />
+                <Textarea
+                  placeholder={`Module ${module.id} Description`}
+                  value={module.description}
+                  onChange={(e) => updateModule(index, "description", e.target.value)}
+                />
+              </div>
+            ))}
+            <Button type="button" onClick={addModule} variant="outline">
+              Add
+            </Button>
+          </div>
           {error && <p className="text-red-500">{error}</p>}
           <Button type="submit" className="w-full">
             Create Course
@@ -78,3 +190,4 @@ export default function CreateCourseForm() {
     </Card>
   );
 }
+

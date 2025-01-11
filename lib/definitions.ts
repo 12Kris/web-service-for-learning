@@ -23,6 +23,11 @@ export interface Module {
   description: string;
 }
 
+export interface WhatWillLearn {
+  id: number;
+  description: string;
+} 
+
 
 export interface Course {
   id: number;
@@ -36,8 +41,8 @@ export interface Course {
   lessons?: number;
   student_count?: number;
   creator?: User;
-  course_details?: string[];
-  what_w_learn?: string[];
+  course_details?: CourseDetails[];
+  what_w_learn?: WhatWillLearn[];
   curriculum?: Module[];
 }
 
@@ -50,6 +55,11 @@ export interface CourseWithStudents {
   creator_id?: string;
   last_completion_date?: string;
   student_count: number;
+}
+
+export interface CourseDetails {
+  id: number;
+  course_detail: string;
 }
 
 export interface UserCourse {

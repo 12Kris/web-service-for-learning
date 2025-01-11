@@ -4,11 +4,11 @@ import Header from "@/components/workspace/courses/header";
 import { useEffect, useState } from "react";
 import CourseDescriptionJumpotron from "@/components/workspace/course-description-jumbotron";
 
-// import { getUser } from "@/lib/auth/actions";
+
 import { use } from "react";
 import { Course } from "@/lib/definitions";
 
-import { getCourseById } from "@/lib/courses/actions"; // isCourseAddedToUser
+import { getCourseById } from "@/lib/courses/actions";
 
 export default function RootLayout({
   children,
@@ -18,14 +18,7 @@ export default function RootLayout({
   params: Promise<{ id: string }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
-  // const [isCourseAdded, setIsCourseAdded] = useState(false);
   const { id } = use(params);
-
-  //   const [isCreator, setIsCreator] = useState(false);
-
-  function onEnrollNow() {
-    console.log("Enroll now clicked");
-  }
 
   function onLearnMore() {
     console.log("Learn more clicked");
@@ -39,13 +32,7 @@ export default function RootLayout({
         const courseData = await getCourseById(id);
         setCourse(courseData);
 
-        // const user = await getUser();
-        // if (user && courseData) {
-        //   setIsCreator(user.id.toString() === courseData.creator_id.toString());
-        // }
 
-        // const result = await isCourseAddedToUser(id);
-        // setIsCourseAdded(result);
       } catch (err) {
         console.error(err);
       }
@@ -59,9 +46,8 @@ export default function RootLayout({
         title={course?.name}
         description={course?.description}
         type={course?.type}
-        onEnrollNow={onEnrollNow}
+        id={id}
         onLearnMore={onLearnMore}
-        // isCourseAdded={isCourseAdded}
       />
       <Header />
       <main className="container mx-auto mt-8 px-4">{children}</main>
