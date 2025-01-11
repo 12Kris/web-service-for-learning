@@ -25,8 +25,7 @@ export default function RootLayout({
 
   async function onEnrollNow() {
     console.log("Enroll now clicked");
-    const res = await addCourseToUser(id);
-    console.log(res)
+    await addCourseToUser(id);
   }
 
   function onLearnMore() {

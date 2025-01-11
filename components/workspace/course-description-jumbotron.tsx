@@ -30,7 +30,6 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
             if (courseId) {
                 try {
                     const registered = await isCourseAddedToUser(courseId);
-                    console.log("registered", registered);
                     setIsRegistered(registered);
                 } catch (error) {
                     console.error("Error checking user registration:", error);

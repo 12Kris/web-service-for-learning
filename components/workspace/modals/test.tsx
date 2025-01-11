@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,15 +10,15 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { getTestById } from "@/lib/tests/actions";
+import {getTestById} from "@/lib/tests/actions";
 
 export function TestModal({
-    isOpen,
-    onClose,
-    onSave,
-    testId,
-    blockId,
-}: {
+                              isOpen,
+                              onClose,
+                              onSave,
+                              testId,
+                              blockId,
+                          }: {
     isOpen: boolean;
     onClose: () => void;
     onSave: (testData: any) => void;
@@ -47,8 +47,8 @@ export function TestModal({
                         id: "1",
                         question: "",
                         answers: [
-                            { id: "1", text: "", correct: false },
-                            { id: "2", text: "", correct: false },
+                            {id: "1", text: "", correct: false},
+                            {id: "2", text: "", correct: false},
                         ],
                     },
                 ]);
@@ -63,7 +63,7 @@ export function TestModal({
 
     const handleQuestionChange = (id: string, text: string) => {
         setQuestions((prev) =>
-            prev.map((q) => (q.id === id ? { ...q, question: text } : q))
+            prev.map((q) => (q.id === id ? {...q, question: text} : q))
         );
     };
 
@@ -72,11 +72,11 @@ export function TestModal({
             prev.map((q) =>
                 q.id === questionId
                     ? {
-                          ...q,
-                          answers: q.answers.map((a) =>
-                              a.id === answerId ? { ...a, text } : a
-                          ),
-                      }
+                        ...q,
+                        answers: q.answers.map((a) =>
+                            a.id === answerId ? {...a, text} : a
+                        ),
+                    }
                     : q
             )
         );
@@ -87,13 +87,13 @@ export function TestModal({
             prev.map((q) =>
                 q.id === questionId
                     ? {
-                          ...q,
-                          answers: q.answers.map((a) =>
-                              a.id === answerId
-                                  ? { ...a, correct: true }
-                                  : { ...a, correct: false }
-                          ),
-                      }
+                        ...q,
+                        answers: q.answers.map((a) =>
+                            a.id === answerId
+                                ? {...a, correct: true}
+                                : {...a, correct: false}
+                        ),
+                    }
                     : q
             )
         );
@@ -104,12 +104,12 @@ export function TestModal({
             prev.map((q) =>
                 q.id === questionId
                     ? {
-                          ...q,
-                          answers: [
-                              ...q.answers,
-                              { id: (q.answers.length + 1).toString(), text: "", correct: false },
-                          ],
-                      }
+                        ...q,
+                        answers: [
+                            ...q.answers,
+                            {id: (q.answers.length + 1).toString(), text: "", correct: false},
+                        ],
+                    }
                     : q
             )
         );
@@ -120,9 +120,9 @@ export function TestModal({
             prev.map((q) =>
                 q.id === questionId
                     ? {
-                          ...q,
-                          answers: q.answers.filter((a) => a.id !== answerId),
-                      }
+                        ...q,
+                        answers: q.answers.filter((a) => a.id !== answerId),
+                    }
                     : q
             )
         );
@@ -135,8 +135,8 @@ export function TestModal({
                 id: (prev.length + 1).toString(),
                 question: "",
                 answers: [
-                    { id: "1", text: "", correct: false },
-                    { id: "2", text: "", correct: false },
+                    {id: "1", text: "", correct: false},
+                    {id: "2", text: "", correct: false},
                 ],
             },
         ]);
@@ -155,7 +155,7 @@ export function TestModal({
                     q.answers.some((a) => a.correct)
             )
         ) {
-            onSave({ block_id: blockId, questions });
+            onSave({block_id: blockId, questions});
             onClose();
         } else {
             alert("Please fill in all questions and answers correctly.");
@@ -168,7 +168,7 @@ export function TestModal({
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogTrigger />
+            <AlertDialogTrigger/>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>

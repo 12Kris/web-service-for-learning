@@ -95,31 +95,6 @@ export async function getUserCourses() {
     }
 }
 
-// export async function addCourseToUser(courseId: string, userId: string) {
-//   try {
-//     const user = await getUser();
-//     console.log(userId);
-//
-//     if (!user) {
-//       throw new Error("User not authenticated");
-//     }
-//     const { data, error } = await supabase
-//       .from("user_courses")
-//       .insert([{ user_id: user.id, course_id: courseId }]);
-//
-//     if (error) {
-//       throw new Error(`Failed to add course: ${error.message}`);
-//     }
-//
-//     return data;
-//   } catch (error) {
-//     console.error("Error adding course to user:", error);
-//     throw new Error(
-//       (error as Error).message || "An error occurred while adding the course"
-//     );
-//   }
-// }
-
 export async function addCourseToUser(courseId: number): Promise<{ success: boolean; message: string }> {
     try {
         const user = await getUser();

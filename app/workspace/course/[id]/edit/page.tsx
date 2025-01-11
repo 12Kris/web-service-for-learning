@@ -252,7 +252,7 @@ export default function EditCoursePage({
         <TestModal
             isOpen={modals.test}
             onClose={() => handleCloseTestModal(setModals, setCurrentTest)}
-            testId={currentTest.id}
+            testId={currentTest?.id ?? ''}
             blockId={currentBlockId}
             onSave={(testData) => {
               handleCreateOrEditTest(testData, currentTest, setModals, setTests);
@@ -261,4 +261,3 @@ export default function EditCoursePage({
       </div>
   );
 }
-// TODO: надо правильно вытягивать для edit вопросы с бд(возможно не передавать куррентТест, а подтягивать вопросы в модалке). ДОбавить поле name в Test, добавить функ удаление
