@@ -227,37 +227,76 @@ export async function getCourses(): Promise<Course[]> {
 }
 
 export async function createCourse(
-    courseData: Omit<Course, "id" | "creator_id" | "creator">
-): Promise<Course | null> {
-    try {
-        const user = await getUser();
-
-        if (!user) {
-            throw new Error("User not authenticated");
+        courseData: Omit<Course, "id" | "creator_id" | "creator">
+    ): Promise<Course | null> {
+        console.log(courseData);
+        try {
+            const user = await getUser();
+    
+            if (!user) {
+                throw new Error("User not authenticated");
+            }
+    
+            const {data, error} = await supabase
+                .from("Course")
+                .insert({
+                    ...courseData,
+                    creator_id: user.id,
+                    // curriculum: courseData.modules,
+                })
+                .select()
+                .single();
+    
+            if (error) {
+                console.error("Error creating course:", error);
+                throw new Error(`Failed to create course: ${error.message}`);
+            }
+    
+            return data;
+        } catch (error) {
+            console.error("Error in createCourse:", error);
+            throw new Error(
+                (error as Error).message || "An error occurred while creating the course"
+            );
         }
-
-        const {data, error} = await supabase
-            .from("Course")
-            .insert({
-                ...courseData,
-                creator_id: user.id,
-            })
-            .select()
-            .single();
-
-        if (error) {
-            console.error("Error creating course:", error);
-            throw new Error(`Failed to create course: ${error.message}`);
-        }
-
-        return data;
-    } catch (error) {
-        console.error("Error in createCourse:", error);
-        throw new Error(
-            (error as Error).message || "An error occurred while creating the course"
-        );
     }
-}
+
+
+
+
+// export async function createCourse(
+//     courseData: Omit<Course, "id" | "creator_id" | "creator"> & {modules: Module[]}
+// ): Promise<Course | null> {
+//     try {
+//         const user = await getUser();
+
+//         if (!user) {
+//             throw new Error("User not authenticated");
+//         }
+
+//         const {data, error} = await supabase
+//             .from("Course")
+//             .insert({
+//                 ...courseData,
+//                 creator_id: user.id,
+//                 curriculum: courseData.modules,
+//             })
+//             .select()
+//             .single();
+
+//         if (error) {
+//             console.error("Error creating course:", error);
+//             throw new Error(`Failed to create course: ${error.message}`);
+//         }
+
+//         return data;
+//     } catch (error) {
+//         console.error("Error in createCourse:", error);
+//         throw new Error(
+//             (error as Error).message || "An error occurred while creating the course"
+//         );
+//     }
+// }
 
 export async function deleteCourse(
     courseId: string

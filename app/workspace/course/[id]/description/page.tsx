@@ -6,9 +6,7 @@ import CourseCurriculum from "@/components/workspace/course-curriculum";
 import MeetTutor from "@/components/workspace/meet-tutor";
 
 import {
-  addCourseToUser,
   getCourseById,
-  isCourseAddedToUser,
 } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/auth/actions";
@@ -17,7 +15,7 @@ import Link from "next/link";
 import { Course } from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
 
-import { Trash2, Edit, UserPlus, UserCheck, BookCheck } from "lucide-react";
+import { Trash2, Edit, BookCheck } from "lucide-react";
 
 import {
   AlertDialog,
@@ -37,7 +35,6 @@ export default function CourseDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
-  const [isCourseAdded, setIsCourseAdded] = useState(false);
   const { id } = use(params);
 
   const [isCreator, setIsCreator] = useState(false);
@@ -55,8 +52,7 @@ export default function CourseDetailPage({
           setIsCreator(user.id.toString() === courseData.creator_id.toString());
         }
 
-        const result = await isCourseAddedToUser(id);
-        setIsCourseAdded(result);
+
       } catch (err) {
         console.error(err);
       }
@@ -64,12 +60,6 @@ export default function CourseDetailPage({
 
     fetchData();
   }, [id]);
-
-  async function handleAddCourse() {
-    if (!id) return;
-    await addCourseToUser(id);
-    setIsCourseAdded(true);
-  }
 
   async function handleDeleteCourse() {
     if (!id) return;
@@ -101,10 +91,10 @@ export default function CourseDetailPage({
       <div className="flex flex-col md:flex-row w-full gap-2">
         <Button
           className="w-full"
-          onClick={handleAddCourse}
-          disabled={isCourseAdded}
+          // onClick={handleAddCourse}
+          disabled={true}
         >
-          {isCourseAdded ? (
+          {/* {isCourseAdded ? (
             <>
               <UserCheck /> Subscribed
             </>
@@ -112,7 +102,7 @@ export default function CourseDetailPage({
             <>
               <UserPlus /> Subscribe
             </>
-          )}
+          )} */}
         </Button>
 
         <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>

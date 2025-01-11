@@ -1,9 +1,10 @@
 import { Check, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CourseDetails, WhatWillLearn } from "@/lib/definitions";
 
 interface CourseInfo {
-  course_details: string[];
-  what_you_learn: string[];
+  course_details: CourseDetails[];
+  what_you_learn: WhatWillLearn[];
   course_rating: number;
   reviews: number;
 }
@@ -26,7 +27,7 @@ const CourseInfo: React.FC<CourseInfo> = ({
             {course_details.length > 0 ? course_details.map((detail, index) => (
               <div key={index} className="flex items-center gap-2">
                 <Check className="h-5 w-5 flex-shrink-0" />
-                <span>{detail}</span>
+                <span>{detail.course_detail}</span>
               </div>
               ))
               : <div className="col-span-2 text-center text-gray-500">
@@ -47,7 +48,7 @@ const CourseInfo: React.FC<CourseInfo> = ({
             <ul className="list-inside space-y-3">
               {what_you_learn.length > 0 ? what_you_learn.map((item, index) => (
                 <li key={index} className="text-sm">
-                  • {item}
+                  • {item.description}
                 </li>
               ))
               : <div className="col-span-2 text-center text-gray-500">
