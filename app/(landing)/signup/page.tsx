@@ -27,7 +27,6 @@ export default function RegisterPage() {
 
     try {
       await registerUser(name, email, password, confirmPassword);
-      console.log("Registration successful!");
     } catch (err) {
       setError((err as Error).message);
       console.error("Registration failed:", err);
