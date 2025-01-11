@@ -99,18 +99,18 @@ export async function getUserCourses() {
 //   try {
 //     const user = await getUser();
 //     console.log(userId);
-
+//
 //     if (!user) {
 //       throw new Error("User not authenticated");
 //     }
 //     const { data, error } = await supabase
 //       .from("user_courses")
 //       .insert([{ user_id: user.id, course_id: courseId }]);
-
+//
 //     if (error) {
 //       throw new Error(`Failed to add course: ${error.message}`);
 //     }
-
+//
 //     return data;
 //   } catch (error) {
 //     console.error("Error adding course to user:", error);
@@ -128,7 +128,6 @@ export async function addCourseToUser(courseId: number): Promise<{ success: bool
             throw new Error("User not authenticated");
         }
 
-        // Check if the course exists
         const {data: course, error: courseError} = await supabase
             .from("Course")
             .select("id")
@@ -139,7 +138,6 @@ export async function addCourseToUser(courseId: number): Promise<{ success: bool
             throw new Error("Course not found");
         }
 
-        // Check if the user has already added this course
         const {data: existingUserCourse} = await supabase
             .from("UserCourse")
             .select("*")
@@ -151,7 +149,6 @@ export async function addCourseToUser(courseId: number): Promise<{ success: bool
             return {success: false, message: "You have already added this course"};
         }
 
-        // Add the course to the user
         const {error: insertError} = await supabase
             .from("UserCourse")
             .insert({user_id: user.id, course_id: courseId});

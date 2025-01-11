@@ -8,7 +8,7 @@ import CourseDescriptionJumpotron from "@/components/workspace/course-descriptio
 import { use } from "react";
 import { Course } from "@/lib/definitions";
 
-import { getCourseById } from "@/lib/courses/actions"; // isCourseAddedToUser
+import {addCourseToUser, getCourseById} from "@/lib/courses/actions"; // isCourseAddedToUser
 
 export default function RootLayout({
   children,
@@ -23,8 +23,10 @@ export default function RootLayout({
 
   //   const [isCreator, setIsCreator] = useState(false);
 
-  function onEnrollNow() {
+  async function onEnrollNow() {
     console.log("Enroll now clicked");
+    const res = await addCourseToUser(id);
+    console.log(res)
   }
 
   function onLearnMore() {

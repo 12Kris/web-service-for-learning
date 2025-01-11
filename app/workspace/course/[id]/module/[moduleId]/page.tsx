@@ -1,14 +1,14 @@
 "use client";
 
-import { useParams } from 'next/navigation';
+import {useParams} from 'next/navigation';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
+import {useEffect, useState} from 'react';
+import {Card} from '@/components/ui/card';
 import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions";
 
 export default function ModulePage() {
     const params = useParams();
-    const courseId = params.courseId;
+    const courseId = params.id;
     const moduleId = params.moduleId;
 
     const [materials, setMaterials] = useState([]);
@@ -29,6 +29,7 @@ export default function ModulePage() {
 
     return (
         <div>
+
             <h1>Course ID: {courseId}</h1>
             <h2>Module ID: {moduleId}</h2>
 
@@ -43,7 +44,7 @@ export default function ModulePage() {
             <div>
                 {tests.map((test) => (
                     <Link key={test.id} href={`/test/${test.id}`}>
-                        <Card>{test.title}</Card>
+                        <Card>{test.question}</Card>
                     </Link>
                 ))}
             </div>
