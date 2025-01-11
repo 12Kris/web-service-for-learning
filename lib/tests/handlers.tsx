@@ -35,7 +35,7 @@ export const handleCreateOrEditBlock = async (
     id: number | null,
     setIsModalOpen: (open: boolean) => void,
     setBlocks: (blocks: any[]) => void,
-    getBlocksByCourseId: (id: number | null) => Promise<any[]>
+    getModulesByCourseId: (id: number | null) => Promise<any[]>
 ) => {
     if (!blockName) return;
 
@@ -45,7 +45,7 @@ export const handleCreateOrEditBlock = async (
         await createBlock(id, blockName);
     }
 
-    setBlocks(await getBlocksByCourseId(id));
+    setBlocks(await getModulesByCourseId(id));
     setIsModalOpen(false);
 };
 
@@ -53,10 +53,10 @@ export const handleDeleteBlock = async (
     blockId: number,
     setBlocks: (blocks: any[]) => void,
     id: string,
-    getBlocksByCourseId: (id: string) => Promise<any[]>
+    getModulesByCourseId: (id: string) => Promise<any[]>
 ) => {
     await deleteBlock(blockId);
-    setBlocks(await getBlocksByCourseId(id));
+    setBlocks(await getModulesByCourseId(id));
 };
 
 export const handleOpenMaterialModal = (

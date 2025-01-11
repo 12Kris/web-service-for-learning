@@ -1,6 +1,6 @@
 "use client";
 
-import { CourseCard } from "@/components/course-card/course-card";
+import {CourseCard} from "@/components/course-card/course-card";
 
 export default function FlashcardPage() {
     return (

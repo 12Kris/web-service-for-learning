@@ -7,7 +7,7 @@ import MeetTutor from "@/components/workspace/meet-tutor";
 
 import {
   addCourseToUser,
-  getCourseById,
+  getCourseById, getModulesByCourseId,
   isCourseAddedToUser,
 } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,7 @@ export default function CourseDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
+  const [modules, setModules] = useState<any[]>([])
   const [isCourseAdded, setIsCourseAdded] = useState(false);
   const { id } = use(params);
 
@@ -48,8 +49,9 @@ export default function CourseDetailPage({
 
       try {
         const courseData = await getCourseById(id);
+        const modulesData = await getModulesByCourseId(id);
         setCourse(courseData);
-
+        setModules(modulesData);
         const user = await getUser();
         if (user && courseData) {
           setIsCreator(user.id.toString() === courseData.creator_id.toString());
@@ -90,7 +92,7 @@ export default function CourseDetailPage({
         reviews={12}
       />
 
-      <CourseCurriculum modules={course?.curriculum || []} />
+      <CourseCurriculum modules={modules || []} />
 
       <MeetTutor
         name={course?.creator?.full_name}
