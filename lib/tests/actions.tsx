@@ -294,20 +294,60 @@ export async function getMaterialsByBlock(blockId: number): Promise<LearningMate
     return data || [];
 }
 
-export async function createMaterial(materialData: {
-    title: string;
-    content: string;
-    block_id: number;
-}): Promise<LearningMaterial | null> {
-    const {data, error} = await supabase.from("LearningMaterial").insert(materialData).select().single();
+export async function createMaterial(
+    materialData: { title: string; block_id: number },
+    materialContents: { front: string; back: string }[]
+  ): Promise<LearningMaterial | null> {
+    const { data, error } = await supabase
+      .from("LearningMaterial")
+      .insert(materialData)
+      .select()
+      .single();
+  
     if (error) throw new Error(`Error creating material: ${error.message}`);
+  
+    if (data?.id) {
+      const cardData = materialContents.map((content) => ({
+        front: content.front,
+        back: content.back,
+        material_id: data.id,
+      }));
+  
+      const { error: cardError } = await supabase.from("flashcards").insert(cardData);
+      if (cardError) throw new Error(`Error creating cards: ${cardError.message}`);
+    }
+  
     return data;
-}
+  }
 
-export async function updateMaterial(materialId: number, materialData: Partial<LearningMaterial>): Promise<void> {
-    const {error} = await supabase.from("LearningMaterial").update(materialData).eq("id", materialId);
+  export async function updateMaterial(
+    materialId: number,
+    materialData: Partial<LearningMaterial>,
+    materialContents: { front: string; back: string }[]
+  ): Promise<void> {
+    const { error } = await supabase
+      .from("LearningMaterial")
+      .update(materialData)
+      .eq("id", materialId);
+  
     if (error) throw new Error(`Error updating material: ${error.message}`);
-}
+  
+    const { error: deleteError } = await supabase
+      .from("flashcards")
+      .delete()
+      .eq("learning_material_id", materialId);
+  
+    if (deleteError) throw new Error(`Error deleting old cards: ${deleteError.message}`);
+    const cardData = materialContents.map((content) => ({
+      front: content.front,
+      back: content.back,
+      learning_material_id: materialId,
+    }));
+  
+    const { error: insertError } = await supabase.from("flashcards").insert(cardData);
+    if (insertError) throw new Error(`Error updating cards: ${insertError.message}`);
+  }
+  
 
 export async function deleteMaterial(materialId: number): Promise<void> {
     const {error} = await supabase.from("LearningMaterial").delete().eq("id", materialId);

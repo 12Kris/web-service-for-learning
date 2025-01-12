@@ -26,11 +26,11 @@ export async function getCourseById(courseId: number | null) {
     return data;
 }
 
-export async function getCardsByBlock(blockId: string) {
+export async function getCardsByLearningMaterial(learningMaterialId: number) {
     const {data, error} = await supabase
-        .from("Card")
+        .from("flashcards")
         .select("*")
-        .eq("block_id", blockId);
+        .eq("learning_material_id", learningMaterialId);
 
     if (error) {
         console.error("Error fetching cards:", error);

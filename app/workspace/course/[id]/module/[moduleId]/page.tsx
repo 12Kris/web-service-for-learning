@@ -18,8 +18,6 @@ export default function ModulePage() {
         const fetchData = async () => {
             const materialsData = await getMaterialsByBlockId(moduleId);
             const testsData = await getTestsByBlockId(moduleId);
-            console.log(materialsData);
-            console.log(testsData);
             setMaterials(materialsData);
             setTests(testsData);
         };
@@ -36,7 +34,9 @@ export default function ModulePage() {
             <h3>Materials</h3>
             <div>
                 {materials.map((material) => (
-                    <Card key={material.id}>{material.title}</Card>
+                    <Link key={material.id} href={`${moduleId}/card/${material.id}`}>
+                        <Card>{material.title}</Card>
+                    </Link>
                 ))}
             </div>
 

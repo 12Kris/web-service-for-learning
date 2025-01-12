@@ -92,27 +92,33 @@ export const handleCloseMaterialModal = (
 
 export const handleCreateOrEditMaterial = async (
     materialTitle: string,
-    materialContent: string,
+    materialContents: { front: string; back: string }[],
     currentMaterial: any,
     currentBlockId: number,
     setIsMaterialModalOpen: (open: boolean) => void,
     setMaterials: (materials: any) => void
-) => {
-    if (!materialTitle || !materialContent) return;
+  ) => {
+    if (!materialTitle || !materialContents.length) return;
+  
     const materialData = {
-        title: materialTitle,
-        content: materialContent,
-        block_id: currentMaterial?.block_id || currentBlockId,
+      title: materialTitle,
+      block_id: currentMaterial?.block_id || currentBlockId,
     };
-    if (currentMaterial) {
-        await updateMaterial(currentMaterial.id, materialData);
-    } else {
-        await createMaterial(materialData);
+  
+    try {
+      if (currentMaterial) {
+        await updateMaterial(currentMaterial.id, materialData, materialContents);
+      } else {
+        await createMaterial(materialData, materialContents);
+      }
+  
+      // setMaterials(await getMaterialsByBlockId(currentBlockId));
+      setIsMaterialModalOpen(false);
+    } catch (error) {
+      console.error(`Error handling material: ${error.message}`);
     }
-
-    setMaterials(await getTestsByBlockId(currentBlockId));
-    setIsMaterialModalOpen(false);
-};
+  };
+  
 
 export const handleCreateOrEditTest = async (
     testData: any,
