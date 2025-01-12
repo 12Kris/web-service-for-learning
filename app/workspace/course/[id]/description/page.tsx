@@ -5,9 +5,7 @@ import CourseInfo from "@/components/workspace/course-info";
 import CourseCurriculum from "@/components/workspace/course-curriculum";
 import MeetTutor from "@/components/workspace/meet-tutor";
 
-import {
-  getCourseById,
-} from "@/lib/courses/actions";
+import { getCourseById } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/auth/actions";
 import { use } from "react";
@@ -51,8 +49,6 @@ export default function CourseDetailPage({
         if (user && courseData) {
           setIsCreator(user.id.toString() === courseData.creator_id.toString());
         }
-
-
       } catch (err) {
         console.error(err);
       }
@@ -89,21 +85,7 @@ export default function CourseDetailPage({
       />
 
       <div className="flex flex-col md:flex-row w-full gap-2">
-        <Button
-          className="w-full"
-          // onClick={handleAddCourse}
-          disabled={true}
-        >
-          {/* {isCourseAdded ? (
-            <>
-              <UserCheck /> Subscribed
-            </>
-          ) : (
-            <>
-              <UserPlus /> Subscribe
-            </>
-          )} */}
-        </Button>
+        <Button className="w-full" disabled={true}></Button>
 
         <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
           <Button className="w-full">

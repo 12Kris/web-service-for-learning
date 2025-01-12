@@ -33,33 +33,31 @@ export default function Header() {
   };
 
   return (
-    <header className="text-black">
-      <nav className="container mx-auto px-4 py-0 pt-4">
-        <ul className="flex space-x-4">
-          <li>
-            <Link
-              href={getHref("")}
-              className={`px-4 py-2 transition-colors ${
-                isActive("") ? "border-b-2 border-black border-solid" : ""
-              }`}
-            >
-              Tasks
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={getHref("description")}
-              className={`px-4 py-2 transition-colors ${
-                isActive("description")
-                  ? "border-b-2 border-black border-solid"
-                  : ""
-              }`}
-            >
-              Description
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </header>
+    <nav className="container mx-auto px-4 py-0 pt-4">
+      <ul className="flex space-x-4">
+        <li>
+          <Link
+            href={getHref("")}
+            className={`px-4 py-2 transition-colors ${
+              isActive("") ? "border-b-2 border-black border-solid" : ""
+            }`}
+          >
+            Modules
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={getHref("description")}
+            className={`px-4 py-2 transition-colors ${
+              isActive("description")
+                ? "border-b-2 border-black border-solid"
+                : ""
+            }`}
+          >
+            Description
+          </Link>
+        </li>
+      </ul>
+    </nav>
   );
 }

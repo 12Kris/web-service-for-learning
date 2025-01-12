@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   addCourseToUser,
   isCourseAddedToUser,
+  removeCourseFromUser,
 } from "@/lib/courses/actions";
 
 interface CourseDescriptionJumbotronProps {
@@ -24,19 +25,12 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   onLearnMore,
 }) => {
   const [isCourseAdded, setIsCourseAdded] = useState(false);
-  // const [isCreator, setIsCreator] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
       if (!id) return;
 
       try {
-
-        // const user = await getUser();
-        // if (user && courseData) {
-        //   setIsCreator(user.id.toString() === courseData.creator_id.toString());
-        // }
-
         const result = await isCourseAddedToUser(id);
         setIsCourseAdded(result);
       } catch (err) {
@@ -47,13 +41,21 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     fetchData();
   }, [id]);
 
-  async function handleAddCourse() {
+  async function handleAddCourse(id: string) {
     if (!id) return;
     await addCourseToUser(id);
     setIsCourseAdded(true);
+    window.location.reload();
   }
+  async function handleRemoveCourse(id: string) {
+    if (!id) return;
+    await removeCourseFromUser(id);
+    setIsCourseAdded(false);
+    window.location.reload();
+  }
+
   return (
-    <section className="w-full bg-slate-200 rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
+    <section className="w-full bg-[#e8f4f1] rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-5xl font-bold text-center">
           {title || (
@@ -66,7 +68,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
           )}
         </h1>
         {type && (
-          <p className="text-sm md:text-base px-3 py-1 bg-slate-300 text-slate-700 rounded-full whitespace-nowrap">
+          <p className="text-sm md:text-base px-3 py-1 bg-[#d5e2de] text-slate-700 rounded-full whitespace-nowrap">
             {type}
           </p>
         )}
@@ -97,8 +99,9 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
         </Button>
         <Button
           variant="classic_filled"
-          onClick={handleAddCourse}
-          disabled={isCourseAdded}
+          onClick={() =>
+            isCourseAdded ? handleRemoveCourse(id) : handleAddCourse(id)
+          }
         >
           {isCourseAdded ? (
             <>
