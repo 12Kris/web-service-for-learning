@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,21 +10,22 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {getTestById} from "@/lib/tests/actions";
+import { getTestById } from "@/lib/tests/actions";
 
 export function TestModal({
-                              isOpen,
-                              onClose,
-                              onSave,
-                              testId,
-                              blockId,
-                          }: {
+    isOpen,
+    onClose,
+    onSave,
+    testId,
+    blockId,
+}: {
     isOpen: boolean;
     onClose: () => void;
     onSave: (testData: any) => void;
     testId: number;
     blockId: number | null;
 }) {
+    const [testTitle, setTestTitle] = useState<string>("");
     const [questions, setQuestions] = useState<
         {
             id: string;
@@ -32,23 +33,24 @@ export function TestModal({
             answers: { id: string; text: string; correct: boolean }[];
         }[]
     >([]);
-
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchTest = async () => {
             setIsLoading(true);
             const currentTest = await getTestById(testId);
-            if (currentTest?.questions) {
-                setQuestions(currentTest.questions);
+            if (currentTest) {
+                setTestTitle(currentTest.question || "");
+                setQuestions(currentTest.questions || []);
             } else {
+                setTestTitle("");
                 setQuestions([
                     {
                         id: "1",
                         question: "",
                         answers: [
-                            {id: "1", text: "", correct: false},
-                            {id: "2", text: "", correct: false},
+                            { id: "1", text: "", correct: false },
+                            { id: "2", text: "", correct: false },
                         ],
                     },
                 ]);
@@ -63,7 +65,7 @@ export function TestModal({
 
     const handleQuestionChange = (id: string, text: string) => {
         setQuestions((prev) =>
-            prev.map((q) => (q.id === id ? {...q, question: text} : q))
+            prev.map((q) => (q.id === id ? { ...q, question: text } : q))
         );
     };
 
@@ -74,7 +76,7 @@ export function TestModal({
                     ? {
                         ...q,
                         answers: q.answers.map((a) =>
-                            a.id === answerId ? {...a, text} : a
+                            a.id === answerId ? { ...a, text } : a
                         ),
                     }
                     : q
@@ -90,8 +92,8 @@ export function TestModal({
                         ...q,
                         answers: q.answers.map((a) =>
                             a.id === answerId
-                                ? {...a, correct: true}
-                                : {...a, correct: false}
+                                ? { ...a, correct: true }
+                                : { ...a, correct: false }
                         ),
                     }
                     : q
@@ -107,7 +109,7 @@ export function TestModal({
                         ...q,
                         answers: [
                             ...q.answers,
-                            {id: (q.answers.length + 1).toString(), text: "", correct: false},
+                            { id: (q.answers.length + 1).toString(), text: "", correct: false },
                         ],
                     }
                     : q
@@ -135,8 +137,8 @@ export function TestModal({
                 id: (prev.length + 1).toString(),
                 question: "",
                 answers: [
-                    {id: "1", text: "", correct: false},
-                    {id: "2", text: "", correct: false},
+                    { id: "1", text: "", correct: false },
+                    { id: "2", text: "", correct: false },
                 ],
             },
         ]);
@@ -147,6 +149,11 @@ export function TestModal({
     };
 
     const handleSubmit = () => {
+        if (!testTitle.trim()) {
+            alert("Please provide a test title.");
+            return;
+        }
+
         if (
             questions.every(
                 (q) =>
@@ -155,7 +162,7 @@ export function TestModal({
                     q.answers.some((a) => a.correct)
             )
         ) {
-            onSave({block_id: blockId, questions});
+            onSave({ block_id: blockId, question: testTitle, questions });
             onClose();
         } else {
             alert("Please fill in all questions and answers correctly.");
@@ -168,7 +175,7 @@ export function TestModal({
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogTrigger/>
+            <AlertDialogTrigger />
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
@@ -181,6 +188,16 @@ export function TestModal({
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <div className="flex flex-col gap-4">
+                    <div>
+                        <label className="font-medium">Test Title</label>
+                        <input
+                            type="text"
+                            value={testTitle}
+                            onChange={(e) => setTestTitle(e.target.value)}
+                            placeholder="Enter the test title"
+                            className="input"
+                        />
+                    </div>
                     {questions.map((q) => (
                         <div key={q.id} className="border p-4">
                             <div>

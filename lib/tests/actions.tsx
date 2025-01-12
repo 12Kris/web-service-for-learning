@@ -41,7 +41,7 @@ export async function deleteBlock(blockId: number): Promise<void> {
 export async function getTestById(testId: number) {
     const {data, error} = await supabase
         .from("Test")
-        .select("id, block_id, TestQuestions(id, question, correct_id, TestAnswers!TestAnswers_question_id_fkey(id, answer))")
+        .select("id, block_id, question, TestQuestions(id, question, correct_id, TestAnswers!TestAnswers_question_id_fkey(id, answer))")
         .eq("id", testId);
 
     if (error) {
@@ -52,6 +52,7 @@ export async function getTestById(testId: number) {
     return data && data.length > 0 ? {
         id: data[0].id,
         blockId: data[0].block_id,
+        question: data[0].question,
         questions: data[0].TestQuestions.map((q: any) => ({
             id: q.id.toString(),
             question: q.question,
@@ -193,6 +194,7 @@ export async function updateTest(
     testId: number,
     testData: {
         block_id: number;
+        question: string;
         questions: {
             question: string;
             answers: { text: string; correct: boolean }[];
@@ -202,7 +204,7 @@ export async function updateTest(
     try {
         const {data: testDataResponse, error: testError} = await supabase
             .from("Test")
-            .update({block_id: testData.block_id})
+            .update({block_id: testData.block_id, question: testData.question})
             .eq("id", testId)
             .select()
             .single();

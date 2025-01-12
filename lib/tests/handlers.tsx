@@ -126,9 +126,11 @@ export const handleCreateOrEditTest = async (
     setIsTestModalOpen: (open: boolean) => void,
     setTests: (tests: any) => void
 ) => {
+    console.log(testData);
     try {
         if (currentTest) {
-            await updateTest(currentTest.id, testData);
+            const res = await updateTest(currentTest.id, testData);
+            console.log(res);
         } else {
             await createTest(testData);
         }
