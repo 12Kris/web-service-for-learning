@@ -4,7 +4,6 @@ import Header from "@/components/workspace/courses/header";
 import { useEffect, useState } from "react";
 import CourseDescriptionJumpotron from "@/components/workspace/course-description-jumbotron";
 
-
 import { use } from "react";
 import { Course } from "@/lib/definitions";
 
@@ -31,8 +30,6 @@ export default function RootLayout({
       try {
         const courseData = await getCourseById(id);
         setCourse(courseData);
-
-
       } catch (err) {
         console.error(err);
       }
@@ -40,6 +37,7 @@ export default function RootLayout({
 
     fetchData();
   }, [id]);
+
   return (
     <div>
       <CourseDescriptionJumpotron
