@@ -6,7 +6,7 @@ import { isCourseAddedToUser } from "@/lib/courses/actions";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { ModuleCard } from "@/components/workspace/courses/modules/module-card";
-import { Module } from "@/types/learning";
+import { Module } from "@/lib/types/learning";
 
 export default function FlashcardPage({
   params,

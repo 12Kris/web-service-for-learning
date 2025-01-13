@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
-import CourseInfo from "@/components/workspace/course-info";
-import CourseCurriculum from "@/components/workspace/course-curriculum";
-import MeetTutor from "@/components/workspace/meet-tutor";
+import CourseInfo from "@/components/workspace/courses/course-info";
+import CourseCurriculum from "@/components/workspace/courses/course-curriculum";
+import MeetTutor from "@/components/workspace/courses/meet-tutor";
 
 import { getCourseById } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";

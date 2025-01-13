@@ -23,10 +23,9 @@ export async function getUser() {
   }
 
   const {
-    data: { user},
+    data: { user },
     error,
   } = await supabase.auth.getUser(token);
-  // console.log(user)
   if (error || !user) {
     throw new Error("Failed to fetch user");
   }

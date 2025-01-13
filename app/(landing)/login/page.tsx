@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { loginUser } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { useRouter } from "next/navigation";
+import { getUser } from "@/lib/auth/actions";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -18,10 +19,16 @@ export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setError("");
-  };
+  useEffect(() => {
+    const checkSession = async () => {
+      const userdata = await getUser();
+      if (userdata) {
+        router.push("/workspace");
+      }
+    };
+
+    checkSession();
+  }, [router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

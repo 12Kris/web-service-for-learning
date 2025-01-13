@@ -2,7 +2,7 @@
 
 import Header from "@/components/workspace/courses/header";
 import { useEffect, useState } from "react";
-import CourseDescriptionJumpotron from "@/components/workspace/course-description-jumbotron";
+import CourseDescriptionJumpotron from "@/components/workspace/courses/course-description-jumbotron";
 
 import { use } from "react";
 import { Course } from "@/lib/definitions";
