@@ -27,7 +27,7 @@ export default function LoginPage() {
     };
 
     checkSession();
-  }, []);
+  }, [router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
