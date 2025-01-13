@@ -19,6 +19,10 @@ export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setError("");
+  };
   useEffect(() => {
     const checkSession = async () => {
       const userdata = await getUser();
