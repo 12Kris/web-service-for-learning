@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { loginUser } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
+import { getUser } from "@/lib/auth/actions";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,6 +17,18 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const userdata = await getUser();
+      if (userdata) {
+        router.push("/workspace");
+      }
+    };
+
+    checkSession();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -24,7 +37,6 @@ export default function LoginPage() {
       try {
         await loginUser(email, password);
         router.push("/workspace");
-        // console.log("Login successful, token:", token);
       } catch (err) {
         setError((err as Error).message);
         console.error("Login failed:", err);
