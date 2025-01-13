@@ -229,8 +229,8 @@ export async function getTests(courseId: number): Promise<Test[]> {
 
 export async function getModulesByCourseId(courseId: number | null): Promise<Block[]> {
     const {data, error} = await supabase
-        .from("Block")
-        .select("id, course_id, name")
+        .from("Module")
+        .select("id, course_id, name, description, duration")
         .eq("course_id", courseId);
 
     if (error) {
