@@ -4,8 +4,8 @@ import { useState } from "react";
 import { registerUser } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,6 +14,8 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,63 +37,100 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center font-bold">
-            Sign Up
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            {error && <p className="text-sm text-red-500">{error}</p>}
-            <Button type="submit">Sign Up</Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+      <div className="min-h-[65dvh] bg-[#fef9f2] flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Card className="p-6 bg-white shadow-sm">
+            <h1 className="text-2xl font-semibold text-center mb-6 text-[#ff8a80]">
+              Sign Up
+            </h1>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="relative">
+                <User className="absolute left-3 top-2.5 h-5 w-5 text-[#517970]" />
+                <Input
+                    id="name"
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 border-[#517970] focus-visible:ring-[#517970]"
+                />
+              </div>
+
+              <div className="relative">
+                <Mail className="absolute left-3 top-2.5 h-5 w-5 text-[#517970]" />
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 border-[#517970] focus-visible:ring-[#517970]"
+                />
+              </div>
+
+              <div className="relative">
+                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-[#517970]" />
+                <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 pr-10 border-[#517970] focus-visible:ring-[#517970]"
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-2.5 text-[#517970]"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+
+              <div className="relative">
+                <Lock className="absolute left-3 top-2.5 h-5 w-5 text-[#517970]" />
+                <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Password confirmation"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                    className="pl-10 pr-10 border-[#517970] focus-visible:ring-[#517970]"
+                />
+                <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-2.5 text-[#517970]"
+                >
+                  {showConfirmPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                  ) : (
+                      <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+
+              {error && <p className="text-sm text-red-500">{error}</p>}
+
+              <div className="pt-4 flex justify-center items-center">
+                <Button
+                    type="submit"
+                    className="w-1/3 bg-[#ff8a80] hover:bg-[#ff8a80]/90 text-white rounded-3xl"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
+      </div>
   );
 }

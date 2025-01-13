@@ -2,6 +2,7 @@ import { Jumbotron } from "@/components/jumbotron";
 import { MetricsShowcase } from "@/components/metrics-showcase";
 import ProblemsTable from "@/components/problems-table/page";
 import {StudyCarousel} from "@/components/study-carousel/study-carousel";
+import Gradient from "../../components/gradient-tittle/gradient";
 
 const studyTopics = [
     {
@@ -107,6 +108,8 @@ export default function Home() {
           <main className="min-h-screen flex items-center justify-center p-4">
               <StudyCarousel title="Directions of Education" topics={studyTopics}/>
           </main>
+
+          <Gradient />
 
       </div>
   );

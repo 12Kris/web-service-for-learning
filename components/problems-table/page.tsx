@@ -28,13 +28,13 @@ export default function InfoTable() {
                                 <span className="text-6xl font-bold text-[#FF6B6B]">
                                     {String(problem.id).padStart(2, "0")}
                                 </span>
-                                <h3 className="text-2xl font-bold text-[--neutral]">
+                                <h3 className="text-2xl font-bold text-[--neutral] ml-1">
                                     {problem.title}
                                 </h3>
                             </div>
 
                             <div>
-                                <div className="flex items-start gap-4">
+                                <div className="flex items-start gap-4 mb-8">
                                     <div>
                                         <Image
                                             src={problem.imageUrl}
@@ -43,7 +43,7 @@ export default function InfoTable() {
                                             height={350}
                                         />
                                     </div>
-                                    <p className="text-lg text-[--neutral]">
+                                    <p className="text-lg text-[--neutral] ml-4">
                                         {problem.description}
                                     </p>
                                 </div>
