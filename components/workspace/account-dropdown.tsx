@@ -1,6 +1,6 @@
 import { Github, LifeBuoy, LogOut, Settings, User } from "lucide-react";
 
-import { logoutUser } from "@/lib/auth/actions";
+import {getUser, logoutUser} from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,15 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
     }
   };
 
+  const handleProfileClick = async () => {
+    try {
+      getUser();
+      router.push("/workspace/profile");
+    } catch (error) {
+      console.error("Navigation failed:", error);
+    }
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -46,7 +55,7 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
         <DropdownMenuLabel>{name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleProfileClick}>
             <User />
             <span>Profile</span>
           </DropdownMenuItem>
