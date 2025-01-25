@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { getTestById } from "@/lib/tests/actions";
 import { Button } from "@/components/ui/button";
+import {TestDataModal} from "@/lib/definitions";
 
 export function TestModal({
     isOpen,
@@ -22,7 +23,7 @@ export function TestModal({
 }: {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (testData: any) => void;
+    onSave: (testData: TestDataModal) => void; // TODO: change
     testId: number;
     blockId: number | null;
 }) {
@@ -154,7 +155,7 @@ export function TestModal({
           alert("Please provide a test title.");
           return;
         }
-      
+
         if (
           questions.every(
             (q) =>
@@ -168,7 +169,7 @@ export function TestModal({
         } else {
           alert("Please fill in all questions and answers correctly.");
         }
-      };      
+      };
 
     if (isLoading) {
         return <div>Loading...</div>;

@@ -579,7 +579,7 @@
 "use server";
 import { supabase } from "@/lib/supabaseClient";
 import { getUser } from "@/lib/auth/actions";
-import { Course, CourseWithStudents } from "@/lib/definitions";
+import {Block, Course, CourseWithStudents, Test, TestData, TestQuestionData} from "@/lib/definitions";
 
 export async function getCourseById(courseId: number) {
   const { data, error } = await supabase
@@ -995,7 +995,7 @@ export async function getTests(courseId: number): Promise<Test[]> {
         return [];
     }
 
-    return data.map((item: any) => ({
+    return (data as unknown as TestData[]).map((item) => ({
         id: item.id,
         question: item.question,
         block_id: item.block_id,
@@ -1052,8 +1052,13 @@ export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
     return data as Test[];
 }
 
-export async function getTestQuestions(testId: string): Promise<TestQuestion[]> {
-    const {data, error} = await supabase
+export async function getTestQuestions(testId: string): Promise<{
+    id: string;
+    question: string;
+    correct_answer: string;
+    answers: { id: string; answer: string; correct: boolean }[]
+}[]> {
+    const { data, error } = await supabase
         .from('TestQuestions')
         .select(`
             id,
@@ -1071,8 +1076,8 @@ export async function getTestQuestions(testId: string): Promise<TestQuestion[]> 
         return [];
     }
 
-    return data.map((item: any) => {
-        const answersWithCorrect = item.answers.map((answer: any) => ({
+    return (data as unknown as TestQuestionData[]).map((item) => {
+        const answersWithCorrect = item.answers.map((answer) => ({
             ...answer,
             correct: answer.id === item.correct_id,
         }));
@@ -1085,6 +1090,8 @@ export async function getTestQuestions(testId: string): Promise<TestQuestion[]> 
         };
     });
 }
+
+
 
 export async function saveTestResults(
     testId: string,

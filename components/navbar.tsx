@@ -7,12 +7,13 @@ import {Button} from "@/components/ui/button";
 import {Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger,} from "@/components/ui/sheet";
 import {Menu} from "lucide-react";
 import {getToken, getUser, logoutUser} from "@/lib/auth/actions";
+import {User} from "@/lib/definitions";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   const navItems = [
@@ -35,7 +36,7 @@ export function Navbar() {
     }
 
     fetchData();
-  }, []);
+  }, [token]);
 
   const handleLogout = async () => {
     try {

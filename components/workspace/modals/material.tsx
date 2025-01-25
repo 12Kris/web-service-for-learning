@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { getCardsByLearningMaterial } from "@/lib/courses/actions";
+import {Card, Module} from "@/lib/definitions";
 
 export function MaterialModal({
   isOpen,
@@ -10,7 +11,7 @@ export function MaterialModal({
   materialTitle,
   setMaterialTitle,
   currentMaterial,
-  blockId,
+  // blockId,
   materialContents,
   setMaterialContents,
 }: {
@@ -19,7 +20,7 @@ export function MaterialModal({
   onSave: (title: string, contents: { front: string; back: string }[]) => void;
   materialTitle: string;
   setMaterialTitle: (title: string) => void;
-  currentMaterial: any;
+  currentMaterial: Module;
   blockId: number | null;
   materialContents: { front: string; back: string }[];
   setMaterialContents: (contents: { front: string; back: string }[]) => void;
@@ -29,7 +30,7 @@ export function MaterialModal({
       const loadCards = async () => {
         const cards = await getCardsByLearningMaterial(currentMaterial.id);
         setMaterialContents(
-          cards.map((card: any) => ({
+          cards.map((card: Card) => ({
             front: card.front || "",
             back: card.back || "",
           }))

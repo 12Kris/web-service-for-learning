@@ -29,7 +29,8 @@ export default function CreateCourseForm() {
   const [course_details, setCourseDetails] = useState<CourseDetails[]>([
     { id: 1, course_detail: "" },
   ]);
-  const [curriculum, setcurriculum] = useState<Module[]>([
+  const [curriculum, // setcurriculum
+  ] = useState<Module[]>([
     { id: 1, title: "", description: "" },
   ]);
   const [what_w_learn, setWhatWillLearn] = useState<WhatWillLearn[]>([
@@ -67,19 +68,19 @@ export default function CreateCourseForm() {
     setCourseDetails(updatedcoursedetail);
   };
 
-  const addModule = () => {
-    setcurriculum([...curriculum, { id: curriculum.length + 1, title: "", description: "" }]);
-  };
+  // const addModule = () => {
+  //   setcurriculum([...curriculum, { id: curriculum.length + 1, title: "", description: "" }]);
+  // };
 
-  const updateModule = (index: number, field: keyof Module, value: string) => {
-    const updatedcurriculum = curriculum.map((module, i) => {
-      if (i === index) {
-        return { ...module, [field]: value };
-      }
-      return module;
-    });
-    setcurriculum(updatedcurriculum);
-  };
+  // const updateModule = (index: number, field: keyof Module, value: string) => {
+  //   const updatedcurriculum = curriculum.map((module, i) => {
+  //     if (i === index) {
+  //       return { ...module, [field]: value };
+  //     }
+  //     return module;
+  //   });
+  //   setcurriculum(updatedcurriculum);
+  // };
 
   const addWhatWillStudentLearn = () => {
     setWhatWillLearn([...what_w_learn, { id: what_w_learn.length + 1, description: "" }]);

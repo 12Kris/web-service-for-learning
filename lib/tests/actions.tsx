@@ -45,10 +45,23 @@ export async function deleteBlock(blockId: number): Promise<void> {
 }
 
 
-export async function getTestById(testId: number) {
-    const {data, error} = await supabase
+export async function getTestById(testId: number): Promise<TestWithQuestions | null> {
+    const { data, error } = await supabase
         .from("Test")
-        .select("id, block_id, question, TestQuestions(id, question, correct_id, TestAnswers!TestAnswers_question_id_fkey(id, answer))")
+        .select(`
+            id,
+            block_id,
+            question,
+            TestQuestions (
+                id,
+                question,
+                correct_id,
+                TestAnswers!TestAnswers_question_id_fkey (
+                    id,
+                    answer
+                )
+            )
+        `)
         .eq("id", testId);
 
     if (error) {
@@ -56,21 +69,26 @@ export async function getTestById(testId: number) {
         return null;
     }
 
-    return data && data.length > 0 ? {
-        id: data[0].id,
-        blockId: data[0].block_id,
-        question: data[0].question,
-        questions: data[0].TestQuestions.map((q: any) => ({
+    if (!data || data.length === 0) return null;
+
+    const testData = data[0];
+
+    return {
+        id: testData.id,
+        blockId: testData.block_id,
+        question: testData.question,
+        questions: testData.TestQuestions.map((q: TestQuestionDataFromDB) => ({
             id: q.id.toString(),
             question: q.question,
-            answers: q.TestAnswers.map((a: any) => ({
+            answers: q.TestAnswers.map((a: TestAnswerDataFromDB) => ({
                 id: a.id.toString(),
                 text: a.answer,
                 correct: a.id === q.correct_id,
             })),
         })),
-    } : null;
+    };
 }
+
 
 
 export async function getTestAnswers(testId: number) {
@@ -89,7 +107,7 @@ export async function getTestAnswers(testId: number) {
             throw new Error(questionsError.message);
         }
 
-        const questionsWithAnswers = questions.map((question) => {
+        return questions.map((question) => {
             const correctAnswer = question.TestAnswers.find(
                 (answer) => answer.id === question.correct_id
             );
@@ -101,8 +119,6 @@ export async function getTestAnswers(testId: number) {
                 correctAnswer: correctAnswer || null,
             };
         });
-
-        return questionsWithAnswers;
     } catch (error) {
         console.error("Error fetching test answers:", error);
         return null;
@@ -190,7 +206,7 @@ export async function createTest(testData: {
         }
 
         return testDataResponse;
-    } catch (error: any) {
+    } catch (error) {
         console.error("Error creating test:", error.message);
         throw new Error("Internal server error: " + error.message);
     }

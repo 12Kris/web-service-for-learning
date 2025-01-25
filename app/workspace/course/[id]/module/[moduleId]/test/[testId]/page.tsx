@@ -126,7 +126,7 @@
 import React, { useEffect, useState } from 'react';
 import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
 import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/definitions';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
@@ -135,7 +135,6 @@ import { Progress } from "@/components/ui/progress"
 
 export default function TestPage() {
     const params = useParams();
-    const router = useRouter();
     const testId = params.testId;
     const courseId = params.id;
     const moduleId = params.moduleId;
@@ -145,7 +144,7 @@ export default function TestPage() {
     const [answers, setAnswers] = useState<UserTestAnswer[]>([]);
     const [isTestComplete, setIsTestComplete] = useState<boolean>(false);
     const [score, setScore] = useState<number>(0);
-    const [attempts, setAttempts] = useState<number>(1);
+    // const [attempts, setAttempts] = useState<number>(1);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
     useEffect(() => {
@@ -208,7 +207,7 @@ export default function TestPage() {
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <p className="text-xl">Your Score: {score}/{questions.length}</p>
-                            <p className="text-gray-600">Attempts: {attempts}</p>
+                            {/*<p className="text-gray-600">Attempts: {attempts}</p>*/}
                         </div>
                         <Progress value={(score / questions.length) * 100} className="w-full" />
                         {/* <p className="text-muted-foreground">Attempt {attempts}</p> */}

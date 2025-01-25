@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/auth/actions";
 import { use } from "react";
 import Link from "next/link";
-import { Course } from "@/lib/definitions";
+import {Course, Module} from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
 
 import {Trash2, Edit, BookCheck, UserPlus, UserCheck} from "lucide-react";
@@ -34,7 +34,7 @@ export default function CourseDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
-  const [modules, setModules] = useState<any[]>([])
+  const [modules, setModules] = useState<Module[]>([])
   const [isCourseAdded, setIsCourseAdded] = useState(false);
   const { id } = use(params);
 

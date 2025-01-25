@@ -236,7 +236,7 @@ export default function TestPage({ params }: TestPageProps) {
     const [answers, setAnswers] = useState<UserTestAnswer[]>([]);
     const [isTestComplete, setIsTestComplete] = useState<boolean>(false);
     const [score, setScore] = useState<number>(0);
-    const [attempts, setAttempts] = useState<number>(1);
+    // const [attempts, setAttempts] = useState<number>(1);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
     useEffect(() => {
@@ -295,7 +295,7 @@ export default function TestPage({ params }: TestPageProps) {
                     <h2 className="text-3xl font-bold">Test Complete!</h2>
                     <div className="space-y-2">
                         <p className="text-xl">Your Score: {score}/{questions.length}</p>
-                        <p className="text-gray-600">Attempts: {attempts}</p>
+                        {/*<p className="text-gray-600">Attempts: {attempts}</p>*/}
                     </div>
                     <Button
                         className="w-full max-w-md"

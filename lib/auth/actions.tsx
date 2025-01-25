@@ -3,6 +3,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
+import {User} from "@/lib/definitions";
 
 export async function getToken() {
   const token = (await cookies()).get("token")?.value;
@@ -29,7 +30,7 @@ export async function getUser() {
   if (error || !user) {
     throw new Error("Failed to fetch user");
   }
-  return user;
+  return user as unknown as User;
 }
 
 export async function registerUser(
