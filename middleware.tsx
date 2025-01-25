@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { supabase } from '@/lib/supabaseClient';
 
-const PUBLIC_PATHS = ['/login', '/signup', '/about', '/contact', '/', '/forgot-password', '/how-it-works'];
+const PUBLIC_PATHS = ['/login', '/signup', '/about', '/contact', '/', '/forgot-password', '/how-it-works', '/signup/confirm'];
 
 export async function middleware(request: NextRequest) {
     const token = request.cookies.get('token')?.value;
