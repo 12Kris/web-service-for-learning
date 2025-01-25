@@ -36,13 +36,13 @@ export default function AboutPage() {
 
       <h2 className="text-2xl font-semibold mt-8">Our Team</h2>
       <div className="grid md:grid-cols-3 gap-6">
-      {["Isaienko Volodymyr", "Virt Mykhailo", "Mamchur Chrystyna", "Bikbulatov Bogdan", "Mykhailo Nyskohuz", "Novikova Yana", "Dubas Roman"].map((name) => (
+        {["John Doe", "Jane Smith", "Mike Johnson"].map((name) => (
           <Card key={name}>
             <CardHeader>
               <CardTitle>{name}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>Welcome to Memoria!</p>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             </CardContent>
           </Card>
         ))}

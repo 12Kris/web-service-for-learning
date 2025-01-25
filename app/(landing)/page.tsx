@@ -105,7 +105,7 @@ export default function Home() {
               metrics={metrics}
           />
 
-          <main className="flex items-center justify-center p-4 my-24">
+          <main className="min-h-screen flex items-center justify-center p-4">
               <StudyCarousel title="Directions of Education" topics={studyTopics}/>
           </main>
 

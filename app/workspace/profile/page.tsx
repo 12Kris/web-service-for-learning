@@ -16,7 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Book, Users, Clock, Award } from "lucide-react";
-import { getCourses, getStudentCountForCourse, getUserById, getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
+import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
 import { getUser } from "@/lib/auth/actions";
 import { Course, User } from "@/lib/definitions";
 import { Edit } from "lucide-react";
@@ -50,26 +50,7 @@ export default function UserProfile() {
             "No description available",
         });
         setCreatedCourses(await getUserCreatedCourses());
-        // setStudyingCourses(await getUserCourses());
-
-        const userCourses = await getUserCourses();
-        const courses = await getCourses();
-
-        const updatedStudyingCourses = await Promise.all(userCourses.map(async (course) => {
-          const instructor = await getUserById(course.creator_id);
-          const studentCount = await getStudentCountForCourse(course.id);
-          const progress = Math.floor(Math.random() * 100);
-      
-          // console.log(studentCount);
-          return {
-              ...course,
-              progress,
-              creator_name: instructor?.full_name || "Unknown",
-              studentsCount: studentCount,
-          };
-      }));
-
-      setStudyingCourses(updatedStudyingCourses);
+        setStudyingCourses(await getUserCourses());
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -203,7 +184,7 @@ export default function UserProfile() {
                     <CardHeader>
                       <CardTitle className="text-xl">{course.name}</CardTitle>
                       <CardDescription>
-                        Instructor: {course.creator_name}
+                        Instructor: {course.creator_id}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>

@@ -486,35 +486,35 @@
 //       if (!userId) {
 //         throw new Error("User ID is required");
 //       }
-  
+
 //       const { data, error } = await supabase
 //         .from("users")
 //         .select("*")
 //         .eq("id", userId)
 //         .single();
-  
+
 //       if (error) {
 //         throw new Error("User not found or error occurred while fetching user data");
 //       }
-  
+
 //       return data;
 //     } catch (error) {
 //       console.error("Error fetching user by ID:", error);
 //       return null;
 //     }
 //   }
-  
+
 //   export async function getStudentCountForCourse(courseId: string) {
 //     try {
 //         const { data, error } = await supabase
 //             .from('UserCourse')
 //             .select('user_id')
 //             .eq('course_id', courseId);
-  
+
 //         if (error) {
 //             throw new Error(error.message);
 //         }
-  
+
 //         return data.length;
 //     } catch (error) {
 //         console.error("Error fetching student count:", error);
@@ -579,15 +579,7 @@
 "use server";
 import { supabase } from "@/lib/supabaseClient";
 import { getUser } from "@/lib/auth/actions";
-import {
-    Block,
-    Course,
-    CourseWithStudents,
-    LearningMaterial,
-    SaveTestResult,
-    Test, TestQuestion,
-    UserTestAnswer
-} from "@/lib/definitions";
+import { Course, CourseWithStudents } from "@/lib/definitions";
 
 export async function getCourseById(courseId: number) {
   const { data, error } = await supabase
@@ -795,7 +787,9 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
 
     return data.map((course) => ({
       ...course,
-      student_count: course.student_count ? course.student_count[0]?.count || 0 : 0,
+      student_count: course.student_count
+        ? course.student_count[0]?.count || 0
+        : 0,
     })) as CourseWithStudents[];
   } catch (error) {
     console.error("Error fetching user created courses:", error);
@@ -824,7 +818,6 @@ export async function getCourses(): Promise<Course[]> {
 export async function createCourse(
   courseData: Omit<Course, "id" | "creator_id" | "creator">
 ): Promise<Course | null> {
-  (courseData);
   try {
     const user = await getUser();
 
@@ -943,35 +936,35 @@ export async function getUserById(userId: string) {
       if (!userId) {
         throw new Error("User ID is required");
       }
-  
+
       const { data, error } = await supabase
         .from("users")
         .select("*")
         .eq("id", userId)
         .single();
-  
+
       if (error) {
         throw new Error("User not found or error occurred while fetching user data");
       }
-  
+
       return data;
     } catch (error) {
       console.error("Error fetching user by ID:", error);
       return null;
     }
   }
-  
+
   export async function getStudentCountForCourse(courseId: string) {
     try {
         const { data, error } = await supabase
             .from('UserCourse')
             .select('user_id')
             .eq('course_id', courseId);
-  
+
         if (error) {
             throw new Error(error.message);
         }
-  
+
         return data.length;
     } catch (error) {
         console.error("Error fetching student count:", error);
