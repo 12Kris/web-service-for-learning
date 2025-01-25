@@ -5,7 +5,7 @@ import CourseInfo from "@/components/workspace/courses/course-info";
 import CourseCurriculum from "@/components/workspace/courses/course-curriculum";
 import MeetTutor from "@/components/workspace/courses/meet-tutor";
 
-import { getCourseById } from "@/lib/courses/actions";
+import {addCourseToUser, getCourseById, getModulesByCourseId, isCourseAddedToUser} from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/auth/actions";
 import { use } from "react";
@@ -13,7 +13,7 @@ import Link from "next/link";
 import { Course } from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
 
-import { Trash2, Edit, BookCheck } from "lucide-react";
+import {Trash2, Edit, BookCheck, UserPlus, UserCheck} from "lucide-react";
 
 import {
   AlertDialog,
@@ -47,6 +47,7 @@ export default function CourseDetailPage({
       try {
         const courseData = await getCourseById(id);
         const modulesData = await getModulesByCourseId(id);
+        console.log(modulesData)
         setCourse(courseData);
         setModules(modulesData);
         const user = await getUser();
