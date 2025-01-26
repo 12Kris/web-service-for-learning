@@ -38,8 +38,8 @@ export default function RegisterPage() {
 
   return (
       <div className="min-h-[65dvh] bg-[#fef9f2] flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <Card className="p-6 bg-white shadow-sm">
+      <div className="w-full max-w-md">
+          <Card className="p-6 bg-[#FFFAF4] border-0 shadow-[0_0_30px_rgba(255,138,128,0.3)]">
             <h1 className="text-2xl font-semibold text-center mb-6 text-[#ff8a80]">
               Sign Up
             </h1>
@@ -89,7 +89,11 @@ export default function RegisterPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-2.5 text-[#517970]"
                 >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {showPassword ? (
+                      <Eye className="h-5 w-5" />
+                  ) : (
+                      <EyeOff className="h-5 w-5" />
+                  )}
                 </button>
               </div>
 
@@ -111,9 +115,9 @@ export default function RegisterPage() {
                     className="absolute right-3 top-2.5 text-[#517970]"
                 >
                   {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                  ) : (
                       <Eye className="h-5 w-5" />
+                  ) : (
+                      <EyeOff className="h-5 w-5" />
                   )}
                 </button>
               </div>
