@@ -21,14 +21,12 @@ export interface Module {
   id: number;
   title: string;
   description: string;
-
 }
 
 export interface WhatWillLearn {
   id: number;
   description: string;
-} 
-
+}
 
 export interface Course {
   id: number;
@@ -45,8 +43,8 @@ export interface Course {
   course_details?: CourseDetails[];
   what_w_learn?: WhatWillLearn[];
   curriculum?: Module[];
+  created_at?: string;
 }
-
 
 export interface CourseWithStudents {
   id: number;
@@ -56,6 +54,7 @@ export interface CourseWithStudents {
   creator_id?: string;
   last_completion_date?: string;
   student_count: number;
+  created_at: string;
 }
 
 export interface CourseDetails {
@@ -96,8 +95,8 @@ export interface MenuItems {
 }
 
 export interface Problem {
-  id: string
-  title: string
-  description: string
-  imageUrl: string
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
 }

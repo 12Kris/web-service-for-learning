@@ -2,6 +2,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { getUser } from "@/lib/auth/actions";
 import { Course, CourseWithStudents } from "@/lib/definitions";
+// import {use} from "react";
 
 export async function getCourseById(courseId: string) {
   const { data, error } = await supabase
@@ -88,7 +89,7 @@ export async function getUserCourses() {
 }
 
 export async function addCourseToUser(
-  courseId: string
+  courseId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const user = await getUser();
@@ -138,7 +139,7 @@ export async function addCourseToUser(
 }
 
 export async function removeCourseFromUser(
-  courseId: string
+  courseId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const user = await getUser();
@@ -220,14 +221,19 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
 }
 
 export async function getCourses(): Promise<Course[]> {
-  const { data, error } = await supabase.from("Course").select(`
+  const { data, error } = await supabase
+    .from("Course")
+    .select(
+      `
         *,
         creator:creator_id (
           id,
           email,
           full_name
         )
-      `);
+      `,
+    )
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching courses:", error);
@@ -238,7 +244,7 @@ export async function getCourses(): Promise<Course[]> {
 }
 
 export async function createCourse(
-  courseData: Omit<Course, "id" | "creator_id" | "creator">
+  courseData: Omit<Course, "id" | "creator_id" | "creator">,
 ): Promise<Course | null> {
   console.log(courseData);
   try {
@@ -267,13 +273,13 @@ export async function createCourse(
   } catch (error) {
     console.error("Error in createCourse:", error);
     throw new Error(
-      (error as Error).message || "An error occurred while creating the course"
+      (error as Error).message || "An error occurred while creating the course",
     );
   }
 }
 
 export async function deleteCourse(
-  courseId: string
+  courseId: string,
 ): Promise<{ success: boolean; message: string }> {
   try {
     const user = await getUser();
@@ -321,17 +327,21 @@ export async function deleteCourse(
 }
 
 export async function updateCourse(
-  courseId: string,
-  courseData: Partial<Course>
+  courseId: number,
+  courseData: Partial<Course>,
+  creatorId: string | undefined,
 ) {
   try {
     const user = await getUser();
+
+    console.log(user?.id);
+    console.log(creatorId);
 
     if (!user) {
       throw new Error("User not authenticated");
     }
 
-    if (courseData.creator_id !== user.id) {
+    if (creatorId !== user.id) {
       throw new Error("You don't have permission to update this course");
     }
 
@@ -349,7 +359,7 @@ export async function updateCourse(
   } catch (error) {
     console.error("Error in updateCourse:", error);
     throw new Error(
-      (error as Error).message || "An error occurred while updating the course"
+      (error as Error).message || "An error occurred while updating the course",
     );
   }
 }
