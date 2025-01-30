@@ -82,7 +82,7 @@ export function Navbar() {
                 variant="accent"
                 asChild
               >
-                <Link href="/login">Log in</Link>
+                <Link href="/login">Log In</Link>
               </Button>
               <Button
                 className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary] shadow-none rounded-full"
