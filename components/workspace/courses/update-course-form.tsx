@@ -2,48 +2,55 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCourse } from "@/lib/courses/actions";
+import { updateCourse } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import type { CourseDetails, Module, WhatWillLearn } from "@/lib/definitions";
+import {
+  type Course,
+  CourseDetails,
+  Module,
+  WhatWillLearn,
+} from "@/lib/definitions";
+
+// type FormState = Omit<Course, "id" | "creator_id" | "created_at" | "updated_at">
 
 type FormState = {
-  name: string;
-  description: string;
-  type: string;
+  name: string | undefined;
+  description: string | undefined;
+  type: string | undefined;
   course_details: CourseDetails[];
   curriculum: Module[];
   what_w_learn: WhatWillLearn[];
 };
 
-const initialFormState: FormState = {
-  name: "",
-  description: "",
-  type: "",
-  course_details: [{ id: 1, course_detail: "" }],
-  curriculum: [{ id: 1, title: "", description: "" }],
-  what_w_learn: [{ id: 1, description: "" }],
-};
-
-export default function CreateCourseForm() {
-  const [formState, setFormState] = useState<FormState>(initialFormState);
+export function CourseEditForm({ course }: { course: Course }) {
+  const [formState, setFormState] = useState<FormState>({
+    name: course.name,
+    description: course.description,
+    type: course.type,
+    course_details: course.course_details || [],
+    curriculum: course.curriculum || [],
+    what_w_learn: course.what_w_learn || [],
+  });
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-
+    console.log("course id");
     try {
-      const newCourse = await createCourse(formState);
-      if (newCourse) {
-        router.push(`/workspace/course/${newCourse.id}`);
-      }
+      await updateCourse(course.id, formState, course.creator_id);
+      router.push(`/workspace/course/${course.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while updating the course",
+      );
     }
   };
 
@@ -88,10 +95,12 @@ export default function CreateCourseForm() {
     }));
   };
 
+  // console.log(course)
+
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Create New Course</CardTitle>
+        <CardTitle>Edit Course: {course.name}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -222,7 +231,7 @@ export default function CreateCourseForm() {
             </p>
           )}
           <Button type="submit" className="w-full">
-            Create Course
+            Update Course
           </Button>
         </form>
       </CardContent>

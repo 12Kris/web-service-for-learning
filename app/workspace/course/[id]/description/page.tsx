@@ -129,7 +129,7 @@ export default function CourseDetailPage({
         {isCreator && (
           <Link
             className="w-full"
-            href={`/workspace/course/${course?.id}/edit`}
+            href={`/workspace/course/edit/${course?.id}/`}
           >
             <Button className="w-full">
               <Edit />
