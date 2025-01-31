@@ -3,7 +3,7 @@
 import Header from "@/components/workspace/courses/header";
 import { useEffect, useState } from "react";
 import CourseDescriptionJumpotron from "@/components/workspace/courses/course-description-jumbotron";
-
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import { use } from "react";
 import { Course } from "@/lib/definitions";
 
@@ -24,6 +24,7 @@ export default function RootLayout({
   }
 
   useEffect(() => {
+
     async function fetchData() {
       if (!id) return;
 
@@ -38,7 +39,14 @@ export default function RootLayout({
     fetchData();
   }, [id]);
 
+
+
+  if (!course) {
+    return <LoadingSpinner className="mx-auto" />;
+  }
+
   return (
+    
     <div>
       <CourseDescriptionJumpotron
         title={course?.name}

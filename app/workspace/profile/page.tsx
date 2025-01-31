@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -59,8 +60,8 @@ export default function UserProfile() {
     fetchData();
   }, []);
 
-  if (!user) {
-    return <div>Loading...</div>;
+  if (!user || !createdCourses || !studyingCourses) {
+    return <LoadingSpinner className="mx-auto" />;
   }
 
   return (
