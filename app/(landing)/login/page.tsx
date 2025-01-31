@@ -111,7 +111,8 @@ export default function LoginPage() {
                 <Button
                     type="submit"
                     disabled={isPending}
-                    className="w-1/3 bg-[#ff8a80] hover:bg-[#ff8a80]/90 text-white rounded-3xl"
+                    variant={'accent'}
+                    size={'wide'}
                 >
                   {isPending ? "Logging in..." : "Log In"}
                 </Button>

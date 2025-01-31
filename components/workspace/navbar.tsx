@@ -130,23 +130,23 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
               />
             </div>
             <Button
-              variant="outline"
-              size="sm"
+              variant={"default"}
+              size="wide"
               onClick={onFilter}
               className="hidden sm:flex"
             >
-              <Filter className="mr-0 h-4 w-4" />
+              <Filter strokeWidth={3} className="mr-0 h-4 w-4" />
               Filter
             </Button>
             {showAddButton && (
               <Link href="/workspace/course/create">
                 <Button
                   variant="default"
-                  size="sm"
+                  size="wide"
                   onClick={onAdd}
                   className="flex"
                 >
-                  <Plus className="mr-0 h-4 w-4" />
+                  <Plus strokeWidth={3} className="mr-0 h-4 w-4" />
                   Add New
                 </Button>
               </Link>
