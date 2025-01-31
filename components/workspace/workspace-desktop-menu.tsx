@@ -22,7 +22,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
     <div className="hidden lg:flex sticky top-0 flex-col h-screen w-64 bg-background border-r">
       <div className="p-6">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-2xl text-[--neutral] font-light">Memoria</span>
+          <span className="text-2xl text-[--neutral] font-black">Memoria</span>
         </Link>
       </div>
       <nav className="flex-1 px-4 space-y-2">

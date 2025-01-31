@@ -48,7 +48,7 @@ export function Navbar() {
     <nav className="border-none bg-[--background] sticky top-0 z-50 md:py-4">
       <div className="flex items-center justify-between mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16">
         <div className="flex items-center">
-          <Link href="/" className="text-2xl text-[--neutral] font-light">
+          <Link href="/" className="text-2xl text-[--neutral] font-black">
             Memoria
           </Link>
         </div>
