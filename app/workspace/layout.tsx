@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import { Navbar } from "@/components/workspace/navbar";
 import Footer from "@/components/landing/footer";
 import { DesktopMenu } from "@/components/workspace/workspace-desktop-menu";
-const inter = Inter({ subsets: ["latin"] });
+import { Jura } from 'next/font/google';
 
+const jura = Jura({
+  subsets: ['latin'],
+
+});
 export const metadata: Metadata = {
   title: "Workspace",
   description: "Workspace for learning",
@@ -25,7 +28,7 @@ export default function WorkspaceLayout({
 
   return (
     <div
-      className={`${inter.className} bg-white flex w-full flex-col min-h-screen md:flex-row`}
+      className={`${jura.className} bg-white flex w-full flex-col min-h-screen md:flex-row`}
     >
       <DesktopMenu menuItems={menuItems} />
       <div className="flex flex-col w-full">
