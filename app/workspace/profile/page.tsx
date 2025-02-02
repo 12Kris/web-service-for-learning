@@ -166,7 +166,7 @@ export default function UserProfile() {
                     </CardContent>
                     <CardFooter>
                       <Button asChild className="w-full">
-                        <Link href={`/courses/${course.id}`}>
+                        <Link href={`/workspace/course/${course.id}`}>
                           Manage Course
                         </Link>
                       </Button>

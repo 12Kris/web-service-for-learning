@@ -105,11 +105,11 @@ export default function Home() {
         metrics={metrics}
       />
 
-      <main className="min-h-screen flex items-center justify-center p-4">
+      {/*<main className="min-h-screen flex items-center justify-center p-4">
         <StudyCarousel title="Directions of Education" topics={studyTopics} />
       </main>
 
-      <Gradient />
+      <Gradient />*/}
     </div>
   );
 }
