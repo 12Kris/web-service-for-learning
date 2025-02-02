@@ -77,6 +77,7 @@ export interface Block {
     id: number;
     course_id: number | null;
     name: string;
+    description?: string;
 }
 
 export interface FlashCards {

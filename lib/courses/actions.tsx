@@ -964,9 +964,9 @@ export async function updateCourse(
 			if (newModules.length > 0) {
 				const modulesToInsert = newModules.map((module) => ({
 					course_id: courseId,
-					name: module.name,
+					name: module.title,
 					description: module.description,
-					duration: module.duration,
+					duration: module.duration ?? null,
 				}));
 
 				const { error: moduleError } = await supabase.from("Module").insert(modulesToInsert);
@@ -1084,7 +1084,7 @@ export async function getCardsByLearningMaterial(learningMaterialId: number) {
 export async function getModulesByCourseId(courseId: number | null): Promise<Block[]> {
 	const { data, error } = await supabase
 		.from("Module")
-		.select("id, course_id, name")
+		.select("id, course_id, name, description")
 		.eq("course_id", courseId);
 
 	if (error) {
