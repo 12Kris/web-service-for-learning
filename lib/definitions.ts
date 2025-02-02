@@ -22,6 +22,8 @@ export interface User {
 }
 
 export interface Module {
+    materials?: LearningMaterial[];
+    tests?: Test[];
     id: number;
     title?: string;
     name?: string;

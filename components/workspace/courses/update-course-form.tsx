@@ -14,7 +14,7 @@ import {
   CourseDetails,
   Module,
   WhatWillLearn,
-  Material,
+  LearningMaterial,
   Test,
 } from "@/lib/definitions";
 
@@ -111,7 +111,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                   <div>
                     <Label className="text-sm font-medium">Materials</Label>
                     <ul className="list-disc list-inside">
-                      {module.materials.map((material: Material) => (
+                      {module.materials.map((material: LearningMaterial) => (
                         <li key={material.id}>{material.title}</li>
                       ))}
                     </ul>
