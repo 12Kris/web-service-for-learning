@@ -29,7 +29,7 @@ interface NavbarProps {
 
 export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
   const pathname = usePathname();
-  const showAddButton = pathname === "/workspace";
+  const showAddButton = pathname === "/workspace/course/browse";
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -64,7 +64,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
   }, []);
 
   return (
-    <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b bg-background/95 ">
+    <nav className="sticky bg-[--background] top-0 px-4 z-50 w-full border-b  ">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -147,7 +147,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
                   className="flex"
                 >
                   <Plus strokeWidth={3} className="mr-0 h-4 w-4" />
-                  Add New
+                  Create New
                 </Button>
               </Link>
             )}

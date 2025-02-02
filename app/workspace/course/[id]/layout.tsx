@@ -24,7 +24,6 @@ export default function RootLayout({
   }
 
   useEffect(() => {
-
     async function fetchData() {
       if (!id) return;
 
@@ -39,14 +38,11 @@ export default function RootLayout({
     fetchData();
   }, [id]);
 
-
-
   if (!course) {
     return <LoadingSpinner className="mx-auto" />;
   }
 
   return (
-    
     <div>
       <CourseDescriptionJumpotron
         title={course?.name}
