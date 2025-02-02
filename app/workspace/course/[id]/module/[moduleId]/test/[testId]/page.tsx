@@ -135,7 +135,7 @@ import { Progress } from "@/components/ui/progress"
 
 export default function TestPage() {
     const params = useParams();
-    const testId = params.testId;
+    const testId = Number(params.testId);
     const courseId = params.id;
     const moduleId = params.moduleId;
 
@@ -160,7 +160,7 @@ export default function TestPage() {
         if (selectedAnswer === null) return;
 
         const currentQuestion = questions[currentQuestionIndex];
-        const isCorrect = selectedAnswer === currentQuestion.correct_answer.id;
+        const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
@@ -169,7 +169,7 @@ export default function TestPage() {
         setAnswers((prev) => [
             ...prev,
             {
-                questionId: currentQuestion.id,
+                questionId: Number(currentQuestion.id),
                 answerId: selectedAnswer,
                 isCorrect,
             },

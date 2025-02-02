@@ -1,7 +1,11 @@
+import {Dispatch, SetStateAction} from "react";
+
 export interface UserMetadata {
     name?: string;
     avatar_url?: string;
     role?: string;
+    displayName?: string;
+    description?: string;
 }
 
 export interface User {
@@ -19,9 +23,10 @@ export interface User {
 
 export interface Module {
     id: number;
-    title: string;
-    description: string;
-
+    title?: string;
+    name?: string;
+    description?: string;
+    duration?: string
 }
 
 export interface WhatWillLearn {
@@ -70,22 +75,45 @@ export interface UserCourse {
 
 export interface Block {
     id: number;
-    course_id: number;
+    course_id: number | null;
     name: string;
 }
 
-// export interface Card {
-//   id: number;
-//   block_id: number;
-//   question: string;
-//   answer: string;
-// }
+export interface FlashCards {
+    learning_material_id?: number;
+    id?: number;
+    front: string;
+    back: string;
+}
+
+export interface BlockSectionProps {
+    block: Block;
+    setModals: Dispatch<SetStateAction<{ block: boolean }>>;
+    handleOpenBlockModal: (block: Block | null) => void;
+}
+
+export interface LearningMaterial {
+    id: number;
+    title: string;
+    content: string;
+}
+
+export interface MaterialData {
+    title: string;
+}
+
+export interface TestDataWithQuestion {
+    block_id: number;
+    questions?: Question[];
+    question?: Question
+    answers: Answer[]
+}
 
 export interface TestData {
     id: number;
     question: string;
     block_id: number;
-    Block: BlockData;
+    Block?: BlockData;
 }
 
 export interface BlockData {
@@ -120,7 +148,7 @@ export interface Test {
     id: number;
     block_id: number;
     question: string;
-    answer: string;
+    answer?: { question_id: number, answer: string } | string;
     correct: boolean;
 }
 
@@ -144,16 +172,51 @@ export interface TestWithQuestions {
     questions: TestQuestion[];
 }
 
+
 export interface TestQuestion {
-    id: string;
+    id: number;
     question: string;
+    correct_answer?: number;
+    correct_id?: number
     answers: TestAnswer[];
 }
 
-export interface TestAnswer {
-    id: string;
-    text: string;
+export interface TestAnswerForCourse {
+    id: number;
+    answer: string;
     correct: boolean;
+    text: string;
+}
+
+export interface TestQuestionForCourse {
+    id: number;
+    question: string;
+    correct_answer?: number;
+    correct_id?: number;
+    answers: TestAnswerForCourse[];
+}
+
+export interface TestAnswer {
+    answer?: string;
+    id: number;
+    text: string;
+    correct: boolean | number;
+}
+
+export interface AnswerDataQuestion {
+    text: string;
+    question_id: number;
+}
+
+export interface SaveTestResult {
+    id?: number;
+    error?: string;
+}
+
+export interface UserTestAnswer {
+    questionId: number;
+    answerId: number;
+    isCorrect: boolean;
 }
 
 export interface TestQuestionDataFromDB {
@@ -168,8 +231,6 @@ export interface TestAnswerDataFromDB {
     answer: string;
 }
 
-
-
 export interface Answer {
     id: string;
     text: string;
@@ -177,7 +238,7 @@ export interface Answer {
 }
 
 export interface Question {
-    id: string;
+    id: number;
     question: string;
     answers: Answer[];
 }

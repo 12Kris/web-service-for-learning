@@ -5,13 +5,14 @@ import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {Card} from '@/components/ui/card';
 import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions";
+import {LearningMaterial, Test} from "@/lib/definitions";
 
 export default function ModulePage() {
     const params = useParams();
-    const moduleId = params.moduleId;
+    const moduleId = Number(params.moduleId);
 
-    const [materials, setMaterials] = useState([]);
-    const [tests, setTests] = useState([]);
+    const [materials, setMaterials] = useState<LearningMaterial[]>([]);
+    const [tests, setTests] = useState<Test[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,8 +22,11 @@ export default function ModulePage() {
             setTests(testsData);
         };
 
-        fetchData();
+        if (moduleId) {
+            fetchData();
+        }
     }, [moduleId]);
+
 
     return (
         <div className='flex text-center space-x-10 justify-center'>

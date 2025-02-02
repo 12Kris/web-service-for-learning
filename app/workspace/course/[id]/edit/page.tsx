@@ -46,7 +46,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
         try {
             if (currentBlock) {
                 const response = await updateBlock(currentBlock.id, id, blockName);
-                if (response?.id) {
+                if (response) {
                     setBlocks((prev) =>
                         prev.map((block) =>
                             block.id === currentBlock.id ? { ...block, name: blockName } : block
@@ -121,7 +121,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
                     <Link href={`/workspace/course/${course?.id}`}>
                         <Button variant="outline">Back</Button>
                     </Link>
-                    <Button variant="primary">Save</Button>
+                    <Button variant="default">Save</Button>
                 </div>
             </div>
             <div className="flex-1 bg-zinc-100 rounded-3xl p-6">

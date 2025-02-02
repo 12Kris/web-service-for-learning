@@ -14,7 +14,7 @@ export default function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: number }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
   const { id } = use(params);

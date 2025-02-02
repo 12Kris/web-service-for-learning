@@ -579,7 +579,14 @@
 "use server";
 import { supabase } from "@/lib/supabaseClient";
 import { getUser } from "@/lib/auth/actions";
-import { Block, Course, CourseWithStudents, Test, TestData, TestQuestionData } from "@/lib/definitions";
+import {
+	Block,
+	Course,
+	CourseWithStudents, LearningMaterial,
+	SaveTestResult,
+	Test, TestQuestionForCourse,
+	UserTestAnswer
+} from "@/lib/definitions";
 
 export async function getCourseById(courseId: number) {
 	const { data, error } = await supabase
@@ -666,7 +673,7 @@ export async function getUserCourses() {
 }
 
 export async function addCourseToUser(
-	courseId: string
+	courseId: number
 ): Promise<{ success: boolean; message: string }> {
 	try {
 		const user = await getUser();
@@ -716,7 +723,7 @@ export async function addCourseToUser(
 }
 
 export async function removeCourseFromUser(
-	courseId: string
+	courseId: number
 ): Promise<{ success: boolean; message: string }> {
 	try {
 		const user = await getUser();
@@ -867,7 +874,7 @@ export async function createCourse(
 
 
 export async function deleteCourse(
-	courseId: string
+	courseId: number
 ): Promise<{ success: boolean; message: string }> {
 	try {
 		const user = await getUser();
@@ -915,9 +922,9 @@ export async function deleteCourse(
 }
 
 export async function updateCourse(
-	courseId: string,
+	courseId: number,
 	courseData: Partial<Course>,
-	creator_id: string
+	creator_id: string | undefined
 ) {
 	try {
 		const user = await getUser();
@@ -1022,43 +1029,43 @@ export async function getStudentCountForCourse(courseId: string) {
 	}
 }
 
-export async function getTests(courseId: number): Promise<Test[]> {
-	const { data, error } = await supabase
-		.from('Test')
-		.select(`
-            id,
-            question,
-            block_id,
-            Block:Block!Test_block_id_fkey (
-                id,
-                name,
-                Course:Course!Block_course_id_fkey (
-                    id,
-                    name
-                )
-            )
-        `)
-		.eq('Module.course_id', courseId);
-
-	if (error) {
-		console.error('Error fetching tests:', error);
-		return [];
-	}
-
-	return (data as unknown as TestData[]).map((item) => ({
-		id: item.id,
-		question: item.question,
-		block_id: item.block_id,
-		Block: {
-			id: item.Block.id,
-			name: item.Block.name,
-			Course: {
-				id: item.Block.Course.id,
-				name: item.Block.Course.name,
-			},
-		},
-	}));
-}
+// export async function getTests(courseId: number): Promise<Test[]> {
+// 	const { data, error } = await supabase
+// 		.from('Test')
+// 		.select(`
+//             id,
+//             question,
+//             block_id,
+//             Block:Block!Test_block_id_fkey (
+//                 id,
+//                 name,
+//                 Course:Course!Block_course_id_fkey (
+//                     id,
+//                     name
+//                 )
+//             )
+//         `)
+// 		.eq('Module.course_id', courseId);
+//
+// 	if (error) {
+// 		console.error('Error fetching tests:', error);
+// 		return [];
+// 	}
+//
+// 	return (data as unknown as TestData[]).map((item) => ({
+// 		id: item.id,
+// 		question: item.question,
+// 		block_id: item.block_id,
+// 		Block: {
+// 			id: item.Block.id,
+// 			name: item.Block.name,
+// 			Course: {
+// 				id: item.Block.Course.id,
+// 				name: item.Block.Course.name,
+// 			},
+// 		},
+// 	}));
+// }
 
 export async function getCardsByLearningMaterial(learningMaterialId: number) {
 	const { data, error } = await supabase
@@ -1102,11 +1109,13 @@ export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
 	return data as Test[];
 }
 
-export async function getTestQuestions(testId: string): Promise<{
-	id: string;
+
+
+export async function getTestQuestions(testId: number): Promise<{
+	id: number;
 	question: string;
-	correct_answer: string;
-	answers: { id: string; answer: string; correct: boolean }[]
+	correct_answer: number | undefined;
+	answers: { id: number; answer: string; correct: boolean; text: string }[]
 }[]> {
 	const { data, error } = await supabase
 		.from('TestQuestions')
@@ -1126,7 +1135,7 @@ export async function getTestQuestions(testId: string): Promise<{
 		return [];
 	}
 
-	return (data as unknown as TestQuestionData[]).map((item) => {
+	return (data as unknown as TestQuestionForCourse[]).map((item) => {
 		const answersWithCorrect = item.answers.map((answer) => ({
 			...answer,
 			correct: answer.id === item.correct_id,
@@ -1143,8 +1152,9 @@ export async function getTestQuestions(testId: string): Promise<{
 
 
 
+
 export async function saveTestResults(
-	testId: string,
+	testId: number,
 	answers: UserTestAnswer[]
 ): Promise<SaveTestResult> {
 	try {

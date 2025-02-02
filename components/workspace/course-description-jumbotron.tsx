@@ -13,7 +13,7 @@ interface CourseDescriptionJumbotronProps {
   title?: string;
   description?: string;
   type?: string;
-  id: string;
+  id: number;
   onLearnMore: () => void;
 }
 
@@ -41,13 +41,13 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     fetchData();
   }, [id]);
 
-  async function handleAddCourse(id: string) {
+  async function handleAddCourse(id: number) {
     if (!id) return;
     await addCourseToUser(id);
     setIsCourseAdded(true);
     window.location.reload();
   }
-  async function handleRemoveCourse(id: string) {
+  async function handleRemoveCourse(id: number) {
     if (!id) return;
     await removeCourseFromUser(id);
     setIsCourseAdded(false);

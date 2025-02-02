@@ -1,7 +1,7 @@
 "use client"
 import {useState, useEffect, useCallback} from "react";
 import Skeleton from "react-loading-skeleton";
-import {getMaterialsByBlockId, getModulesByCourseId, getTestsByBlockId} from "@/lib/courses/actions";
+import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions";
 import {
     createTest,
     deleteTest,
@@ -14,16 +14,28 @@ import {
 import {Button} from "@/components/ui/button";
 import {MaterialModal} from "@/components/workspace/modals/material";
 import {TestModal} from "@/components/workspace/modals/test";
+import {
+    BlockSectionProps,
+    Card,
+    LearningMaterial,
+    MaterialData,
+    TestData,
+    TestDataWithQuestion
+} from "@/lib/definitions";
 
-export default function BlockSection({block, setModals, handleOpenBlockModal}) {
-    const [materials, setMaterials] = useState(null);
-    const [tests, setTests] = useState(null);
+export default function BlockSection({
+                                         block,
+                                         setModals,
+                                         handleOpenBlockModal,
+                                     }: BlockSectionProps) {
+    const [materials, setMaterials] = useState<LearningMaterial[] | null>([]);
+    const [tests, setTests] = useState<TestData[] | null>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isMaterialModalOpen, setMaterialModalOpen] = useState(false);
     const [isTestModalOpen, setTestModalOpen] = useState(false);
-    const [currentMaterial, setCurrentMaterial] = useState(null);
-    const [materialContents, setMaterialContents] = useState([]);
-    const [currentTest, setCurrentTest] = useState(null);
+    const [currentMaterial, setCurrentMaterial] = useState<LearningMaterial | null>(null);
+    const [materialContents, setMaterialContents] = useState<Card[]>([]);
+    const [currentTest, setCurrentTest] = useState<TestData | null>(null);
 
     const fetchBlockData = useCallback(async () => {
         setIsLoading(true);
@@ -45,13 +57,16 @@ export default function BlockSection({block, setModals, handleOpenBlockModal}) {
         fetchBlockData();
     }, [fetchBlockData]);
 
-    const handleSaveMaterial = async (blockId, materialData, materialContents) => {
+    const handleSaveMaterial = async (blockId: number, materialData: MaterialData, materialContents: {
+        front: string;
+        back: string
+    }[]) => {
         setIsLoading(true);
         try {
-            if (currentMaterial?.id) {
-                await updateMaterial(currentMaterial.id, {title: materialData.title}, materialContents);
-            } else {
+            if (!currentMaterial?.id) {
                 await createMaterial({title: materialData.title, block_id: blockId}, materialContents);
+            } else {
+                await updateMaterial(currentMaterial.id, {title: materialData.title}, materialContents);
             }
             await fetchBlockData();
             setMaterialModalOpen(false);
@@ -72,13 +87,11 @@ export default function BlockSection({block, setModals, handleOpenBlockModal}) {
         }
     };
 
-    const handleSaveTest = async (testId, testData) => {
+    const handleSaveTest = async (testId: number | null, testData: TestDataWithQuestion) => {
         setIsLoading(true);
         try {
             if (testId) {
-                console.log(testData)
-                const res = await updateTest(testId, testData);
-                console.log(res)
+                await updateTest(testId, testData);
             } else {
                 await createTest(testData);
             }
@@ -119,7 +132,7 @@ export default function BlockSection({block, setModals, handleOpenBlockModal}) {
                                 size="sm"
                                 onClick={async () => {
                                     await deleteMaterial(material.id);
-                                    fetchBlockData(); // Обновление списка материалов после удаления
+                                    fetchBlockData();
                                 }}
                             >
                                 Delete
@@ -149,7 +162,7 @@ export default function BlockSection({block, setModals, handleOpenBlockModal}) {
                                 size="sm"
                                 onClick={async () => {
                                     await deleteTest(test.id);
-                                    fetchBlockData(); // Обновление списка тестов после удаления
+                                    fetchBlockData();
                                 }}
                             >
                                 Delete
@@ -164,7 +177,7 @@ export default function BlockSection({block, setModals, handleOpenBlockModal}) {
                     variant="destructive"
                     onClick={() => {
                         setModals((prev) => ({...prev, deleteBlock: block.id}));
-                        deleteModule(block.id, block.course_id, getModulesByCourseId);
+                        deleteModule(block.id);
                     }}
                 >
                     Delete Block
@@ -192,10 +205,14 @@ export default function BlockSection({block, setModals, handleOpenBlockModal}) {
             <MaterialModal
                 isOpen={isMaterialModalOpen}
                 onClose={() => setMaterialModalOpen(false)}
-                onSave={(materialTitle, materialContents) => handleSaveMaterial(block.id, {title: materialTitle}, materialContents)}
+                onSave={(materialTitle: string, materialContents: Card[]) => {
+                    handleSaveMaterial(block.id, { title: materialTitle }, materialContents);
+                }}
                 materialTitle={currentMaterial?.title || ""}
                 setMaterialTitle={(title) =>
-                    setCurrentMaterial((prev) => ({...prev, title}))
+                    setCurrentMaterial((prev) =>
+                        prev ? { ...prev, title } : null
+                    )
                 }
                 currentMaterial={currentMaterial}
                 blockId={block.id}

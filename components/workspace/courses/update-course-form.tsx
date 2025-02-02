@@ -41,7 +41,6 @@ export function CourseEditForm({ course }: { course: Course }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
-    console.log("course id");
     try {
       await updateCourse(course.id, formState, course.creator_id);
       router.push(`/workspace/course/${course.id}`);

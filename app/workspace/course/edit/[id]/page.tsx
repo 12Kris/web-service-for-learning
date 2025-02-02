@@ -4,7 +4,7 @@ import { getCourseById } from "@/lib/courses/actions";
 import { notFound } from "next/navigation";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: number }>;
 }
 
 export default async function CourseEditPage({ params }: PageProps) {

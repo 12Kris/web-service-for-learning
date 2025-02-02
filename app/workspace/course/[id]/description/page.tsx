@@ -31,7 +31,7 @@ import Skeleton from "react-loading-skeleton";
 export default function CourseDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: number }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
   const [modules, setModules] = useState<Module[]>([])
@@ -47,7 +47,6 @@ export default function CourseDetailPage({
       try {
         const courseData = await getCourseById(id);
         const modulesData = await getModulesByCourseId(id);
-        console.log(modulesData)
         setCourse(courseData);
         setModules(modulesData);
         const user = await getUser();

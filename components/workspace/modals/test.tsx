@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { getTestById } from "@/lib/tests/actions";
 import { Button } from "@/components/ui/button";
-import {TestDataModal} from "@/lib/definitions";
+import {TestDataWithQuestion} from "@/lib/definitions";
 
 export function TestModal({
     isOpen,
@@ -23,8 +23,8 @@ export function TestModal({
 }: {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (testData: TestDataModal) => void; // TODO: change
-    testId: number;
+    onSave: (testId: number | null, testData: TestDataWithQuestion) => void;
+    testId: number | null;
     blockId: number | null;
 }) {
     const [testTitle, setTestTitle] = useState<string>("");

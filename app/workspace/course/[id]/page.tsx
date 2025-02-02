@@ -11,12 +11,12 @@ import { Module } from "@/lib/types/learning";
 export default function FlashcardPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: number }>;
 }) {
   const [isCourseAdded, setIsCourseAdded] = useState<boolean | null>(null);
   const { id } = use(params);
 
-  async function fetchData(id: string) {
+  async function fetchData(id: number) {
     if (!id) return;
 
     try {

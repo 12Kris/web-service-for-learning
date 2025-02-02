@@ -84,19 +84,22 @@ import Flashcard from '@/components/card/card'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { getCardsByLearningMaterial } from '@/lib/courses/actions'
+import {FlashCards} from "@/lib/definitions";
 
 export default function CardPage() {
   const params = useParams()
-  const cardId = params.cardId
+  const cardId = Number(params.cardId)
   const [currentCard, setCurrentCard] = useState(0)
   const [isFlipped, setIsFlipped] = useState(false)
-  const [flashcards, setFlashcards] = useState([])
+  const [flashcards, setFlashcards] = useState<FlashCards[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getCardsByLearningMaterial(cardId)
-      if (res && res.length > 0) {
-        setFlashcards(res)
+      if(cardId) {
+        const res = await getCardsByLearningMaterial(cardId)
+        if (res && res.length > 0) {
+          setFlashcards(res)
+        }
       }
     }
 
