@@ -1,33 +1,34 @@
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "rounded-full inline-flex font-bold items-center justify-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-1",
+  "rounded-full inline-flex font-bold items-center justify-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[--neutral] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4",
   {
     variants: {
       variant: {
         default:
-          "text-[--neutral] bg-transparent hover:text-white border-2 border-[--neutral] border-solid rounded-full hover:bg-[--neutral]",
+          "text-[--neutral] bg-transparent border-2 border-[--neutral] hover:text-white hover:bg-[--neutral]",
         destructive:
-          "text-[--accent] hover:text-white hover:bg-[--accent] border-2 border-[--accent] border-solid rounded-full",
+          "text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]",
         destructiveSolid: "text-white bg-[--accent] hover:bg-[--accent]/80",
         secondary:
-          "text-[--neutral] bg-[--primary] hover:bg-[--primary] shadow-none rounded-full",
+          "text-[--neutral] bg-[--primary] border-2 border-[--primary] hover:bg-[--primary-light]",
         solid:
-          "text-white bg-black rounded-full border-2 border-black border-solid ",
+          "text-white bg-[--neutral-dark] border-2 border-[--neutral-dark]",
         outline:
-          "text-black rounded-full border-2 border-black border-solid hover:bg-black hover:text-white",
-        ghost: "text-[--neutral]",
-        link: "text-[--neutral] underline-offset-4 hover:underline",
-        primary: "bg-[--primary] text-[--neutral] hover:bg-[--primary]/90",
+          "text-[--neutral] bg-transparent border-2 border-[--neutral] hover:bg-[--neutral] hover:text-white",
+        ghost: "text-[--neutral] bg-transparent",
+        link: "text-[--neutral] bg-transparent underline-offset-4 hover:underline",
+        primary:
+          "bg-[--primary] text-[--neutral] border-2 border-[--primary] hover:bg-[--primary-hover]",
         primaryOutline:
-          "text-[--primary] border-2 border-[--primary] hover:bg-[--primary] hover:text-[--primary-foreground]",
-        accent: "bg-[--accent] text-white hover:bg-[--accent]/90",
+          "text-[--primary] bg-transparent border-2 border-[--primary] hover:bg-[--primary] hover:text-[--primary-foreground]",
+        accent:
+          "bg-[--accent] text-white border-2 border-[--accent] hover:bg-[--accent-hover]",
         accentOutline:
-          "text-[--accent] border-2 border-[--accent] hover:bg-[--accent] hover:text-white",
+          "text-[--accent] bg-transparent border-2 border-[--accent] hover:bg-[--accent] hover:text-white",
       },
       size: {
         default: "h-9 px-4 py-2",

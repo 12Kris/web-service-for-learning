@@ -34,7 +34,7 @@ export default function ConfirmEmailPage() {
       setError(`Invalid token ${err}`);
     }
   } else {
-    return <p>Token not found in URL</p>;    
+    return <p>Token not found in URL</p>;
   }
 
   const alreadyConfirmedHandler = async (event: {

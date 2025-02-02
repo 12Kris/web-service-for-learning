@@ -77,14 +77,13 @@ export function CourseCarousel({ title, courses }: CourseCarouselProps) {
                   : "w-full"
               }`}
             >
-              <Link href={`workspace/course/${course.id}`}>
+              <Link href={`/workspace/course/${course.id}`}>
                 <CourseCard
                   title={course.name}
                   topic={course.type || ""}
                   thermsCount={0}
                   description={course.description || ""}
                   author={course.creator?.full_name || ""}
-                  onLike={() => console.log(`Liked course: ${course.id}`)}
                 />
               </Link>
             </div>

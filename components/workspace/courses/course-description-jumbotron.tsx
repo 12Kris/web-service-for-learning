@@ -55,7 +55,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   }
 
   return (
-    <section className="w-full bg-[#e8f4f1] rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
+    <section className="w-full bg-[--primary-light] border rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-5xl font-bold text-center">
           {title || (

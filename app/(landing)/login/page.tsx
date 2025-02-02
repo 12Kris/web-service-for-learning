@@ -43,10 +43,7 @@ export default function LoginPage() {
 
     startTransition(async () => {
       try {
-        const { error } = await loginUser(
-          formData.email,
-          formData.password
-        );
+        const { error } = await loginUser(formData.email, formData.password);
         if (error) {
           setError(error);
           return;

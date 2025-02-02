@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/workspace/navbar";
 import Footer from "@/components/landing/footer";
 import { DesktopMenu } from "@/components/workspace/workspace-desktop-menu";
-import { Jura } from 'next/font/google';
+import { Jura } from "next/font/google";
+import "../globals.css";
 
 const jura = Jura({
-  subsets: ['latin'],
-
+  subsets: ["latin"],
 });
 export const metadata: Metadata = {
   title: "Workspace",
@@ -19,8 +19,12 @@ export default function WorkspaceLayout({
   children: React.ReactNode;
 }) {
   const menuItems = [
-    { name: "Home", icon: "Home", href: "/" },
-    { name: "Courses", icon: "Book", href: "/workspace" },
+    { name: "Home", icon: "Home", href: "/workspace" },
+    {
+      name: "Browse courses",
+      icon: "Compass",
+      href: "/workspace/course/browse",
+    },
     { name: "Bookmarks", icon: "Bookmark", href: "/workspace/bookmarks" },
     { name: "Profile", icon: "User", href: "/workspace/profile" },
     { name: "Help", icon: "HelpCircle", href: "/workspace/help" },
@@ -28,13 +32,13 @@ export default function WorkspaceLayout({
 
   return (
     <div
-      className={`${jura.className} bg-white flex w-full flex-col min-h-screen md:flex-row`}
+      className={`${jura.className} bg-[--background] flex w-full flex-col min-h-screen md:flex-row`}
     >
       <DesktopMenu menuItems={menuItems} />
       <div className="flex flex-col w-full">
         <Navbar menuItems={menuItems} />
 
-        <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-1 bg-[--background] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           {children}
         </main>
         <Footer />
