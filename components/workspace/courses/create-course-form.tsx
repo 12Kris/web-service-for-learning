@@ -49,13 +49,13 @@ export default function CreateCourseForm() {
 
   const updateFormState = <K extends keyof FormState>(
     key: K,
-    value: FormState[K],
+    value: FormState[K]
   ) => {
     setFormState((prev) => ({ ...prev, [key]: value }));
   };
 
   const addItem = <K extends "course_details" | "curriculum" | "what_w_learn">(
-    key: K,
+    key: K
   ) => {
     setFormState((prev) => ({
       ...prev,
@@ -73,17 +73,17 @@ export default function CreateCourseForm() {
 
   const updateItem = <
     K extends "course_details" | "curriculum" | "what_w_learn",
-    F extends keyof FormState[K][number],
+    F extends keyof FormState[K][number]
   >(
     key: K,
     index: number,
     field: F,
-    value: string,
+    value: string
   ) => {
     setFormState((prev) => ({
       ...prev,
       [key]: prev[key].map((item, i) =>
-        i === index ? { ...item, [field]: value } : item,
+        i === index ? { ...item, [field]: value } : item
       ),
     }));
   };
@@ -137,7 +137,7 @@ export default function CreateCourseForm() {
                       "course_details",
                       index,
                       "course_detail",
-                      e.target.value,
+                      e.target.value
                     )
                   }
                   aria-label={`Course detail ${detail.id}`}
@@ -166,7 +166,7 @@ export default function CreateCourseForm() {
                       "what_w_learn",
                       index,
                       "description",
-                      e.target.value,
+                      e.target.value
                     )
                   }
                   aria-label={`Learning outcome ${item.id}`}
@@ -201,7 +201,7 @@ export default function CreateCourseForm() {
                       "curriculum",
                       index,
                       "description",
-                      e.target.value,
+                      e.target.value
                     )
                   }
                   aria-label={`Module ${module.id} description`}
