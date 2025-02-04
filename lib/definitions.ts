@@ -67,11 +67,11 @@ export interface UserCourse {
   course_id: number;
 }
 
-export interface Block {
-  id: number;
-  course_id: number;
-  name: string;
-}
+// export interface Block {
+//   id: number;
+//   course_id: number;
+//   name: string;
+// }
 
 export interface Card {
   id: number;
@@ -105,6 +105,55 @@ export interface Problem {
 // bohdan code
 
 
+export interface CourseWithStudents {
+    id: number;
+    name: string;
+    description?: string;
+    type?: string;
+    creator_id?: string;
+    last_completion_date?: string;
+    student_count: number;
+}
+
+export interface CourseDetails {
+    id: number;
+    course_detail: string;
+}
+
+export interface UserCourse {
+    user_id: string;
+    course_id: number;
+}
+
+export interface Block {
+    id: number;
+    course_id: number | null;
+    name: string;
+    description?: string;
+}
+
+export interface FlashCards {
+    learning_material_id?: number;
+    id?: number;
+    front: string;
+    back: string;
+}
+
+export interface BlockSectionProps {
+    block: Block;
+    setModals: Dispatch<SetStateAction<{ block: boolean }>>;
+    handleOpenBlockModal: (block: Block | null) => void;
+}
+
+export interface LearningMaterial {
+    id: number;
+    title: string;
+    content: string;
+}
+
+export interface MaterialData {
+    title: string;
+}
 
 export interface TestWithQuestions {
     id: number;
