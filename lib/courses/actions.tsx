@@ -387,45 +387,6 @@ export async function getCardsByLearningMaterial(learningMaterialId: number) {
 	return data;
 }
 
-export async function getTestQuestions(testId: number): Promise<{
-	id: number;
-	question: string;
-	correct_answer: number | undefined;
-	answers: { id: number; answer: string; correct: boolean; text: string }[]
-}[]> {
-	const { data, error } = await supabase
-		.from('TestQuestions')
-		.select(`
-            id,
-            question,
-            correct_id:TestAnswers!TestQuestions_correct_id_fkey(id),
-            answers:TestAnswers!TestAnswers_question_id_fkey (
-                id,
-                answer
-            )
-        `)
-		.eq('test_id', testId);
-
-	if (error) {
-		console.error("Error fetching test questions:", error);
-		return [];
-	}
-
-	return (data as unknown as TestQuestionForCourse[]).map((item) => {
-		const answersWithCorrect = item.answers.map((answer) => ({
-			...answer,
-			correct: answer.id === item.correct_id,
-		}));
-
-		return {
-			id: item.id,
-			question: item.question,
-			correct_answer: item.correct_id,
-			answers: answersWithCorrect,
-		};
-	});
-}
-
 
 
 
@@ -495,3 +456,91 @@ export async function saveTestResults(
 
 // bohdan code 
 
+
+export async function getModulesByCourseId(courseId: number | null): Promise<Block[]> {
+	const { data, error } = await supabase
+		.from("Module")
+		.select("id, course_id, name, description")
+		.eq("course_id", courseId);
+
+	if (error) {
+		console.error("Error fetching modules:", error);
+		return [];
+	}
+
+	return data as Block[];
+}
+
+export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
+	const { data, error } = await supabase
+		.from("Test")
+		.select("id, block_id, question")
+		.eq("block_id", blockId);
+
+	if (error) {
+		console.error("Error fetching tests:", error);
+		return [];
+	}
+
+	return data as Test[];
+}
+
+
+
+export async function getTestQuestions(testId: number): Promise<{
+	id: number;
+	question: string;
+	correct_answer: number | undefined;
+	answers: { id: number; answer: string; correct: boolean; text: string }[]
+}[]> {
+	const { data, error } = await supabase
+		.from('TestQuestions')
+		.select(`
+            id,
+            question,
+            correct_id:TestAnswers!TestQuestions_correct_id_fkey(id),
+            answers:TestAnswers!TestAnswers_question_id_fkey (
+                id,
+                answer
+            )
+        `)
+		.eq('test_id', testId);
+
+	if (error) {
+		console.error("Error fetching test questions:", error);
+		return [];
+	}
+
+	return (data as unknown as TestQuestionForCourse[]).map((item) => {
+		const answersWithCorrect = item.answers.map((answer) => ({
+			...answer,
+			correct: answer.id === item.correct_id,
+		}));
+
+		return {
+			id: item.id,
+			question: item.question,
+			correct_answer: item.correct_id,
+			answers: answersWithCorrect,
+		};
+	});
+}
+
+
+
+
+
+export async function getMaterialsByBlockId(blockId: number): Promise<LearningMaterial[]> {
+	const { data, error } = await supabase
+		.from("LearningMaterial")
+		.select("id, title, content, material_type, order_number")
+		.eq("block_id", blockId)
+		.order("order_number", { ascending: true });
+
+	if (error) {
+		console.error("Error fetching learning materials:", error);
+		return [];
+	}
+
+	return data as LearningMaterial[];
+}
