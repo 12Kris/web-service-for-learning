@@ -363,3 +363,20 @@ export async function updateCourse(
     );
   }
 }
+
+//bohdan code
+
+export async function getCardsByLearningMaterial(learningMaterialId: number) {
+	const { data, error } = await supabase
+		.from("flashcards")
+		.select("*")
+		.eq("learning_material_id", learningMaterialId);
+
+	if (error) {
+		console.error("Error fetching cards:", error);
+		return [];
+	}
+
+	return data;
+}
+
