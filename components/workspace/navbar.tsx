@@ -153,7 +153,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
                     className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 "
                   />
                 }
-                className="w-[300px]"
+                className="w-[300px] hidden sm:block"
                 onChange={(e) => onSearch?.(e.target.value)}
               />
             </div>

@@ -105,9 +105,9 @@ export default function Home() {
         metrics={metrics}
       />
 
-      <main className="min-h-screen flex items-center justify-center p-4">
+    <div className="mx-auto my-32">
         <StudyCarousel title="Directions of Education" topics={studyTopics} />
-      </main>
+        </div>
 
       {/*<Gradient />*/}
     </div>
