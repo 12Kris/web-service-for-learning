@@ -101,7 +101,7 @@ export default function CourseDetailPage({
       />
 
       <div className="flex flex-col md:flex-row w-full gap-2">
-        <Button className="w-full" disabled={true}></Button>
+        {/* <Button className="w-full" disabled={true}></Button> */}
         <Button
           className="w-full"
           onClick={handleAddCourse}

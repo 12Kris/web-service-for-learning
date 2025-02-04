@@ -141,7 +141,7 @@ export default function CardPage() {
             <span>Previous</span>
           </button> */}
           <div className="flex-1">
-            <div className="w-full h-[400px]">
+            <div className="w-full h-[450px]">
               <Flashcard
                 frontContent={flashcards[currentCard].front}
                 backContent={flashcards[currentCard].back}
