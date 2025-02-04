@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -33,28 +34,26 @@ export default function Header() {
   };
 
   return (
-    <nav className="container mx-auto px-4 py-0 pt-4">
-      <ul className="flex space-x-4">
+    <nav className="mx-auto mt-4">
+      <ul className="flex space-x-4 justify-center">
         <li>
-          <Link
-            href={getHref("")}
-            className={`px-4 py-2 transition-colors ${
-              isActive("") ? "border-b-2 border-black border-solid" : ""
-            }`}
-          >
-            Modules
+          <Link href={getHref("")} className={`transition-colors `}>
+            <Button
+              size={"lg"}
+              variant={`${isActive("") ? "secondary" : "ghost"}`}
+            >
+              Modules
+            </Button>
           </Link>
         </li>
         <li>
-          <Link
-            href={getHref("description")}
-            className={`px-4 py-2 transition-colors ${
-              isActive("description")
-                ? "border-b-2 border-black border-solid"
-                : ""
-            }`}
-          >
-            Description
+          <Link href={getHref("description")} className={`transition-colors `}>
+            <Button
+              size={"lg"}
+              variant={`${isActive("description") ? "secondary" : "ghost"}`}
+            >
+              Description
+            </Button>
           </Link>
         </li>
       </ul>
