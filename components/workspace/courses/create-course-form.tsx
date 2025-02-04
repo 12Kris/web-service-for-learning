@@ -95,11 +95,11 @@ export default function CreateCourseForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Course Name</Label>
+          <div>
             <Input
               id="name"
               type="text"
+              label="Course Name"
               value={formState.name}
               onChange={(e) => updateFormState("name", e.target.value)}
               required
@@ -107,10 +107,10 @@ export default function CreateCourseForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={formState.description}
+              label="Course Description"
               onChange={(e) => updateFormState("description", e.target.value)}
               aria-label="Course description"
             />
