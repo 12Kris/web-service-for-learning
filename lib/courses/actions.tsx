@@ -380,3 +380,107 @@ export async function getCardsByLearningMaterial(learningMaterialId: number) {
 	return data;
 }
 
+export async function getTestQuestions(testId: number): Promise<{
+	id: number;
+	question: string;
+	correct_answer: number | undefined;
+	answers: { id: number; answer: string; correct: boolean; text: string }[]
+}[]> {
+	const { data, error } = await supabase
+		.from('TestQuestions')
+		.select(`
+            id,
+            question,
+            correct_id:TestAnswers!TestQuestions_correct_id_fkey(id),
+            answers:TestAnswers!TestAnswers_question_id_fkey (
+                id,
+                answer
+            )
+        `)
+		.eq('test_id', testId);
+
+	if (error) {
+		console.error("Error fetching test questions:", error);
+		return [];
+	}
+
+	return (data as unknown as TestQuestionForCourse[]).map((item) => {
+		const answersWithCorrect = item.answers.map((answer) => ({
+			...answer,
+			correct: answer.id === item.correct_id,
+		}));
+
+		return {
+			id: item.id,
+			question: item.question,
+			correct_answer: item.correct_id,
+			answers: answersWithCorrect,
+		};
+	});
+}
+
+
+
+
+export async function saveTestResults(
+	testId: number,
+	answers: UserTestAnswer[]
+): Promise<SaveTestResult> {
+	try {
+		const user = await getUser();
+		if (!user) {
+			throw new Error('User not authenticated');
+		}
+
+		const userId = user.id;
+
+		const { data: previousAttempts, error: attemptsError } = await supabase
+			.from('user_test_results')
+			.select('id')
+			.eq('user_id', userId)
+			.eq('test_id', testId);
+
+		if (attemptsError) {
+			throw new Error(`Error fetching attempts: ${attemptsError.message}`);
+		}
+
+		const attemptNumber = (previousAttempts?.length || 0) + 1;
+
+		const { data: testResult, error: testResultError } = await supabase
+			.from('user_test_results')
+			.insert([
+				{
+					user_id: userId,
+					test_id: testId,
+					score: answers.filter((a) => a.isCorrect).length,
+					attempt_number: attemptNumber,
+				},
+			])
+			.select('id')
+			.single();
+
+		if (testResultError) {
+			throw new Error(`Error saving test result: ${testResultError.message}`);
+		}
+
+		const { error: answersError } = await supabase
+			.from('test_answers')
+			.insert(
+				answers.map((answer) => ({
+					user_test_result_id: testResult.id,
+					question_id: answer.questionId,
+					answer: answer.answerId,
+					is_correct: answer.isCorrect,
+				}))
+			);
+
+		if (answersError) {
+			throw new Error(`Error saving answers: ${answersError.message}`);
+		}
+
+		return { id: testResult.id };
+	} catch (error) {
+		console.error('Error saving test results:', error);
+		return { error: (error as Error).message };
+	}
+}
