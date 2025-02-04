@@ -34,31 +34,26 @@ export default function Header() {
   };
 
   return (
-    <nav  className="mx-auto mt-4">
+    <nav className="mx-auto mt-4">
       <ul className="flex space-x-4 justify-center">
         <li>
-          <Link
-            href={getHref("")}
-            className={`transition-colors `}
-          >
-            <Button size={'lg'} variant={`${
-              isActive("")
-                ? "secondary"
-                : "ghost"
-            }`}>Modules</Button>
+          <Link href={getHref("")} className={`transition-colors `}>
+            <Button
+              size={"lg"}
+              variant={`${isActive("") ? "secondary" : "ghost"}`}
+            >
+              Modules
+            </Button>
           </Link>
         </li>
         <li>
-          <Link
-            href={getHref("description")}
-            className={`transition-colors `}
-          >
-                        <Button size={'lg'} variant={`${
-              isActive("description")
-                ? "secondary"
-                : "ghost"
-            }`}>Description</Button>
-
+          <Link href={getHref("description")} className={`transition-colors `}>
+            <Button
+              size={"lg"}
+              variant={`${isActive("description") ? "secondary" : "ghost"}`}
+            >
+              Description
+            </Button>
           </Link>
         </li>
       </ul>
