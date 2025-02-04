@@ -4,6 +4,7 @@ import Footer from "@/components/landing/footer";
 import { DesktopMenu } from "@/components/workspace/workspace-desktop-menu";
 import { Jura } from "next/font/google";
 import "../globals.css";
+import { Suspense } from "react";
 
 const jura = Jura({
   subsets: ["latin"],
@@ -39,7 +40,9 @@ export default function WorkspaceLayout({
         <Navbar menuItems={menuItems} />
 
         <main className="flex-1 bg-[--background] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <Suspense fallback={<div>Loading...</div>}>
           {children}
+          </Suspense>
         </main>
         <Footer />
       </div>

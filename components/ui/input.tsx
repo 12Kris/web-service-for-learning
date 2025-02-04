@@ -11,7 +11,7 @@ export interface InputProps
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, label, icon, ...props }, ref) => {
     return (
-      <div className={`${label ? "space-y-2" : ""} relative hidden sm:block`}>
+      <div className={`${label ? "space-y-2" : ""} relative`}>
         {label && <Label htmlFor="name">{label}</Label>}
         {icon && <div className="">{icon}</div>}
 
