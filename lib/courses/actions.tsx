@@ -1,7 +1,14 @@
 "use server";
 import { supabase } from "@/lib/supabaseClient";
 import { getUser } from "@/lib/auth/actions";
-import { Course, CourseWithStudents } from "@/lib/definitions";
+import {
+	Block,
+	Course,
+	CourseWithStudents, LearningMaterial,
+	SaveTestResult,
+	Test, TestQuestionForCourse,
+	UserTestAnswer
+} from "@/lib/definitions";
 // import {use} from "react";
 
 export async function getCourseById(courseId: string) {
