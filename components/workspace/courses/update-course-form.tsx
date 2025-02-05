@@ -1,146 +1,3 @@
-// // TODO: make logic crud material and test, type
-// "use client";
-
-// import { useState } from "react";
-// import { useRouter } from "next/navigation";
-// import { updateCourse } from "@/lib/courses/actions";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea";
-// import { Label } from "@/components/ui/label";
-// import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-// import {
-//   type Course,
-//   CourseDetails,
-//   Module,
-//   WhatWillLearn,
-//   LearningMaterial,
-//   Test,
-// } from "@/lib/definitions";
-
-// type FormState = {
-//   name: string | undefined;
-//   description: string | undefined;
-//   type: string | undefined;
-//   course_details: CourseDetails[];
-//   curriculum: Module[];
-//   what_w_learn: WhatWillLearn[];
-// };
-
-// export function CourseEditForm({ course, modules }: { course: Course; modules: Module[] }) {
-//   const [formState, setFormState] = useState<FormState>({
-//     name: course.name,
-//     description: course.description,
-//     type: course.type,
-//     course_details: course.course_details || [],
-//     curriculum: modules || [],
-//     what_w_learn: course.what_w_learn || [],
-//   });
-//   const router = useRouter();
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     try {
-//       await updateCourse(course.id, formState, course.creator_id);
-//       router.push(`/workspace/course/${course.id}`);
-//     } catch (err) {
-//       console.error("Error updating course:", err);
-//     }
-//   };
-
-//   return (
-//     <Card className="w-full max-w-3xl mx-auto">
-//       <CardHeader>
-//         <CardTitle>Edit Course: {course.name}</CardTitle>
-//       </CardHeader>
-//       <CardContent>
-//         <form onSubmit={handleSubmit} className="space-y-4">
-//           <div className="space-y-2">
-//             <Label>Course Name</Label>
-//             <Input
-//               type="text"
-//               value={formState.name}
-//               onChange={(e) => setFormState((prev) => ({ ...prev, name: e.target.value }))}
-//               required
-//             />
-//           </div>
-
-//           <div className="space-y-2">
-//             <Label>Description</Label>
-//             <Textarea
-//               value={formState.description}
-//               onChange={(e) => setFormState((prev) => ({ ...prev, description: e.target.value }))}
-//             />
-//           </div>
-
-//           <div className="space-y-4">
-//             <Label className="text-lg font-semibold">Curriculum</Label>
-//             {formState.curriculum.map((module) => (
-//               <Card key={module.id} className="p-4 space-y-4">
-//                 <div>
-//                   <Label>Module Title</Label>
-//                   <Input
-//                     type="text"
-//                     value={module.name}
-//                     onChange={(e) =>
-//                       setFormState((prev) => ({
-//                         ...prev,
-//                         curriculum: prev.curriculum.map((m) =>
-//                           m.id === module.id ? { ...m, name: e.target.value } : m
-//                         ),
-//                       }))
-//                     }
-//                   />
-//                 </div>
-//                 <div>
-//                   <Label>Module Description</Label>
-//                   <Textarea
-//                     value={module.description}
-//                     onChange={(e) =>
-//                       setFormState((prev) => ({
-//                         ...prev,
-//                         curriculum: prev.curriculum.map((m) =>
-//                           m.id === module.id ? { ...m, description: e.target.value } : m
-//                         ),
-//                       }))
-//                     }
-//                   />
-//                 </div>
-
-//                 {module.materials && module.materials.length > 0 && (
-//                   <div>
-//                     <Label className="text-sm font-medium">Materials</Label>
-//                     <ul className="list-disc list-inside">
-//                       {module.materials.map((material: LearningMaterial) => (
-//                         <li key={material.id}>{material.title}</li>
-//                       ))}
-//                     </ul>
-//                   </div>
-//                 )}
-
-//                 {module.tests && module.tests.length > 0 && (
-//                   <div>
-//                     <Label className="text-sm font-medium">Tests</Label>
-//                     <ul className="list-disc list-inside">
-//                       {module.tests.map((test: Test) => (
-//                         <li key={test.id}>{test.question}</li>
-//                       ))}
-//                     </ul>
-//                   </div>
-//                 )}
-//               </Card>
-//             ))}
-//           </div>
-
-//           <Button type="submit" className="w-full">
-//             Update Course
-//           </Button>
-//         </form>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
 "use client";
 
 import { useState } from "react";
@@ -197,13 +54,16 @@ export function CourseEditForm({
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred while updating the course",
+          : "An error occurred while updating the course"
       );
     }
   };
 
   // Helpers for updating course_details and what_w_learn (unchanged)
-  const updateFormState = <K extends keyof FormState>(key: K, value: FormState[K]) => {
+  const updateFormState = <K extends keyof FormState>(
+    key: K,
+    value: FormState[K]
+  ) => {
     setFormState((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -214,11 +74,13 @@ export function CourseEditForm({
     key: K,
     index: number,
     field: F,
-    value: string,
+    value: string
   ) => {
     setFormState((prev) => ({
       ...prev,
-      [key]: prev[key].map((item, i) => (i === index ? { ...item, [field]: value } : item)),
+      [key]: prev[key].map((item, i) =>
+        i === index ? { ...item, [field]: value } : item
+      ),
     }));
   };
 
@@ -282,13 +144,13 @@ export function CourseEditForm({
               <div key={detail.id} className="space-y-2">
                 <Textarea
                   placeholder={`Course Detail ${detail.id}`}
-                  value={(detail as any).course_detail}
+                  value={detail.course_detail}
                   onChange={(e) =>
                     updateItem(
                       "course_details",
                       index,
-                      "course_detail" as any,
-                      e.target.value,
+                      "course_detail",
+                      e.target.value
                     )
                   }
                   aria-label={`Course detail ${detail.id}`}
@@ -306,14 +168,21 @@ export function CourseEditForm({
 
           {/* What Students Will Learn */}
           <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">What Students Will Learn</legend>
+            <legend className="text-sm font-medium">
+              What Students Will Learn
+            </legend>
             {formState.what_w_learn.map((item, index) => (
               <div key={item.id} className="space-y-2">
                 <Textarea
                   placeholder={`Learning Outcome ${item.id}`}
                   value={item.description}
                   onChange={(e) =>
-                    updateItem("what_w_learn", index, "description", e.target.value)
+                    updateItem(
+                      "what_w_learn",
+                      index,
+                      "description",
+                      e.target.value
+                    )
                   }
                   aria-label={`Learning outcome ${item.id}`}
                 />
@@ -342,7 +211,9 @@ export function CourseEditForm({
                       setFormState((prev) => ({
                         ...prev,
                         curriculum: prev.curriculum.map((m) =>
-                          m.id === module.id ? { ...m, name: e.target.value } : m,
+                          m.id === module.id
+                            ? { ...m, name: e.target.value }
+                            : m
                         ),
                       }))
                     }
@@ -356,7 +227,9 @@ export function CourseEditForm({
                       setFormState((prev) => ({
                         ...prev,
                         curriculum: prev.curriculum.map((m) =>
-                          m.id === module.id ? { ...m, description: e.target.value } : m,
+                          m.id === module.id
+                            ? { ...m, description: e.target.value }
+                            : m
                         ),
                       }))
                     }

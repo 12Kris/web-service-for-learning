@@ -1473,7 +1473,7 @@ export async function updateCourse(
 ) {
 	try {
 
-		console.log("courseData", courseData);
+
 		const user = await getUser();
 
 		if (!user) {
@@ -1511,7 +1511,7 @@ export async function updateCourse(
 			if (newModules.length > 0) {
 				const modulesToInsert = newModules.map((module) => ({
 					course_id: courseId,
-					name: module.title,
+					name: module.name,
 					description: module.description,
 					duration: module.duration ?? null,
 				}));
