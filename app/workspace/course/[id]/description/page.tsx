@@ -5,15 +5,15 @@ import CourseInfo from "@/components/workspace/courses/course-info";
 import CourseCurriculum from "@/components/workspace/courses/course-curriculum";
 import MeetTutor from "@/components/workspace/courses/meet-tutor";
 
-import { getCourseById } from "@/lib/courses/actions";
+import { addCourseToUser, getCourseById, getModulesByCourseId, isCourseAddedToUser } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/lib/auth/actions";
 import { use } from "react";
 import Link from "next/link";
-import { Course } from "@/lib/definitions";
+import { Course, Module } from "@/lib/definitions";
 import { deleteCourse } from "@/lib/courses/actions";
 
-import { Trash2, Edit, BookCheck } from "lucide-react";
+import { Trash2, Edit, BookCheck, UserPlus, UserCheck } from "lucide-react";
 
 import {
   AlertDialog,
@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Skeleton from "react-loading-skeleton";
 
 export default function CourseDetailPage({
   params,
@@ -33,6 +34,8 @@ export default function CourseDetailPage({
   params: Promise<{ id: number }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
+  const [modules, setModules] = useState<Module[]>([])
+  const [isCourseAdded, setIsCourseAdded] = useState(false);
   const { id } = use(params);
 
   const [isCreator, setIsCreator] = useState(false);
@@ -43,12 +46,16 @@ export default function CourseDetailPage({
 
       try {
         const courseData = await getCourseById(id);
+        const modulesData = await getModulesByCourseId(id);
         setCourse(courseData);
-
+        setModules(modulesData);
         const user = await getUser();
         if (user && courseData) {
           setIsCreator(user.id.toString() === courseData.creator_id.toString());
         }
+
+        const result = await isCourseAddedToUser(id);
+        setIsCourseAdded(result);
       } catch (err) {
         console.error(err);
       }
@@ -56,6 +63,12 @@ export default function CourseDetailPage({
 
     fetchData();
   }, [id]);
+
+  async function handleAddCourse() {
+    if (!id) return;
+    await addCourseToUser(id);
+    setIsCourseAdded(true);
+  }
 
   async function handleDeleteCourse() {
     if (!id) return;
@@ -76,8 +89,11 @@ export default function CourseDetailPage({
         reviews={12}
       />
 
-      <CourseCurriculum modules={course?.curriculum || []} />
-
+      {modules.length ? (
+        <CourseCurriculum modules={modules} />
+      ) : (
+        <Skeleton height={150} />
+      )}
       <MeetTutor
         name={course?.creator?.full_name}
         description={course?.creator?.description || undefined}
@@ -85,7 +101,22 @@ export default function CourseDetailPage({
       />
 
       <div className="flex flex-col md:flex-row w-full gap-2">
-        {/*<Button className="w-full" disabled={true}></Button>*/}
+        {/* <Button className="w-full" disabled={true}></Button> */}
+        <Button
+          className="w-full"
+          onClick={handleAddCourse}
+          disabled={isCourseAdded}
+        >
+          {isCourseAdded ? (
+            <>
+              <UserCheck /> Subscribed
+            </>
+          ) : (
+            <>
+              <UserPlus /> Subscribe
+            </>
+          )}
+        </Button>
 
         <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
           <Button className="w-full">
