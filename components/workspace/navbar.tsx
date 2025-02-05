@@ -29,7 +29,7 @@ interface NavbarProps {
 
 export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
   const pathname = usePathname();
-  const showAddButton = pathname === "/workspace";
+  const showAddButton = pathname === "/workspace/course/browse";
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -64,7 +64,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
   }, []);
 
   return (
-    <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b bg-background/95 ">
+    <nav className="sticky bg-[--background] top-0 px-4 z-50 w-full border-b  ">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -121,36 +121,43 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
           </div>
 
           <div className="flex items-center space-x-4">
-            <div className="relative hidden sm:block">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search..."
-                className="w-[300px] pl-9"
-                onChange={(e) => onSearch?.(e.target.value)}
-              />
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onFilter}
-              className="hidden sm:flex"
-            >
-              <Filter className="mr-0 h-4 w-4" />
-              Filter
-            </Button>
             {showAddButton && (
               <Link href="/workspace/course/create">
                 <Button
                   variant="default"
-                  size="sm"
+                  size="wide"
                   onClick={onAdd}
                   className="flex"
                 >
-                  <Plus className="mr-0 h-4 w-4" />
-                  Add New
+                  <Plus strokeWidth={3} className="mr-0 h-4 w-4" />
+                  Create New
                 </Button>
               </Link>
             )}
+
+            <Button
+              variant={"default"}
+              size="wide"
+              onClick={onFilter}
+              className="hidden sm:flex"
+            >
+              <Filter strokeWidth={3} className="mr-0 h-4 w-4" />
+              Filter
+            </Button>
+            <div className="relative hidden sm:block">
+              <Input
+                placeholder="Search..."
+                icon={
+                  <Search
+                    style={{ color: `var(--neutral)` }}
+                    className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 "
+                  />
+                }
+                className="w-[300px] hidden sm:block"
+                onChange={(e) => onSearch?.(e.target.value)}
+              />
+            </div>
+
             <AccountDropdown name={user?.name} />
           </div>
         </div>

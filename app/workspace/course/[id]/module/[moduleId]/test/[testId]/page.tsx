@@ -163,7 +163,7 @@ export default function TestPage() {
         const isCorrect = selectedAnswer === currentQuestion.correct_answer;
 
         if (isCorrect) {
-            setScore((prev) => prev + 1);
+            setScore((prev) => prev + 1);            
         }
 
         setAnswers((prev) => [
@@ -199,7 +199,7 @@ export default function TestPage() {
 
     if (isTestComplete) {
         return (
-            <Card className="max-w-2xl mx-auto mt-8">
+            <Card className="max-w-2xl mx-auto mt-8 bg-white">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold text-center">Test Complete!</CardTitle>
                 </CardHeader>
@@ -232,7 +232,7 @@ export default function TestPage() {
     }
 
     return (
-        <Card className="max-w-2xl mx-auto mt-8">
+        <Card className="max-w-2xl mx-auto mt-8 bg-white">
             <CardHeader className="text-center">
                 <CardTitle>Knowledge Test</CardTitle>
                 <Progress 

@@ -32,7 +32,7 @@ export default function ModulePage() {
         <div className='flex text-center space-x-10 justify-center'>
             <div className='w-96 m-8'>
                 <h3 className='m-3'>Cards:</h3>
-                <div className='w-full'>
+                <div className='w-full bg-white'>
                     {materials.map((material) => (
                         <Link key={material.id} href={`${moduleId}/card/${material.id}`}>
                             <Card className='p-3'>{material.title}</Card>
@@ -43,7 +43,7 @@ export default function ModulePage() {
 
             <div className='w-96 m-8'>
                 <h3 className='m-3'>Tests:</h3>
-                <div className='w-full'>
+                <div className='w-full bg-white'>
                     {tests.map((test) => (
                         <Link key={test.id} href={`${moduleId}/test/${test.id}`}>
                             <Card className='p-3'>{test.question}</Card>

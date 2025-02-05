@@ -1,9 +1,14 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { Navbar } from '@/components/landing/navbar'
 import Footer from "@/components/landing/footer";
 
-const inter = Inter({ subsets: ['latin'] })
+import { Jura } from 'next/font/google';
+
+// Configure the font with specific weights
+const jura = Jura({
+  subsets: ['latin'],
+
+});
 
 export const metadata: Metadata = {
   title: 'Web Service For Learning',
@@ -16,7 +21,7 @@ export default function LandingLayout({
   children: React.ReactNode
 })  {
     return (
-    <div className={`${inter.className} bg-[--background] flex flex-col min-h-screen w-full`}>
+    <div className={`${jura.className} bg-[--background] flex flex-col min-h-screen w-full`}>
         <Navbar />
         <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8" >
           {children}

@@ -1,15 +1,15 @@
-import * as React from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 interface JumbotronProps {
-  title: string
-  description: string
-  primaryButtonText: string
-  primaryButtonLink: string
-  secondaryButtonText: string
-  secondaryButtonLink: string
+  title: string;
+  description: string;
+  primaryButtonText: string;
+  primaryButtonLink: string;
+  secondaryButtonText: string;
+  secondaryButtonLink: string;
 }
 
 export function Jumbotron({
@@ -26,10 +26,10 @@ export function Jumbotron({
         <h1 className="text-5xl font-bold mb-4 text-[--neutral]">{title}</h1>
         <p className="text-lg mb-6 text-[--neutral]">{description}</p>
         <div className="flex justify-center md:justify-start gap-4">
-          <Button className="text-[--neutral] bg-transparent hover:text-[--neutral-foreground] px-6 py-2  border-2 border-[--neutral] border-solid rounded-full" asChild size="lg">
+          <Button variant={"default"} asChild size="lg">
             <Link href={primaryButtonLink}>{primaryButtonText}</Link>
           </Button>
-          <Button className="text-white border-2 border-[--accent] bg-[--accent] px-6 py-2 hover:text-white hover:bg-[--accent-foreground]/80 shadow-none rounded-full" asChild variant="outline" size="lg">
+          <Button asChild variant={"destructiveSolid"} size="lg">
             <Link href={secondaryButtonLink}>{secondaryButtonText}</Link>
           </Button>
         </div>
@@ -41,10 +41,8 @@ export function Jumbotron({
           width={400}
           height={400}
           className="mx-auto"
-          
         />
       </div>
     </div>
-  )
+  );
 }
-

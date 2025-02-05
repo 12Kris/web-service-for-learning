@@ -130,7 +130,7 @@ export default function CardPage() {
 
   return (
     <div className="flex items-center justify-center p-8">
-      <div className="w-full max-w-2xl bg-white rounded-3xl p-8 shadow-sm">
+      <div className="w-full max-w-2xl bg-[--background] rounded-3xl p-8 shadow-sm">
         <div className="items-center gap-4">
           {/* <button
             onClick={handlePrev}
@@ -140,7 +140,7 @@ export default function CardPage() {
             <ChevronLeft className="mr-1" size={20} />
             <span>Previous</span>
           </button> */}
-          <div className="flex-1">
+          <div className="flex-1 bg-white">
             <div className="w-full h-[450px]">
               <Flashcard
                 frontContent={flashcards[currentCard].front}

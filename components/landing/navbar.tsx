@@ -48,23 +48,19 @@ export function Navbar() {
     <nav className="border-none bg-[--background] sticky top-0 z-50 md:py-4">
       <div className="flex items-center justify-between mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16">
         <div className="flex items-center">
-          <Link href="/" className="text-2xl text-[--neutral] font-light">
+          <Link href="/" className="text-2xl text-[--neutral] font-black">
             Memoria
           </Link>
         </div>
         <div className="hidden md:flex items-center space-x-4">
           {navItems.map((item) => (
-            <Link
+            <Button
               key={item.href}
-              href={item.href}
-              className={`text-sm font-medium p-2 px-6 rounded-2xl ${
-                pathname === item.href
-                  ? "text-[--neutral] bg-[--primary]"
-                  : "text-[--neutral]"
-              }`}
+              size={"wide"}
+              variant={pathname === item.href ? "primary" : "ghost"}
             >
-              {item.name}
-            </Link>
+              <Link href={item.href}>{item.name}</Link>
+            </Button>
           ))}
         </div>
         <div className="hidden md:flex items-center space-x-4">
@@ -79,15 +75,13 @@ export function Navbar() {
             <>
               <Button
                 className=""
-                variant="accent"
+                variant={"destructive"}
                 asChild
+                size={"wide"}
               >
                 <Link href="/login">Log In</Link>
               </Button>
-              <Button
-                className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary] shadow-none rounded-full"
-                asChild
-              >
+              <Button className="" size={"wide"} variant={"secondary"} asChild>
                 <Link href="/signup">Sign Up</Link>
               </Button>
             </>

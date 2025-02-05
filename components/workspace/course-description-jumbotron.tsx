@@ -94,11 +94,11 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
       </p>
 
       <div className="flex gap-2">
-        <Button variant="classic" onClick={onLearnMore}>
+        <Button variant="outline" onClick={onLearnMore}>
           Learn more
         </Button>
         <Button
-          variant="classic_filled"
+          variant={isCourseAdded ? "destructive" : "solid"}
           onClick={() =>
             isCourseAdded ? handleRemoveCourse(id) : handleAddCourse(id)
           }
