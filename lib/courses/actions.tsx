@@ -1472,6 +1472,8 @@ export async function updateCourse(
 	creator_id: string | undefined
 ) {
 	try {
+
+		console.log("courseData", courseData);
 		const user = await getUser();
 
 		if (!user) {
