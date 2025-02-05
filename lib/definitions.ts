@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 
-export interface UserMetadata {
-  name?: string;
-  avatar_url?: string;
-  role?: string;
-}
+// export interface UserMetadata {
+//   name?: string;
+//   avatar_url?: string;
+//   role?: string;
+// }
 
 export interface User {
   id: string;
@@ -19,11 +19,11 @@ export interface User {
   user_metadata: UserMetadata;
 }
 
-export interface Module {
-  id: number;
-  title: string;
-  description: string;
-}
+// export interface Module {
+//   id: number;
+//   title: string;
+//   description: string;
+// }
 
 export interface WhatWillLearn {
   id: number;
@@ -75,18 +75,23 @@ export interface UserCourse {
 //   name: string;
 // }
 
+// export interface Card {
+//   id: number;
+//   block_id: number;
+//   question: string;
+//   answer: string;
+// }
+
 export interface Card {
-  id: number;
-  block_id: number;
-  question: string;
-  answer: string;
+  front: string;
+  back: string;
 }
 
 export interface Test {
   id: number;
   block_id: number;
   question: string;
-  answer: string;
+  answer?: { question_id: number, answer: string } | string;
   correct: boolean;
 }
 
@@ -236,4 +241,59 @@ export interface TestDataModal {
   block_id: number | null;
   question: string;
   questions: Question[];
+}
+
+export interface UserMetadata {
+    name?: string;
+    avatar_url?: string;
+    role?: string;
+    displayName?: string;
+    description?: string;
+}
+
+export interface Module {
+    materials?: LearningMaterial[];
+    tests?: Test[];
+    id: number;
+    title?: string;
+    name?: string;
+    description?: string;
+    duration?: string
+}
+
+export interface TestDataWithQuestion {
+    block_id: number;
+    questions?: Question[];
+    question?: Question
+    answers: Answer[]
+}
+
+export interface TestData {
+    id: number;
+    question: string;
+    block_id: number;
+    Block?: BlockData;
+}
+
+export interface BlockData {
+    id: number;
+    name: string;
+    Course: CourseData;
+}
+
+export interface CourseData {
+    id: number;
+    name: string;
+}
+
+export interface TestQuestionData {
+    id: string;
+    question: string;
+    correct_id: string;
+    answers: AnswerData[];
+}
+
+export interface AnswerData {
+    id: string;
+    answer: string;
 }

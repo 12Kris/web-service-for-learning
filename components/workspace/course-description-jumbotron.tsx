@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../../ui/button";
+import { Button } from "../ui/button";
 import Skeleton from "react-loading-skeleton";
 import { UserPlus, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   }
 
   return (
-    <section className="w-full bg-[--primary-light] border rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
+    <section className="w-full bg-[#e8f4f1] rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-5xl font-bold text-center">
           {title || (
@@ -94,7 +94,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
       </p>
 
       <div className="flex gap-2">
-        <Button variant={"outline"} onClick={onLearnMore}>
+        <Button variant="outline" onClick={onLearnMore}>
           Learn more
         </Button>
         <Button
@@ -105,7 +105,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
         >
           {isCourseAdded ? (
             <>
-              <UserCheck /> Subscribed
+              <UserCheck /> Unsubscribe
             </>
           ) : (
             (

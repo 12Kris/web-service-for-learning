@@ -53,7 +53,7 @@ export default function CardPage() {
 
   return (
     <div className="flex items-center justify-center p-8">
-      <div className="w-full max-w-2xl bg-white rounded-3xl p-8 shadow-sm">
+      <div className="w-full max-w-2xl rounded-3xl p-8 shadow-sm">
         <div className="items-center gap-4">
           {/* <button
             onClick={handlePrev}
