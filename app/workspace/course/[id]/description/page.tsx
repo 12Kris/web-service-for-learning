@@ -30,7 +30,7 @@ import {
 export default function CourseDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: number }>;
 }) {
   const [course, setCourse] = useState<Course | null>(null);
   const { id } = use(params);

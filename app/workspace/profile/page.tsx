@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import LoadingSpinner from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -60,8 +59,8 @@ export default function UserProfile() {
     fetchData();
   }, []);
 
-  if (!user || !createdCourses || !studyingCourses) {
-    return <LoadingSpinner className="mx-auto" />;
+  if (!user) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -166,7 +165,7 @@ export default function UserProfile() {
                     </CardContent>
                     <CardFooter>
                       <Button asChild className="w-full">
-                        <Link href={`/workspace/course/${course.id}`}>
+                        <Link href={`/workspaces/courses/${course.id}`}>
                           Manage Course
                         </Link>
                       </Button>
@@ -203,7 +202,7 @@ export default function UserProfile() {
                     </CardContent>
                     <CardFooter>
                       <Button asChild className="w-full">
-                        <Link href={`/courses/${course.id}`}>
+                        <Link href={`/workspace/courses/${course.id}`}>
                           Continue Learning
                         </Link>
                       </Button>
