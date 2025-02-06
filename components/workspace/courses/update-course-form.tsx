@@ -11,10 +11,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   type Course,
   CourseDetails,
-  Module,
+  // Module,
   WhatWillLearn,
-  LearningMaterial,
-  Test,
 } from "@/lib/definitions";
 
 type FormState = {
@@ -22,24 +20,24 @@ type FormState = {
   description: string | undefined;
   type: string | undefined;
   course_details: CourseDetails[];
-  curriculum: Module[];
+  // curriculum: Module[];
   what_w_learn: WhatWillLearn[];
 };
 
 export function CourseEditForm({
   course,
-  modules,
+  // modules,
 }: {
-  course: Course;
-  modules: Module[];
+  course: Course | null;
+  // modules: Module[];
 }) {
   const [formState, setFormState] = useState<FormState>({
-    name: course.name,
-    description: course.description,
-    type: course.type,
-    course_details: course.course_details || [],
-    curriculum: modules || [],
-    what_w_learn: course.what_w_learn || [],
+    name: course?.name,
+    description: course?.description,
+    type: course?.type,
+    course_details: course?.course_details || [],
+    // curriculum: modules || [],
+    what_w_learn: course?.what_w_learn || [],
   });
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -48,8 +46,8 @@ export function CourseEditForm({
     e.preventDefault();
     setError(null);
     try {
-      await updateCourse(course.id, formState, course.creator_id);
-      router.push(`/workspace/course/${course.id}`);
+      await updateCourse(course?.id, formState, course?.creator_id);
+      router.push(`/workspace/course/${course?.id}`);
     } catch (err) {
       setError(
         err instanceof Error
@@ -101,7 +99,7 @@ export function CourseEditForm({
   return (
     <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
-        <CardTitle>Edit Course: {course.name}</CardTitle>
+        <CardTitle>Edit Course: {course?.name}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -198,7 +196,7 @@ export function CourseEditForm({
           </fieldset>
 
           {/* Updated Curriculum Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <Label className="text-lg font-semibold">Curriculum</Label>
             {formState.curriculum.map((module) => (
               <Card key={module.id} className="p-4 space-y-4">
@@ -259,7 +257,7 @@ export function CourseEditForm({
                 )}
               </Card>
             ))}
-          </div>
+          </div> */}
 
           {error && (
             <p className="text-red-500" role="alert">

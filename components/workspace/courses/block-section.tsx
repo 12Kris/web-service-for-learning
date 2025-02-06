@@ -127,8 +127,9 @@ export default function BlockSection({
   }
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 mb-4">
+    <div className="bg-[--card] shadow-md rounded-lg p-4 mb-4 border border-2 border-input">
       <h3 className="font-bold text-lg mb-2">{block.name}</h3>
+      <h4 className="font-bold text-lg mb-2">{block.description}</h4>
       <div className="mb-2">
         <strong>Materials:</strong>
         <ul>
@@ -136,6 +137,7 @@ export default function BlockSection({
             <li key={material.id}>
               {material.title}
               <Button
+                className="ml-3"
                 variant="outline"
                 size="sm"
                 onClick={() => {
@@ -146,6 +148,7 @@ export default function BlockSection({
                 Edit
               </Button>
               <Button
+                className="ml-1"
                 variant="destructive"
                 size="sm"
                 onClick={async () => {
@@ -166,6 +169,7 @@ export default function BlockSection({
             <li key={test.id}>
               {test.question}
               <Button
+                className="ml-3"
                 variant="outline"
                 size="sm"
                 onClick={() => {
@@ -176,6 +180,7 @@ export default function BlockSection({
                 Edit
               </Button>
               <Button
+                className="ml-1"
                 variant="destructive"
                 size="sm"
                 onClick={async () => {
@@ -232,7 +237,14 @@ export default function BlockSection({
         }}
         materialTitle={currentMaterial?.title || ""}
         setMaterialTitle={(title) =>
-          setCurrentMaterial((prev) => (prev ? { ...prev, title } : null))
+          // setCurrentMaterial((prev) => prev ? ({ ...prev, title }) : null)
+          // setCurrentMaterial((prev) => ({...prev, title}))
+
+          setCurrentMaterial((prev) => ({
+            id: prev?.id ?? 0,
+            title,
+            content: prev?.content ?? "",
+          }))
         }
         currentMaterial={currentMaterial}
         blockId={block.id}

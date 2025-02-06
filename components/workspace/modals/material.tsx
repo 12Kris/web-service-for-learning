@@ -92,26 +92,27 @@ export function MaterialModal({
                             value={materialTitle}
                             onChange={(e) => setMaterialTitle(e.target.value)}
                             placeholder="Enter title"
-                            className="input w-full p-2 border border-gray-300 rounded"
+                            // className="input w-full p-2 border border-gray-300 rounded"
+                            className="input w-full p-2 border border-2 border-input rounded-lg bg-[--card]"
                         />
                     </div>
                     <div>
                         <label className="font-medium">Cards:</label>
                         {materialContents.map((card, index) => (
-                            <div key={index} className="flex gap-2 items-center">
+                            <div key={index} className="flex gap-2 items-center m-2">
                                 <input
                                     type="text"
                                     value={card.front}
                                     onChange={(e) => handleCardChange(index, "front", e.target.value)}
                                     placeholder="Front"
-                                    className="input w-full p-2 border border-gray-300 rounded"
+                                    className="input w-full p-2 border border-2 border-input rounded-lg bg-[--card]"
                                 />
                                 <input
                                     type="text"
                                     value={card.back}
                                     onChange={(e) => handleCardChange(index, "back", e.target.value)}
                                     placeholder="Back"
-                                    className="input w-full p-2 border border-gray-300 rounded"
+                                    className="input w-full p-2 border border-2 border-input rounded-lg bg-[--card]"
                                 />
                                 <Button
                                     type="button"
@@ -122,7 +123,7 @@ export function MaterialModal({
                                 </Button>
                             </div>
                         ))}
-                        <Button onClick={handleAddCard} variant="outline">
+                        <Button onClick={handleAddCard} variant="outline" className="mt-3">
                             + Add Card
                         </Button>
                     </div>

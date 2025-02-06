@@ -16,6 +16,8 @@ interface BlockModalProps {
   onSave: () => void;
   blockName: string;
   setBlockName: (name: string) => void;
+  blockDescription: string;
+  setBlockDescription: (description: string) => void;
   currentBlock?: { id: number; name: string } | null;
 }
 
@@ -25,6 +27,8 @@ const BlockModal: FC<BlockModalProps> = ({
   onSave,
   blockName,
   setBlockName,
+  blockDescription,
+  setBlockDescription,
   currentBlock,
 }) => {
   return (
@@ -41,13 +45,27 @@ const BlockModal: FC<BlockModalProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="my-4">
-          <input
-            type="text"
-            value={blockName}
-            onChange={(e) => setBlockName(e.target.value)}
-            placeholder="Module Name"
-            className="w-full p-2 border border-gray-300 rounded"
-          />
+          <div>
+            <label className="font-medium">Name:</label>
+            <input
+              type="text"
+              value={blockName}
+              onChange={(e) => setBlockName(e.target.value)}
+              placeholder="Module Name"
+              className="w-full p-2 border border-2 border-input rounded-lg bg-[--card] my-2"
+            />
+          </div>
+
+          <div className="mt-2">
+            <label className="font-medium">Description:</label>
+            <input
+              type="text"
+              value={blockDescription}
+              onChange={(e) => setBlockDescription(e.target.value)}
+              placeholder="Module Description"
+              className="w-full p-2 border border-2 border-input rounded-lg bg-[--card] my-2"
+            />
+          </div>
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
