@@ -1467,9 +1467,9 @@ export async function deleteCourse(
 }
 
 export async function updateCourse(
-	courseId: number,
-	courseData: Partial<Course>,
-	creator_id: string | undefined
+	courseId?: number,
+	courseData?: Partial<Course>,
+	creator_id?: string | undefined
 ) {
 	try {
 
@@ -1491,7 +1491,7 @@ export async function updateCourse(
 			throw new Error(`Failed to update course: ${error.message}`);
 		}
 
-		if (courseData.curriculum && Array.isArray(courseData.curriculum)) {
+		if (courseData?.curriculum && Array.isArray(courseData.curriculum)) {
 			const { data: existingModules, error: fetchError } = await supabase
 				.from("Module")
 				.select("name")

@@ -109,8 +109,9 @@ export default function BlockSection({
     }
 
     return (
-        <div className="bg-white shadow-md rounded-lg p-4 mb-4">
+        <div className="bg-[--card] shadow-md rounded-lg p-4 mb-4 border border-2 border-input">
             <h3 className="font-bold text-lg mb-2">{block.name}</h3>
+            <h4 className="font-bold text-lg mb-2">{block.description}</h4>
             <div className="mb-2">
                 <strong>Materials:</strong>
                 <ul>

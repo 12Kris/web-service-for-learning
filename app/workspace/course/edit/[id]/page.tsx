@@ -47,14 +47,15 @@
 
 
 "use client"
-import { useEffect, useState, useCallback, useMemo, use } from "react";
+import { useEffect, useState, useCallback, useMemo, use, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { getCourseById, getModulesByCourseId } from "@/lib/courses/actions";
 import { Button } from "@/components/ui/button";
 import Skeleton from "react-loading-skeleton";
-import Link from "next/link";
+// import Link from "next/link";
 import { Block, Course } from "@/lib/definitions";
 import { createBlock, updateBlock } from "@/lib/tests/actions";
+import { CourseEditForm } from "@/components/workspace/courses/update-course-form";
 
 const BlockSection = dynamic(() => import("../../[id]/BlockSection"), { ssr: false });
 const BlockModal = dynamic(() => import("@/components/workspace/modals/block"), { ssr: false });
@@ -67,6 +68,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
     const [modals, setModals] = useState({ block: false });
     const [currentBlock, setCurrentBlock] = useState<Block | null>(null);
     const [blockName, setBlockName] = useState("");
+    const [blockDescription, setBlockDescription] = useState("");
+
 
     const fetchCourseData = useCallback(async () => {
         if (!id) return;
@@ -115,6 +118,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
 
             setModals({ ...modals, block: false });
             setBlockName("");
+            setBlockDescription("");
             setCurrentBlock(null);
         } catch (error) {
             console.error("Error saving block:", error);
@@ -124,7 +128,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
     const handleOpenBlockModal = useCallback((block: Block | null) => {
         setCurrentBlock(block);
         setBlockName(block?.name || "");
-        setModals({ ...modals, block: true });
+        setBlockDescription(block?.name || "");
+        setModals({ ...modals, block: true });        
     }, [modals]);
 
     const renderedBlocks = useMemo(
@@ -146,7 +151,7 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
 
     return (
         <div className="container mx-auto py-10 px-4 flex w-full gap-4">
-            <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
+            {/* <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
                 <h2 className="font-bold text-xl mb-6">Edit Course</h2>
                 <div className="mb-4">
                     <label className="block font-bold">Course Name:</label>
@@ -171,9 +176,16 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
                     </Link>
                     <Button variant="primary">Save</Button>
                 </div>
+            </div> */}
+
+            <div className="w-1/2 mx-auto">
+                <Suspense fallback={<div>Loading...</div>}>
+                    <CourseEditForm course={course} />
+                </Suspense>
             </div>
-            <div className="flex-1 bg-zinc-100 rounded-3xl p-6">
-                <h2 className="font-bold text-xl mb-6">Modules</h2>
+
+            <div className="flex-1 bg-[--card] rounded-xl p-6 w-1/2 border">
+                <h2 className="font-bold text-xl mb-6">Curriculum</h2>
                 {renderedBlocks}
                 <Button onClick={() => handleOpenBlockModal(null)}>Add Module</Button>
             </div>
@@ -184,6 +196,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
                 onSave={handleSaveBlock}
                 blockName={blockName}
                 setBlockName={setBlockName}
+                blockDescription={blockDescription}
+                setBlockDescription={setBlockDescription}
                 currentBlock={currentBlock}
             />
         </div>

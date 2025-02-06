@@ -92,7 +92,8 @@ export function MaterialModal({
                             value={materialTitle}
                             onChange={(e) => setMaterialTitle(e.target.value)}
                             placeholder="Enter title"
-                            className="input w-full p-2 border border-gray-300 rounded"
+                            // className="input w-full p-2 border border-gray-300 rounded"
+                            className="input w-full p-2 border border-2 border-input rounded-lg bg-[--card]"
                         />
                     </div>
                     <div>
@@ -104,14 +105,14 @@ export function MaterialModal({
                                     value={card.front}
                                     onChange={(e) => handleCardChange(index, "front", e.target.value)}
                                     placeholder="Front"
-                                    className="input w-full p-2 border border-gray-300 rounded"
+                                    className="input w-full p-2 border border-2 border-input rounded-lg bg-[--card]"
                                 />
                                 <input
                                     type="text"
                                     value={card.back}
                                     onChange={(e) => handleCardChange(index, "back", e.target.value)}
                                     placeholder="Back"
-                                    className="input w-full p-2 border border-gray-300 rounded"
+                                    className="input w-full p-2 border border-2 border-input rounded-lg bg-[--card]"
                                 />
                                 <Button
                                     type="button"

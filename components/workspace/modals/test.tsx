@@ -197,7 +197,7 @@ export function TestModal({
                             value={testTitle}
                             onChange={(e) => setTestTitle(e.target.value)}
                             placeholder="Enter the test title"
-                            className="input ml-2 p-2 border border-gray-300 rounded"
+                            className="input ml-2 p-2 border border-2 border-input rounded-lg bg-[--card]"
                         />
                     </div>
                     {questions.map((q) => (
@@ -211,7 +211,7 @@ export function TestModal({
                                         handleQuestionChange(q.id, e.target.value)
                                     }
                                     placeholder="Enter the question"
-                                    className="input ml-2 p-2 border border-gray-300 rounded"
+                                    className="input ml-2 p-2 border border-2 border-input rounded-lg bg-[--card]"
                                 />
                             </div>
                             <div>
@@ -240,7 +240,7 @@ export function TestModal({
                                                 )
                                             }
                                             placeholder="Enter the answer"
-                                            className="input p-2 border border-gray-300 rounded w-full"
+                                            className="input p-2 border w-full border-2 border-input rounded-lg bg-[--card]"
                                         />
                                         {/* <button
                                             type="button"
