@@ -57,7 +57,7 @@ import { Block, Course } from "@/lib/definitions";
 import { createBlock, updateBlock } from "@/lib/tests/actions";
 import { CourseEditForm } from "@/components/workspace/courses/update-course-form";
 
-const BlockSection = dynamic(() => import("../../[id]/BlockSection"), { ssr: false });
+const BlockSection = dynamic(() => import("@/components/workspace/courses/block-section"), { ssr: false });
 const BlockModal = dynamic(() => import("@/components/workspace/modals/block"), { ssr: false });
 
 export default function EditCoursePage({ params }: { params: Promise<{ id: number }> }) {
