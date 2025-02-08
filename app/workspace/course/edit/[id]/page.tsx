@@ -9,7 +9,6 @@ interface PageProps {
 
 export default async function CourseEditPage({ params }: PageProps) {
     const { id } = await params;
-
     const course = await getCourseById(id);
 
     if (!course) {

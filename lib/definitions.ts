@@ -96,6 +96,7 @@ export interface BlockSectionProps {
 }
 
 export interface LearningMaterial {
+    block_id?: number;
     id: number;
     title: string;
     content: string;
