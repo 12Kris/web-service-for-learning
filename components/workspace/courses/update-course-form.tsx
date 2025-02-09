@@ -1,17 +1,17 @@
 "use client";
 
-import {useState, useCallback, useEffect} from "react";
-import {useRouter} from "next/navigation";
-import {updateCourse} from "@/lib/courses/actions";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import {Label} from "@/components/ui/label";
-import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { updateCourse } from "@/lib/courses/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
-import {MaterialModal} from "@/components/workspace/modals/material";
-import {TestModal} from "@/components/workspace/modals/test";
-import {Card as CardDefinitions} from "@/lib/definitions";
+import { MaterialModal } from "@/components/workspace/modals/material";
+import { TestModal } from "@/components/workspace/modals/test";
+import { Card as CardDefinitions } from "@/lib/definitions";
 import {
     type Course,
     CourseDetails,
@@ -20,7 +20,7 @@ import {
     LearningMaterial,
     MaterialData,
     TestData,
-    TestDataWithQuestion
+    TestDataWithQuestion,
 } from "@/lib/definitions";
 import {
     createMaterial,
@@ -28,12 +28,9 @@ import {
     updateMaterial,
     createTest,
     updateTest,
-    deleteTest
+    deleteTest,
 } from "@/lib/tests/actions";
-import {
-    getMaterialsByBlockId,
-    getTestsByBlockId,
-} from "@/lib/courses/actions";
+import { getMaterialsByBlockId, getTestsByBlockId } from "@/lib/courses/actions";
 
 type FormState = {
     name: string | undefined;
@@ -44,7 +41,7 @@ type FormState = {
     what_w_learn: WhatWillLearn[];
 };
 
-export function CourseEditForm({course, modules}: { course: Course; modules: Module[] }) {
+export function CourseEditForm({ course, modules }: { course: Course; modules: Module[] }) {
     const [formState, setFormState] = useState<FormState>({
         name: course.name,
         description: course.description,
@@ -59,6 +56,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
     const [isMaterialModalOpen, setMaterialModalOpen] = useState(false);
     const [isTestModalOpen, setTestModalOpen] = useState(false);
     const [currentMaterial, setCurrentMaterial] = useState<LearningMaterial | null>(null);
+    const [materialTitle, setMaterialTitle] = useState("");
     const [materialContents, setMaterialContents] = useState<CardDefinitions[]>([]);
     const [currentTest, setCurrentTest] = useState<TestData | null>(null);
 
@@ -73,7 +71,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
             const fetchedTests = await Promise.all(
                 modules.map((module) => getTestsByBlockId(module.id))
             );
-
+            console.log(fetchedMaterials.flat());
             setMaterials(fetchedMaterials.flat());
             setTests(fetchedTests.flat());
         } catch (error) {
@@ -87,16 +85,13 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
         fetchBlockData();
     }, [fetchBlockData]);
 
-    const handleSaveMaterial = async (blockId: number, materialData: MaterialData, materialContents: {
-        front: string;
-        back: string
-    }[]) => {
+    const handleSaveMaterial = async (blockId: number, materialData: MaterialData, materialContents: { front: string; back: string }[]) => {
         setIsLoading(true);
         try {
             if (!currentMaterial?.id) {
-                await createMaterial({title: materialData.title, block_id: blockId}, materialContents);
+                await createMaterial({ title: materialData.title, block_id: blockId }, materialContents);
             } else {
-                await updateMaterial(currentMaterial.id, {title: materialData.title}, materialContents);
+                await updateMaterial(currentMaterial.id, { title: materialData.title }, materialContents);
             }
             await fetchBlockData();
             setMaterialModalOpen(false);
@@ -159,42 +154,21 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
     };
 
     if (isLoading || materials === null || tests === null) {
-        return <Skeleton height={200} className="mb-4"/>;
+        return <Skeleton height={200} className="mb-4" />;
     }
 
-    const addItem = <K extends "course_details" | "curriculum" | "what_w_learn">(
-        key: K,
-    ) => {
+    const addItem = <K extends "course_details" | "curriculum" | "what_w_learn">(key: K) => {
         setFormState((prev) => ({
             ...prev,
             [key]: [
                 ...prev[key],
                 {
                     id: prev[key].length + 1,
-                    ...(key === "curriculum"
-                        ? {title: "", description: ""}
-                        : {description: ""}),
+                    ...(key === "curriculum" ? { title: "", description: "" } : { description: "" }),
                 },
             ],
         }));
     };
-
-    // const updateItem = <
-    //     K extends "course_details" | "curriculum" | "what_w_learn",
-    //     F extends keyof FormState[K][number],
-    // >(
-    //     key: K,
-    //     index: number,
-    //     field: F,
-    //     value: string,
-    // ) => {
-    //     setFormState((prev) => ({
-    //         ...prev,
-    //         [key]: prev[key].map((item, i) =>
-    //             i === index ? {...item, [field]: value} : item,
-    //         ),
-    //     }));
-    // };
 
     return (
         <Card className="w-full max-w-3xl mx-auto">
@@ -208,7 +182,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                         <Input
                             type="text"
                             value={formState.name}
-                            onChange={(e) => setFormState((prev) => ({...prev, name: e.target.value}))}
+                            onChange={(e) => setFormState((prev) => ({ ...prev, name: e.target.value }))}
                             required
                         />
                     </div>
@@ -217,7 +191,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                         <Label>Description</Label>
                         <Textarea
                             value={formState.description}
-                            onChange={(e) => setFormState((prev) => ({...prev, description: e.target.value}))}
+                            onChange={(e) => setFormState((prev) => ({ ...prev, description: e.target.value }))}
                         />
                     </div>
 
@@ -234,7 +208,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                                             setFormState((prev) => ({
                                                 ...prev,
                                                 curriculum: prev.curriculum.map((m) =>
-                                                    m.id === module.id ? {...m, name: e.target.value} : m
+                                                    m.id === module.id ? { ...m, name: e.target.value } : m
                                                 ),
                                             }))
                                         }
@@ -248,7 +222,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                                             setFormState((prev) => ({
                                                 ...prev,
                                                 curriculum: prev.curriculum.map((m) =>
-                                                    m.id === module.id ? {...m, description: e.target.value} : m
+                                                    m.id === module.id ? { ...m, description: e.target.value } : m
                                                 ),
                                             }))
                                         }
@@ -272,7 +246,9 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                                         onClick={(e) => {
                                             e.preventDefault();
                                             setMaterialModalOpen(true);
-                                            setCurrentMaterial(null);
+                                            setCurrentMaterial({ id: 0, title: "", content: "" });
+                                            setMaterialTitle("");
+                                            setMaterialContents([]);
                                         }}
                                     >
                                         Add Material
@@ -294,8 +270,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                                             >
                                                 Edit Material
                                             </Button>
-                                            <Button variant="destructive"
-                                                    onClick={() => deleteMaterialItem(material.id)}>
+                                            <Button variant="destructive" onClick={() => deleteMaterialItem(material.id)}>
                                                 Delete Material
                                             </Button>
                                         </div>
@@ -324,11 +299,7 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                             </Card>
                         ))}
                     </div>
-                    <Button
-                        type="button"
-                        onClick={() => addItem("curriculum")}
-                        variant="outline"
-                    >
+                    <Button type="button" onClick={() => addItem("curriculum")} variant="outline">
                         Add Module
                     </Button>
                     <Button type="submit" className="w-full">
@@ -341,10 +312,10 @@ export function CourseEditForm({course, modules}: { course: Course; modules: Mod
                 isOpen={isMaterialModalOpen}
                 onClose={() => setMaterialModalOpen(false)}
                 onSave={(materialTitle: string, materialContents: CardDefinitions[]) =>
-                    handleSaveMaterial(formState.curriculum[0].id ?? null, {title: materialTitle}, materialContents)
+                    handleSaveMaterial(formState.curriculum[0].id ?? null, { title: materialTitle }, materialContents)
                 }
-                materialTitle={currentMaterial?.title || ""}
-                setMaterialTitle={(title) => setCurrentMaterial((prev) => (prev ? {...prev, title} : null))}
+                materialTitle={materialTitle}
+                setMaterialTitle={setMaterialTitle}
                 currentMaterial={currentMaterial}
                 blockId={formState?.curriculum[0]?.id ?? null}
                 materialContents={materialContents}

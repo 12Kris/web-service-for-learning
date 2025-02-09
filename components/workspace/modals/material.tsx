@@ -15,16 +15,16 @@ import { getCardsByLearningMaterial } from "@/lib/courses/actions";
 import { Card, LearningMaterial } from "@/lib/definitions";
 
 export function MaterialModal({
-                                  isOpen,
-                                  onClose,
-                                  onSave,
-                                  materialTitle,
-                                  setMaterialTitle,
-                                  currentMaterial,
-                                  // blockId,
-                                  materialContents,
-                                  setMaterialContents,
-                              }: {
+    isOpen,
+    onClose,
+    onSave,
+    materialTitle,
+    setMaterialTitle,
+    currentMaterial,
+    blockId,
+    materialContents,
+    setMaterialContents,
+}: {
     isOpen: boolean;
     onClose: () => void;
     onSave: (title: string, contents: { front: string; back: string }[]) => void;
