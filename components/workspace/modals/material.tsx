@@ -21,7 +21,7 @@ export function MaterialModal({
     materialTitle,
     setMaterialTitle,
     currentMaterial,
-    blockId,
+    // blockId,
     materialContents,
     setMaterialContents,
 }: {

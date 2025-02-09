@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { updateCourse } from "@/lib/courses/actions";
+import { createBlock, updateBlock, deleteBlock } from "@/lib/tests/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,6 +32,7 @@ import {
     deleteTest,
 } from "@/lib/tests/actions";
 import { getMaterialsByBlockId, getTestsByBlockId } from "@/lib/courses/actions";
+import BlockModal from "@/components/workspace/modals/block";
 
 type FormState = {
     name: string | undefined;
@@ -55,10 +57,14 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
     const [isLoading, setIsLoading] = useState(true);
     const [isMaterialModalOpen, setMaterialModalOpen] = useState(false);
     const [isTestModalOpen, setTestModalOpen] = useState(false);
+    const [isBlockModalOpen, setBlockModalOpen] = useState(false);
     const [currentMaterial, setCurrentMaterial] = useState<LearningMaterial | null>(null);
     const [materialTitle, setMaterialTitle] = useState("");
     const [materialContents, setMaterialContents] = useState<CardDefinitions[]>([]);
     const [currentTest, setCurrentTest] = useState<TestData | null>(null);
+    const [currentBlock, setCurrentBlock] = useState<Module | null>(null);
+    const [blockName, setBlockName] = useState<string>("");
+    const [blockDescription, setBlockDescription] = useState<string>("");
 
     const router = useRouter();
 
@@ -72,6 +78,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 modules.map((module) => getTestsByBlockId(module.id))
             );
             console.log(fetchedMaterials.flat());
+            console.log(fetchedTests.flat());
             setMaterials(fetchedMaterials.flat());
             setTests(fetchedTests.flat());
         } catch (error) {
@@ -153,22 +160,62 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
         }
     };
 
+    const handleSaveBlock = async () => {
+        try {
+            const newBlock = await createBlock(course.id, blockName, blockDescription);
+            if(newBlock) {
+                setFormState((prev) => ({
+                    ...prev,
+                    curriculum: [
+                        ...prev.curriculum,
+                        {
+                            id: newBlock.id,
+                            name: blockName,
+                            description: blockDescription,
+                        },
+                    ],
+                }));
+            }
+        } catch (error) {
+            console.error("Error saving block:", error);
+        } finally {
+            setBlockModalOpen(false);
+            setBlockName("");
+            setBlockDescription("");
+        }
+    };
+
+    const handleUpdateBlock = async (blockId: number, newName: string | undefined, newDescription: string | undefined) => {
+        try {
+            if(newName){
+                await updateBlock(blockId, newName, newDescription);
+            }
+            setFormState((prev) => ({
+                ...prev,
+                curriculum: prev.curriculum.map((block) =>
+                    block.id === blockId ? { ...block, name: newName, description: newDescription ?? "" } : block
+                ),
+            }));
+        } catch (error) {
+            console.error("Error updating block:", error);
+        }
+    };
+
+    const handleDeleteBlock = async (blockId: number) => {
+        try {
+            await deleteBlock(blockId);
+            setFormState((prev) => ({
+                ...prev,
+                curriculum: prev.curriculum.filter((block) => block.id !== blockId),
+            }));
+        } catch (error) {
+            console.error("Error deleting block:", error);
+        }
+    };
+
     if (isLoading || materials === null || tests === null) {
         return <Skeleton height={200} className="mb-4" />;
     }
-
-    const addItem = <K extends "course_details" | "curriculum" | "what_w_learn">(key: K) => {
-        setFormState((prev) => ({
-            ...prev,
-            [key]: [
-                ...prev[key],
-                {
-                    id: prev[key].length + 1,
-                    ...(key === "curriculum" ? { title: "", description: "" } : { description: "" }),
-                },
-            ],
-        }));
-    };
 
     return (
         <Card className="w-full max-w-3xl mx-auto">
@@ -202,29 +249,20 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                 <div>
                                     <Label>Module Title</Label>
                                     <Input
-                                        type="text"
+                                        type="text" disabled
                                         value={module.name}
                                         onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                curriculum: prev.curriculum.map((m) =>
-                                                    m.id === module.id ? { ...m, name: e.target.value } : m
-                                                ),
-                                            }))
+                                            handleUpdateBlock(module.id, e.target.value, module.description)
                                         }
                                     />
                                 </div>
                                 <div>
                                     <Label>Module Description</Label>
                                     <Textarea
+                                        disabled
                                         value={module.description}
                                         onChange={(e) =>
-                                            setFormState((prev) => ({
-                                                ...prev,
-                                                curriculum: prev.curriculum.map((m) =>
-                                                    m.id === module.id ? { ...m, description: e.target.value } : m
-                                                ),
-                                            }))
+                                            handleUpdateBlock(module.id, module.name, e.target.value)
                                         }
                                     />
                                 </div>
@@ -252,6 +290,29 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                         }}
                                     >
                                         Add Material
+                                    </Button>
+
+                                    <Button
+                                        variant="outline"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setBlockModalOpen(true);
+                                            setCurrentBlock(module);
+                                            setBlockName(module.name ?? "");
+                                            setBlockDescription(module.description ?? "");
+                                        }}
+                                    >
+                                        Edit Module
+                                    </Button>
+
+                                    <Button
+                                        variant="destructive"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleDeleteBlock(module.id)
+                                        }}
+                                    >
+                                        Delete Module
                                     </Button>
                                 </div>
 
@@ -299,7 +360,15 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                             </Card>
                         ))}
                     </div>
-                    <Button type="button" onClick={() => addItem("curriculum")} variant="outline">
+                    <Button
+                        type="button"
+                        onClick={() => {
+                            setBlockModalOpen(true);
+                            setCurrentBlock(null);
+                            setBlockName("");
+                        }}
+                        variant="outline"
+                    >
                         Add Module
                     </Button>
                     <Button type="submit" className="w-full">
@@ -328,6 +397,20 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 onSave={handleSaveTest}
                 testId={currentTest?.id || null}
                 blockId={formState?.curriculum[0]?.id ?? null}
+            />
+
+            <BlockModal
+                isOpen={isBlockModalOpen}
+                onClose={() => setBlockModalOpen(false)}
+                onSave={currentBlock
+                    ? () => handleUpdateBlock(currentBlock.id, blockName, blockDescription)
+                    : () => handleSaveBlock()
+                }
+                blockName={blockName}
+                setBlockName={setBlockName}
+                blockDescription={blockDescription}
+                setBlockDescription={setBlockDescription}
+                currentBlock={currentBlock}
             />
         </Card>
     );

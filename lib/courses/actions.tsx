@@ -938,7 +938,6 @@ export async function updateCourse(
 		}
 
 		const { error } = await supabase.from("Course").update(courseData).eq("id", courseId);
-		// TODO: make logic module
 		if (error) {
 			console.error("Error updating course:", error);
 			throw new Error(`Failed to update course: ${error.message}`);
@@ -964,7 +963,7 @@ export async function updateCourse(
 			if (newModules.length > 0) {
 				const modulesToInsert = newModules.map((module) => ({
 					course_id: courseId,
-					name: module.title,
+					name: module.name,
 					description: module.description,
 					duration: module.duration ?? null,
 				}));
