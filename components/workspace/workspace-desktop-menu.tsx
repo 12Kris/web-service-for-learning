@@ -21,8 +21,8 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
   return (
     <div className="hidden lg:flex sticky top-0 flex-col h-screen w-64 bg-background border-r">
       <div className="p-6">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-2xl text-[--neutral] font-light">Memoria</span>
+        <Link href="/workspace" className="flex items-center space-x-2">
+          <span className="text-2xl text-[--neutral] font-black">Memoria</span>
         </Link>
       </div>
       <nav className="flex-1 px-4 space-y-2">
@@ -33,7 +33,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium",
+                "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-bold",
                 "hover:bg-black/10 ",
                 "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-ring",
                 isActive && "bg-[--neutral] text-white hover:bg-[--neutral]/90"

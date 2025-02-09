@@ -1,6 +1,6 @@
 import { Github, LifeBuoy, LogOut, Settings, User } from "lucide-react";
 
-import {getUser, logoutUser} from "@/lib/auth/actions";
+import { getUser, logoutUser } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -43,11 +43,11 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant={"default"}
           size="icon"
-          className="shrink-0 border rounded-full bg-zinc-100"
+          className="shrink-0 rounded-full bg-zinc-100"
         >
-          <User className="h-5 w-5 " />
+          <User strokeWidth={3} className="h-5 w-5 " />
           <span className="sr-only">User menu</span>
         </Button>
       </DropdownMenuTrigger>
