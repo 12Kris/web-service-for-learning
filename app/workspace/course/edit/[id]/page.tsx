@@ -68,7 +68,8 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: numbe
     const [modals, setModals] = useState({ block: false });
     const [currentBlock, setCurrentBlock] = useState<Block | null>(null);
     const [blockName, setBlockName] = useState("");
-    const [blockDescription, setBlockDescription] = useState("");
+    // const [blockDescription, setBlockDescription] = useState("");
+    const [blockDescription, setBlockDescription] = useState<string>("");
 
 
     const fetchCourseData = useCallback(async () => {
