@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { FC } from "react";
+import {Module} from "@/lib/definitions";
 
 interface BlockModalProps {
   isOpen: boolean;
@@ -18,7 +19,8 @@ interface BlockModalProps {
   setBlockName: (name: string) => void;
   blockDescription: string;
   setBlockDescription: (description: string) => void;
-  currentBlock?: { id: number; name: string } | null;
+  // currentBlock?: { id: number; name: string } | null;
+  currentBlock?: Module | null;
 }
 
 const BlockModal: FC<BlockModalProps> = ({
@@ -58,13 +60,19 @@ const BlockModal: FC<BlockModalProps> = ({
 
           <div className="mt-2">
             <label className="font-medium">Description:</label>
-            <input
+            {/* <input
               type="text"
               value={blockDescription}
               onChange={(e) => setBlockDescription(e.target.value)}
               placeholder="Module Description"
               className="w-full p-2 border border-2 border-input rounded-lg bg-[--card] my-2"
-            />
+            /> */}
+            <textarea
+                  value={blockDescription}
+                  onChange={(e) => setBlockDescription(e.target.value)}
+                  placeholder="Module Description"
+                  className="w-full p-2 border border-2 border-input rounded-lg bg-[--card] my-2"
+              />
           </div>
         </div>
         <AlertDialogFooter>

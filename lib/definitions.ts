@@ -154,6 +154,7 @@ export interface LearningMaterial {
   id: number;
   title: string;
   content: string;
+  block_id?: number;
 }
 
 export interface MaterialData {

@@ -1767,7 +1767,7 @@ export async function saveTestResults(
 export async function getMaterialsByBlockId(blockId: number): Promise<LearningMaterial[]> {
 	const { data, error } = await supabase
 		.from("LearningMaterial")
-		.select("id, title, content, material_type, order_number")
+		.select("id, block_id, title, content, material_type, order_number")
 		.eq("block_id", blockId)
 		.order("order_number", { ascending: true });
 

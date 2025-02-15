@@ -131,7 +131,7 @@ export default function BlockSection({
       <h3 className="font-bold text-lg mb-2">{block.name}</h3>
       <h4 className="font-bold text-lg mb-2">{block.description}</h4>
       <div className="mb-2">
-        <strong>Materials:</strong>
+        <strong>Cards:</strong>
         <ul>
           {materials.map((material) => (
             <li key={material.id}>
@@ -196,6 +196,7 @@ export default function BlockSection({
       </div>
       <div className="flex justify-between">
         <Button onClick={() => handleOpenBlockModal(block)}>Edit Block</Button>
+        
         <Button
           variant="destructive"
           onClick={() => {
@@ -214,7 +215,7 @@ export default function BlockSection({
             setMaterialModalOpen(true);
           }}
         >
-          Add Material
+          Add Cards
         </Button>
         <Button
           onClick={() => {
@@ -222,7 +223,7 @@ export default function BlockSection({
             setTestModalOpen(true);
           }}
         >
-          Add Test
+          Add Tests
         </Button>
       </div>
       <MaterialModal
