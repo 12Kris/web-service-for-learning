@@ -128,18 +128,18 @@ export async function createTest(testData: TestDataWithQuestion): Promise<Test |
         }
 
         for (const question of testData.questions) {
-            if (!question.question) throw new Error(`Each question must have a non-empty 'question' field.`);
+            if (!question.question) throw new Error("Each question must have a non-empty 'question' field.");
             if (!Array.isArray(question.answers) || question.answers.length === 0) {
-                throw new Error(`Each question must have at least one answer.`);
+                throw new Error("Each question must have at least one answer.");
             }
-            if (!question.answers.some((answer: { correct: boolean; }) => answer.correct)) {
-                throw new Error(`Each question must have at least one correct answer.`);
+            if (!question.answers.some((answer: { correct: boolean }) => answer.correct)) {
+                throw new Error("Each question must have at least one correct answer.");
             }
         }
 
-        const {data: testDataResponse, error: testError}: SupabaseResponse<Test> = await supabase
+        const { data: testDataResponse, error: testError }: SupabaseResponse<Test> = await supabase
             .from("Test")
-            .insert({block_id: testData.block_id, question: testData.question})
+            .insert({ block_id: testData.block_id, question: testData.question })
             .select()
             .single();
 
@@ -147,7 +147,7 @@ export async function createTest(testData: TestDataWithQuestion): Promise<Test |
         const testId = testDataResponse?.id;
 
         for (const question of testData.questions) {
-            const {data: questionData, error: questionError}: SupabaseResponse<TestQuestion> = await supabase
+            const { data: questionData, error: questionError }: SupabaseResponse<TestQuestion> = await supabase
                 .from("TestQuestions")
                 .insert({
                     test_id: testId,
@@ -160,28 +160,34 @@ export async function createTest(testData: TestDataWithQuestion): Promise<Test |
             if (questionError) throw new Error(`Error creating test question: ${questionError.message}`);
             const questionId = questionData?.id;
 
-            const answersToInsert = question.answers.map((answer: { text: string; correct: boolean }) => ({
-                question_id: questionId,
-                answer: answer.text,
-            }));
+            const answersToInsert = question.answers.map(
+                (answer: { text: string; correct: boolean }, index: number) => ({
+                    question_id: questionId,
+                    answer: answer.text,
+                    order: index + 1,
+                })
+            );
 
-            const {data: insertedAnswers, error: answersError}: SupabaseResponse<TestAnswer[]> = await supabase
+            const { data: insertedAnswers, error: answersError }: SupabaseResponse<TestAnswer[]> = await supabase
                 .from("TestAnswers")
                 .insert(answersToInsert)
                 .select();
 
             if (answersError) throw new Error(`Error creating answers: ${answersError.message}`);
 
-            const correctAnswer = question.answers.find((answer: { text: string; correct: boolean }) => answer.correct);
+            const correctAnswer = question.answers.find(
+                (answer: { text: string; correct: boolean }) => answer.correct
+            );
+
             if (correctAnswer) {
                 const correctAnswerData = insertedAnswers?.find(
                     (insertedAnswer: TestAnswer) => insertedAnswer?.answer === correctAnswer?.text
                 );
 
                 if (correctAnswerData) {
-                    const {error: updateError} = await supabase
+                    const { error: updateError } = await supabase
                         .from("TestQuestions")
-                        .update({correct_id: correctAnswerData.id})
+                        .update({ correct_id: correctAnswerData.id })
                         .eq("id", questionId);
 
                     if (updateError) throw new Error(`Error updating correct_id: ${updateError.message}`);
@@ -195,22 +201,21 @@ export async function createTest(testData: TestDataWithQuestion): Promise<Test |
     }
 }
 
-
 export async function updateTest(
     testId: number,
     testData: TestDataWithQuestion
 ): Promise<Test | null> {
     try {
-        const {data: testDataResponse, error: testError} = await supabase
+        const { data: testDataResponse, error: testError } = await supabase
             .from("Test")
-            .update({block_id: testData.block_id, question: testData.question})
+            .update({ block_id: testData.block_id, question: testData.question })
             .eq("id", testId)
             .select()
             .single();
 
         if (testError) throw new Error(`Error updating test: ${testError.message}`);
 
-        const {error: deleteQuestionsError} = await supabase
+        const { error: deleteQuestionsError } = await supabase
             .from("TestQuestions")
             .delete()
             .eq("test_id", testId);
@@ -222,7 +227,7 @@ export async function updateTest(
         const questionIds = testData?.questions?.map((q: Question) => Number(q.id)).filter(Boolean) || [];
 
         if (questionIds.length > 0) {
-            const {error: deleteAnswersError} = await supabase
+            const { error: deleteAnswersError } = await supabase
                 .from("TestAnswers")
                 .delete()
                 .in("question_id", questionIds);
@@ -234,7 +239,7 @@ export async function updateTest(
 
         if (testData.questions) {
             for (const question of testData.questions) {
-                const {data: questionData, error: questionError} = await supabase
+                const { data: questionData, error: questionError } = await supabase
                     .from("TestQuestions")
                     .insert({
                         test_id: testId,
@@ -252,12 +257,13 @@ export async function updateTest(
                 const correctAnswerText = question.answers.find((a: Answer) => a.correct)?.text;
 
                 const answers = await Promise.all(
-                    question.answers.map(async (answer: Answer) => {
-                        const {data: answerData, error: answerError} = await supabase
+                    question.answers.map(async (answer: Answer, index: number) => {
+                        const { data: answerData, error: answerError } = await supabase
                             .from("TestAnswers")
                             .insert({
                                 question_id: questionId,
                                 answer: answer.text,
+                                order: index + 1,
                             })
                             .select()
                             .single();
@@ -273,7 +279,7 @@ export async function updateTest(
                 if (correctAnswer) {
                     await supabase
                         .from("TestQuestions")
-                        .update({correct_id: correctAnswer.id})
+                        .update({ correct_id: correctAnswer.id })
                         .eq("id", questionId);
                 }
             }
