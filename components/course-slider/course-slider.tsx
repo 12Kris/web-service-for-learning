@@ -59,17 +59,19 @@ export function CourseCarousel({ title, courses }: CourseCarouselProps) {
         </div>
       </div>
 
-      <div className="overflow-hidden">
+      <div className="overflow-hidden relative">
         <div
-          className="flex transition-transform duration-300 ease-in-out"
+          className="flex  transition-transform duration-300 ease-in-out "
           style={{
-            transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
+            transform: `translateX(calc(-${
+              currentIndex * (100 / cardsPerView)
+            }% )`,
           }}
         >
           {courses.map((course) => (
             <div
               key={course.id}
-              className={`w-full flex-none px-2 ${
+              className={`w-full flex-none course-card-space px-2 ${
                 cardsPerView === 3
                   ? "lg:w-1/3"
                   : cardsPerView === 2
@@ -89,6 +91,10 @@ export function CourseCarousel({ title, courses }: CourseCarouselProps) {
             </div>
           ))}
         </div>
+        <div
+          className="pointer-events-none absolute top-0 right-0 h-full w-10 bg-gradient-to-r from-transparent to-[--background]
+                  backdrop-blur-xl blur-sm"
+        />
       </div>
     </section>
   );
