@@ -21,8 +21,7 @@ import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
 import { getUser } from "@/lib/auth/actions";
 import { Course, User } from "@/lib/definitions";
 import { Edit } from "lucide-react";
-import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png"
-
+import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("created");
@@ -43,7 +42,8 @@ export default function UserProfile() {
           email: currentUser.email || "",
           full_name: currentUser.user_metadata?.name || "Unknown User",
           name: currentUser.user_metadata?.displayName || "Unknown User",
-          avatar: currentUser.user_metadata?.avatar_url || defaultProfileImage.src,
+          avatar:
+            currentUser.user_metadata?.avatar_url || defaultProfileImage.src,
           role: "Instructor & Student",
           created_at: currentUser.created_at,
           user_metadata: currentUser.user_metadata || {},
@@ -63,8 +63,8 @@ export default function UserProfile() {
   }, []);
 
   if (!user) {
-     return <LoadingSpinner className="mx-auto" />;
-   }
+    return <LoadingSpinner className="mx-auto" />;
+  }
 
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
@@ -114,12 +114,12 @@ export default function UserProfile() {
             </CardContent>
 
             <CardFooter>
-                <Button asChild className="w-full">
+              <Button asChild className="w-full">
                 <Link href="/workspace/profile/edit">
                   <Edit />
                   Edit Profile
                 </Link>
-                </Button>
+              </Button>
             </CardFooter>
           </Card>
         </aside>
