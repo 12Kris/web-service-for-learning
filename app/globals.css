@@ -59,4 +59,11 @@
   body {
     @apply text-foreground;
   }
+  .course-card-space:first-child {
+    margin-left: -0.5rem !important;
+  }
+
+  .course-card-space:last-child {
+    margin-right: -0.5rem !important;
+  }
 }
