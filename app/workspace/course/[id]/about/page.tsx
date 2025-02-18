@@ -15,8 +15,6 @@ import CourseInfo from "@/components/workspace/courses/course-info";
 import CourseCurriculum from "@/components/workspace/courses/course-curriculum";
 import MeetTutor from "@/components/workspace/courses/meet-tutor";
 
-import EditBar from "@/components/workspace/courses/edit-bar";
-
 export default function FlashcardPage({
   params,
 }: {
@@ -70,8 +68,6 @@ export default function FlashcardPage({
         description={course?.creator?.description || undefined}
         imageUrl=""
       />
-
-      <EditBar id={id} />
     </div>
   );
 }
