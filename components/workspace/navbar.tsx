@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useContext } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -20,6 +21,8 @@ import { User } from "@/lib/definitions";
 
 import { getUser } from "@/lib/auth/actions";
 
+import { DataContext } from '@/app/workspace/layout';
+
 interface NavbarProps {
   onSearch?: (term: string) => void;
   onFilter?: () => void;
@@ -32,6 +35,15 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
   const showAddButton = pathname === "/workspace/course/browse";
 
   const [user, setUser] = useState<User | null>(null);
+
+
+  const { data, setData } = useContext(DataContext);
+
+  useEffect(() => {
+    // Set data when the component mounts
+    setData("New data from child page");
+  }, []);
+
 
   useEffect(() => {
     async function fetchData() {
