@@ -13,10 +13,10 @@ import Skeleton from "react-loading-skeleton";
 import { MaterialModal } from "@/components/workspace/modals/material";
 import { TestModal } from "@/components/workspace/modals/test";
 import { Card as CardDefinitions } from "@/lib/definitions";
+import { type Module } from "@/lib/types/learning";
 import {
     type Course,
     CourseDetails,
-    Module,
     WhatWillLearn,
     LearningMaterial,
     MaterialData,
@@ -163,19 +163,24 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
     const handleSaveBlock = async () => {
         try {
-            const newBlock = await createBlock(course.id, blockName, blockDescription);
-            if(newBlock) {
-                setFormState((prev) => ({
-                    ...prev,
-                    curriculum: [
-                        ...prev.curriculum,
-                        {
-                            id: newBlock.id,
-                            name: blockName,
-                            description: blockDescription,
-                        },
-                    ],
-                }));
+            const newModule = await createBlock(course.id, blockName, blockDescription);
+            if (newModule) {
+              setFormState((prev) => ({
+                ...prev,
+                curriculum: [
+                  ...prev.curriculum,
+                  {
+                    id: newModule.id,
+                    title: blockName, // was "name" before
+                    description: blockDescription,
+                    duration: "",     // Provide an appropriate default or calculated value
+                    lessons: [],      // Initially empty
+                    isActive: false,  // Default value; adjust as needed
+                    isCompleted: false,
+                    progress: 0,
+                  },
+                ],
+              }));
             }
         } catch (error) {
             console.error("Error saving block:", error);
@@ -380,7 +385,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                     <Label>Module Title</Label>
                                     <Input
                                         type="text" disabled
-                                        value={module.name}
+                                        value={module.title}
                                         onChange={(e) =>
                                             handleUpdateBlock(module.id, e.target.value, module.description)
                                         }
@@ -392,7 +397,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                         disabled
                                         value={module.description}
                                         onChange={(e) =>
-                                            handleUpdateBlock(module.id, module.name, e.target.value)
+                                            handleUpdateBlock(module.id, module.title, e.target.value)
                                         }
                                     />
                                 </div>
@@ -430,7 +435,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                             e.preventDefault();
                                             setBlockModalOpen(true);
                                             setCurrentBlock(module);
-                                            setBlockName(module.name ?? "");
+                                            setBlockName(module.title ?? "");
                                             setBlockDescription(module.description ?? "");
                                         }}
                                     >

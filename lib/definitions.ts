@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
+import { Module } from "@/lib/types/learning";
 
 // export interface UserMetadata {
 //   name?: string;
@@ -252,15 +253,15 @@ export interface UserMetadata {
     description?: string;
 }
 
-export interface Module {
-    materials?: LearningMaterial[];
-    tests?: Test[];
-    id: number;
-    title?: string;
-    name?: string;
-    description?: string;
-    duration?: string
-}
+// export interface Module {
+//     materials?: LearningMaterial[];
+//     tests?: Test[];
+//     id: number;
+//     title?: string;
+//     name?: string;
+//     description?: string;
+//     duration?: string
+// }
 
 export interface TestDataWithQuestion {
     block_id: number;
