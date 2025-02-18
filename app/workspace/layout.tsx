@@ -52,7 +52,7 @@ export default function WorkspaceLayout({
   ];
 
   return (
-    <DataContext.Provider value={{ data, setData }}>
+    <DataContext.Provider key={pathname} value={{ data, setData }}>
       <div
         className={`${jura.className} bg-[--background] flex w-full flex-col min-h-screen md:flex-row`}
       >
