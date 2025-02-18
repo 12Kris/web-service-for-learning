@@ -1,14 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Menu, Plus, Search, Filter } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useState, useEffect } from "react";
 
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AccountDropdown } from "./account-dropdown";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -21,15 +20,12 @@ import { User } from "@/lib/definitions";
 import { getUser } from "@/lib/auth/actions";
 
 interface NavbarProps {
-  onSearch?: (term: string) => void;
-  onFilter?: () => void;
-  onAdd?: () => void;
   menuItems: MenuItems[];
+  data: React.ReactNode | null;
 }
 
-export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
+export function Navbar({ menuItems, data }: NavbarProps) {
   const pathname = usePathname();
-  const showAddButton = pathname === "/workspace/course/browse";
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -121,42 +117,7 @@ export function Navbar({ onSearch, onFilter, onAdd, menuItems }: NavbarProps) {
           </div>
 
           <div className="flex items-center space-x-4">
-            {showAddButton && (
-              <Link href="/workspace/course/create">
-                <Button
-                  variant="default"
-                  size="wide"
-                  onClick={onAdd}
-                  className="flex"
-                >
-                  <Plus strokeWidth={3} className="mr-0 h-4 w-4" />
-                  Create New
-                </Button>
-              </Link>
-            )}
-
-            <Button
-              variant={"default"}
-              size="wide"
-              onClick={onFilter}
-              className="hidden sm:flex"
-            >
-              <Filter strokeWidth={3} className="mr-0 h-4 w-4" />
-              Filter
-            </Button>
-            <div className="relative hidden sm:block">
-              <Input
-                placeholder="Search..."
-                icon={
-                  <Search
-                    style={{ color: `var(--neutral)` }}
-                    className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 "
-                  />
-                }
-                className="w-[300px] hidden sm:block"
-                onChange={(e) => onSearch?.(e.target.value)}
-              />
-            </div>
+            {data && data}
 
             <AccountDropdown name={user?.name} />
           </div>

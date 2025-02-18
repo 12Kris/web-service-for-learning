@@ -61,7 +61,7 @@ const EditBar: React.FC<EditBarProps> = ({ id }) => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row w-full gap-2">
+    <div className="flex flex-col md:flex-row w-full gap-4">
       {/* <Button className="w-full" disabled={true}></Button> */}
 
       <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
