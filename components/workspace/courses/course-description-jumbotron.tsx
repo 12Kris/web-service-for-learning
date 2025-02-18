@@ -14,7 +14,7 @@ interface CourseDescriptionJumbotronProps {
   description?: string;
   type?: string;
   id: number;
-  onLearnMore: () => void;
+  onLearnMore?: () => void;
 }
 
 const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
@@ -22,7 +22,6 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   description,
   type,
   id,
-  onLearnMore,
 }) => {
   const [isCourseAdded, setIsCourseAdded] = useState(false);
 
@@ -45,17 +44,16 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     if (!id) return;
     await addCourseToUser(id);
     setIsCourseAdded(true);
-    window.location.reload();
+    window.location.href = `/workspace/course/${id}`;
   }
   async function handleRemoveCourse(id: number) {
     if (!id) return;
     await removeCourseFromUser(id);
     setIsCourseAdded(false);
-    window.location.reload();
   }
 
   return (
-    <section className="w-full bg-[--primary-light] border rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
+    <section className="w-full bg-[--primary-light] border mb-2 rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-5xl font-bold text-center">
           {title || (
@@ -94,9 +92,6 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
       </p>
 
       <div className="flex gap-2">
-        <Button variant={"outline"} onClick={onLearnMore}>
-          Learn more
-        </Button>
         <Button
           variant={isCourseAdded ? "destructive" : "solid"}
           onClick={() =>

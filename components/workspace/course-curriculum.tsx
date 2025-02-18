@@ -62,7 +62,7 @@
 import React from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
-import { Module } from "@/lib/definitions";
+import { Module } from "@/lib/types/learning";
 import Link from "next/link";
 
 interface CourseCurriculumProps {
@@ -101,7 +101,7 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
               <CardHeader>
                   <Link href={`module/${module.id}`}>
                       <div className="space-y-1">
-                          <h2 className="text-xl font-semibold">{module.name}</h2>
+                          <h2 className="text-xl font-semibold">{module.title}</h2>
                           <p className="text-sm text-muted-foreground">
                               {module.description ?? "No description available."}
                           </p>

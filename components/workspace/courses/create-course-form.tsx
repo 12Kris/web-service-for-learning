@@ -8,7 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import type { CourseDetails, Module, WhatWillLearn } from "@/lib/definitions";
+import type { CourseDetails, WhatWillLearn } from "@/lib/definitions";
+import { Module } from "@/lib/types/learning";
+
 
 type FormState = {
   name: string;
@@ -24,7 +26,14 @@ const initialFormState: FormState = {
   description: "",
   type: "",
   course_details: [{ id: 1, course_detail: "" }],
-  curriculum: [{ id: 1, title: "", description: "" }],
+  curriculum: [{
+    id: 1, title: "", description: "",
+    duration: "",
+    lessons: [],
+    isActive: false,
+    isCompleted: false,
+    progress: 0
+  }],
   what_w_learn: [{ id: 1, description: "" }],
 };
 

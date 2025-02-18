@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
-import { Module } from "@/lib/definitions";
+import { Module } from "@/lib/types/learning";
 import Link from "next/link";
 
 interface CourseCurriculumProps {
@@ -16,7 +16,7 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
   return (
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-bold mb-8">Course Curriculum</h1>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {modules === undefined ? (
           Array.from({ length: 4 }).map((_, index) => (
             <Card key={index}>
@@ -38,7 +38,7 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
                     <CardHeader>
                         <Link href={`module/${module.id}`}>
                             <div className="space-y-1">
-                                <h2 className="text-xl font-semibold">{module.name}</h2>
+                                <h2 className="text-xl font-semibold">{module.title}</h2>
                                 <p className="text-sm text-muted-foreground">
                                     {module.description ?? "No description available."}
                                 </p>

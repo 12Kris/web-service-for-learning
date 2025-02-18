@@ -1,218 +1,180 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import ModuleProgression from "@/components/workspace/courses/modules/module-progression";
+import { Module } from "@/lib/types/learning";
+import { PageHeader } from "@/components/ui/page-header";
+import { useEffect } from "react";
 import { use } from "react";
 import { isCourseAddedToUser } from "@/lib/courses/actions";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import { ModuleCard } from "@/components/workspace/courses/modules/module-card";
-import { Module } from "@/lib/types/learning";
+import { useState } from "react";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
-export default function FlashcardPage({
+export interface PageData {
+  title: string;
+  logo: string;
+  modules: Module[];
+}
+
+export default function EnroledModulePage({
   params,
 }: {
   params: Promise<{ id: number }>;
 }) {
-  const [isCourseAdded, setIsCourseAdded] = useState<boolean | null>(null);
+  const [isCourseAdded, setIsCourseAdded] = useState<boolean | undefined>(
+    undefined
+  );
   const { id } = use(params);
 
-  async function fetchData(id: number) {
-    if (!id) return;
-
-    try {
-      const result = await isCourseAddedToUser(id);
-      setIsCourseAdded(result);
-    } catch (err) {
-      console.error(err);
-      setIsCourseAdded(false);
-    }
-  }
-
-  const modules: Module[] = [
-    {
-      id: 1,
-      title: "Module 1: Web Fundamentals",
-      description: "Learn the basics of HTML, CSS, and JavaScript",
-      duration: "2 weeks",
-      isActive: true,
-      isCompleted: true,
-      progress: 100,
-      lessons: [
-        {
-          id: 1,
-          title: "Introduction to HTML",
-          duration: "45 min",
-          type: "video",
-          isCompleted: true,
-        },
-        {
-          id: 2,
-          title: "CSS Basics",
-          duration: "1h",
-          type: "video",
-          isCompleted: true,
-        },
-        {
-          id: 3,
-          title: "JavaScript Fundamentals",
-          duration: "1.5h",
-          type: "video",
-          isCompleted: true,
-        },
-        {
-          id: 4,
-          title: "Module 1 Quiz",
-          duration: "30 min",
-          type: "quiz",
-          isCompleted: true,
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: "Module 2: Advanced CSS",
-      description: "Master modern CSS techniques and frameworks",
-      duration: "2 weeks",
-      isActive: true,
-      isCompleted: false,
-      progress: 60,
-      lessons: [
-        {
-          id: 1,
-          title: "Flexbox & Grid",
-          duration: "1h",
-          type: "video",
-          isCompleted: true,
-        },
-        {
-          id: 2,
-          title: "CSS Animations",
-          duration: "45 min",
-          type: "video",
-          isCompleted: true,
-        },
-        {
-          id: 3,
-          title: "Building a Responsive Layout",
-          duration: "2h",
-          type: "exercise",
-          isCompleted: false,
-        },
-        {
-          id: 4,
-          title: "Module 2 Quiz",
-          duration: "30 min",
-          type: "quiz",
-          isCompleted: false,
-        },
-      ],
-    },
-    {
-      id: 3,
-      title: "Module 3: JavaScript Deep Dive",
-      description: "Advanced JavaScript concepts and patterns",
-      duration: "3 weeks",
-      isActive: false,
-      isCompleted: false,
-      progress: 0,
-      lessons: [
-        {
-          id: 1,
-          title: "ES6+ Features",
-          duration: "1.5h",
-          type: "video",
-          isCompleted: false,
-        },
-        {
-          id: 2,
-          title: "Async Programming",
-          duration: "2h",
-          type: "video",
-          isCompleted: false,
-        },
-        {
-          id: 3,
-          title: "Building a JavaScript App",
-          duration: "3h",
-          type: "exercise",
-          isCompleted: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      title: "Module 4: React Fundamentals",
-      description: "Learn the basics of React development",
-      duration: "3 weeks",
-      isActive: false,
-      isCompleted: false,
-      progress: 0,
-      lessons: [
-        {
-          id: 1,
-          title: "React Basics",
-          duration: "2h",
-          type: "video",
-          isCompleted: false,
-        },
-        {
-          id: 2,
-          title: "State & Props",
-          duration: "1.5h",
-          type: "video",
-          isCompleted: false,
-        },
-        {
-          id: 3,
-          title: "React Hooks",
-          duration: "2h",
-          type: "video",
-          isCompleted: false,
-        },
-      ],
-    },
-  ];
-
   useEffect(() => {
-    fetchData(id);
+    async function checkIfCourseIsAdded() {
+      try {
+        const result = await isCourseAddedToUser(id);
+        setIsCourseAdded(result);
+      } catch (err) {
+        console.error(err);
+        setIsCourseAdded(false);
+      }
+    }
+    checkIfCourseIsAdded();
   }, [id]);
 
-  if (isCourseAdded === null) {
-    return (
-      <div className="flex flex-wrap gap-4">
-        <div className="w-full h-96 bg-gray-100 rounded-xl flex justify-center items-center">
-          <Skeleton height={384} width="100%" />
-        </div>
-      </div>
-    );
+  useEffect(() => {
+    if (isCourseAdded === false) {
+      window.location.href = `${id}/about`;
+    }
+  }, [isCourseAdded, id]);
+
+  if (isCourseAdded != true) {
+    return <LoadingSpinner />;
   }
 
+  const data: PageData = {
+    title: "Master Web Development",
+    logo: "Memorize",
+    modules: [
+      {
+        id: 1,
+        title: "Module 1",
+        isActive: true,
+        isCompleted: true,
+        progress: 100,
+        lessons: [
+          {
+            id: 1,
+            title: "Introduction to HTML",
+            duration: "45 min",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 2,
+            title: "CSS Basics",
+            duration: "1h",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 3,
+            title: "JavaScript Fundamentals",
+            duration: "1.5h",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 4,
+            title: "Module 1 Quiz",
+            duration: "30 min",
+            type: "quiz",
+            isCompleted: true,
+          },
+        ],
+        description: "Learn the basics of HTML, CSS, and JavaScript",
+        duration: "2 weeks",
+      },
+      {
+        id: 2,
+        title: "Module 2",
+        isActive: true,
+        isCompleted: false,
+        progress: 100,
+        lessons: [
+          {
+            id: 1,
+            title: "Introduction to HTML",
+            duration: "45 min",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 2,
+            title: "CSS Basics",
+            duration: "1h",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 3,
+            title: "JavaScript Fundamentals",
+            duration: "1.5h",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 4,
+            title: "Module 1 Quiz",
+            duration: "30 min",
+            type: "quiz",
+            isCompleted: true,
+          },
+        ],
+        description: "Learn the basics of HTML, CSS, and JavaScript",
+        duration: "2 weeks",
+      },
+      {
+        id: 3,
+        title: "Module 3",
+        isActive: false,
+        isCompleted: false,
+        progress: 100,
+        lessons: [
+          {
+            id: 1,
+            title: "Introduction to HTML",
+            duration: "45 min",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 2,
+            title: "CSS Basics",
+            duration: "1h",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 3,
+            title: "JavaScript Fundamentals",
+            duration: "1.5h",
+            type: "video",
+            isCompleted: true,
+          },
+          {
+            id: 4,
+            title: "Module 1 Quiz",
+            duration: "30 min",
+            type: "quiz",
+            isCompleted: true,
+          },
+        ],
+        description: "Learn the basics of HTML, CSS, and JavaScript",
+        duration: "2 weeks",
+      },
+    ],
+  };
+
   return (
-    <div className="flex flex-wrap gap-4">
-      {isCourseAdded ? (
-        <div className="w-full max-w-4xl mx-auto p-6">
-          <div className="space-y-8">
-            {modules.map((module, index) => (
-              <ModuleCard
-                key={module.id}
-                module={module}
-                isFirst={index === 0}
-                isLast={index === modules.length - 1}
-              />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div className="w-full h-96 bg-gray-100 rounded-xl flex justify-center items-center flex-col gap-3">
-          <h1 className="text-2xl text-gray-500">
-            You need to subscribe to this course to view it
-          </h1>
-          <p className="text-md text-gray-500">
-            After you clicked subscribe button you may need to refresh page to
-            see your course.
-          </p>
-        </div>
-      )}
+    <div>
+      <PageHeader className="mb-10" title={data.title} />
+      <ModuleProgression modules={data.modules} />
     </div>
   );
 }
