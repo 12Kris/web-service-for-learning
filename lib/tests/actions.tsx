@@ -183,10 +183,18 @@ export async function createTest(testData: TestDataWithQuestion): Promise<Test |
             if (questionError) throw new Error(`Error creating test question: ${questionError.message}`);
             const questionId = questionData?.id;
 
-            const answersToInsert = question.answers.map((answer: { text: string; correct: boolean }) => ({
-                question_id: questionId,
-                answer: answer.text,
-            }));
+            // const answersToInsert = question.answers.map((answer: { text: string; correct: boolean }) => ({
+            //     question_id: questionId,
+            //     answer: answer.text,
+            // }));
+
+            const answersToInsert = question.answers.map(
+                (answer: { text: string; correct: boolean }, index: number) => ({
+                    question_id: questionId,
+                    answer: answer.text,
+                    order: index + 1,
+                })
+            );
 
             const {data: insertedAnswers, error: answersError}: SupabaseResponse<TestAnswer[]> = await supabase
                 .from("TestAnswers")
@@ -275,12 +283,28 @@ export async function updateTest(
                 const correctAnswerText = question.answers.find((a: Answer) => a.correct)?.text;
 
                 const answers = await Promise.all(
-                    question.answers.map(async (answer: Answer) => {
-                        const {data: answerData, error: answerError} = await supabase
+                    // question.answers.map(async (answer: Answer) => {
+                    //     const {data: answerData, error: answerError} = await supabase
+                    //         .from("TestAnswers")
+                    //         .insert({
+                    //             question_id: questionId,
+                    //             answer: answer.text,
+                    //         })
+                    //         .select()
+                    //         .single();
+
+                    //     if (answerError) {
+                    //         throw new Error(`Error creating answer: ${answerError.message}`);
+                    //     }
+                    //     return answerData;
+                    // })
+                    question.answers.map(async (answer: Answer, index: number) => {
+                        const { data: answerData, error: answerError } = await supabase
                             .from("TestAnswers")
                             .insert({
                                 question_id: questionId,
                                 answer: answer.text,
+                                order: index + 1,
                             })
                             .select()
                             .single();
