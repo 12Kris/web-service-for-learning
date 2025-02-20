@@ -49,7 +49,7 @@ export default function CreateCourseForm() {
     try {
       const newCourse = await createCourse(formState);
       if (newCourse) {
-        router.push(`/workspace/course/${newCourse.id}`);
+        router.push(`/workspace/courses/${newCourse.id}`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");

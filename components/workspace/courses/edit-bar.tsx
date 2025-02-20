@@ -64,7 +64,7 @@ const EditBar: React.FC<EditBarProps> = ({ id }) => {
     <div className="flex flex-col md:flex-row w-full gap-4">
       {/* <Button className="w-full" disabled={true}></Button> */}
 
-      <Link className="w-full" href={`/workspace/course/${course?.id}/cards`}>
+      <Link className="w-full" href={`/workspace/courses/${course?.id}/cards`}>
         <Button className="w-full">
           {" "}
           <BookCheck />
@@ -72,7 +72,7 @@ const EditBar: React.FC<EditBarProps> = ({ id }) => {
         </Button>
       </Link>
       {isCreator && (
-        <Link className="w-full" href={`/workspace/course/edit/${course?.id}/`}>
+        <Link className="w-full" href={`/workspace/courses/edit/${course?.id}/`}>
           <Button className="w-full">
             <Edit />
             Edit

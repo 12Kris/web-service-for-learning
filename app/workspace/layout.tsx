@@ -44,10 +44,10 @@ export default function WorkspaceLayout({
     {
       name: "Browse courses",
       icon: "Compass",
-      href: "/workspace/course/browse",
+      href: "/workspace/courses/browse",
     },
     { name: "Bookmarks", icon: "Bookmark", href: "/workspace/bookmarks" },
-    { name: "Profile", icon: "User", href: "/workspace/profile" },
+    // { name: "Profile", icon: "User", href: "/workspace/profile" },
     { name: "Help", icon: "HelpCircle", href: "/workspace/help" },
   ];
 

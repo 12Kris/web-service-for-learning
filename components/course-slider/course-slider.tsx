@@ -79,7 +79,7 @@ export function CourseCarousel({ title, courses }: CourseCarouselProps) {
                   : "w-full"
               }`}
             >
-              <Link href={`/workspace/course/${course.id}`}>
+              <Link href={`/workspace/courses/${course.id}`}>
                 <CourseCard
                   title={course.name}
                   topic={course.type || ""}

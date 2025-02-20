@@ -14,7 +14,7 @@ export async function getToken() {
 export async function logoutUser() {
   const cookieStore = await cookies();
   cookieStore.delete("token");
-  revalidatePath("/login");
+  // revalidatePath("/login");
   return true;
 }
 

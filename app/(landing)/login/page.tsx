@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { getUser } from "@/lib/auth/actions";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 
+import LoadingSpinner from "@/components/ui/loading-spinner";
+
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
@@ -21,6 +23,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean|null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -31,6 +34,9 @@ export default function LoginPage() {
       const userdata = await getUser();
       if (userdata) {
         router.push("/workspace");
+      }
+      else {
+        setIsLoggedIn(false);
       }
     };
 
@@ -55,6 +61,9 @@ export default function LoginPage() {
       }
     });
   };
+  if (isLoggedIn === null) {
+    return <LoadingSpinner className="mx-auto" />;
+  }
 
   return (
     <div className="min-h-[65dvh] bg-[#fef9f2] flex items-center justify-center p-4">

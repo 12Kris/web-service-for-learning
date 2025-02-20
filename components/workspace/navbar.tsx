@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { useState, useEffect } from "react";
+import {  useEffect } from "react";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AccountDropdown } from "./account-dropdown";
@@ -15,7 +15,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { cn } from "@/lib/utils";
 import { MenuItems } from "@/lib/definitions";
 
-import { User } from "@/lib/definitions";
+
 
 import { getUser } from "@/lib/auth/actions";
 
@@ -27,7 +27,6 @@ interface NavbarProps {
 export function Navbar({ menuItems, data }: NavbarProps) {
   const pathname = usePathname();
 
-  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -37,20 +36,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
           throw new Error("User not authenticated");
         }
 
-        setUser({
-          id: currentUser.id,
-          email: currentUser.email || "",
-          full_name: currentUser.user_metadata?.name || "Unknown User",
-          name: currentUser.user_metadata?.displayName || "Unknown User",
-          avatar: currentUser.user_metadata?.avatar_url || "/placeholder.svg",
-          role: "Instructor & Student",
-          created_at: currentUser.created_at,
-          user_metadata: currentUser.user_metadata || {},
-          joinDate: new Date(currentUser.created_at).toLocaleDateString(),
-          description:
-            currentUser.user_metadata?.description ||
-            "No description available",
-        });
+       
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -60,7 +46,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
   }, []);
 
   return (
-    <nav className="sticky bg-[--background] top-0 px-4 z-50 w-full border-b  ">
+    <nav className="sticky bg-[--background] top-0 px-4 z-50 w-full border-b  lg:hidden">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -119,7 +105,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
           <div className="flex items-center space-x-4">
             {data && data}
 
-            <AccountDropdown name={user?.name} />
+            <AccountDropdown  />
           </div>
         </div>
       </div>

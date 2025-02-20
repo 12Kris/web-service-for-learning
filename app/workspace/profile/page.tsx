@@ -22,6 +22,9 @@ import { getUser } from "@/lib/auth/actions";
 import { Course, User } from "@/lib/definitions";
 import { Edit } from "lucide-react";
 import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png";
+import { logoutUser } from "@/lib/auth/actions";
+import { useRouter } from "next/navigation";
+import { LogOut } from "lucide-react";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("created");
@@ -61,6 +64,18 @@ export default function UserProfile() {
 
     fetchData();
   }, []);
+
+  const router = useRouter();
+    const handleLogout = async () => {
+      try {
+        const isLoggedOut = await logoutUser();
+        if (isLoggedOut) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
+    };
 
   if (!user) {
     return <LoadingSpinner className="mx-auto" />;
@@ -113,13 +128,18 @@ export default function UserProfile() {
               </Badge>
             </CardContent>
 
-            <CardFooter>
+            <CardFooter className="flex gap-2">
               <Button asChild className="w-full">
                 <Link href="/workspace/profile/edit">
                   <Edit />
                   Edit Profile
                 </Link>
               </Button>
+              <Button onClick={handleLogout} className="w-full">
+              <LogOut />
+
+                Log Out
+                </Button>
             </CardFooter>
           </Card>
         </aside>
@@ -170,7 +190,7 @@ export default function UserProfile() {
                     </CardContent>
                     <CardFooter>
                       <Button asChild className="w-full">
-                        <Link href={`/workspace/course/${course.id}`}>
+                        <Link href={`/workspace/courses/${course.id}`}>
                           Manage Course
                         </Link>
                       </Button>
@@ -207,7 +227,7 @@ export default function UserProfile() {
                     </CardContent>
                     <CardFooter>
                       <Button asChild className="w-full">
-                        <Link href={`/workspace/course/${course.id}`}>
+                        <Link href={`/workspace/courses/${course.id}`}>
                           Continue Learning
                         </Link>
                       </Button>
