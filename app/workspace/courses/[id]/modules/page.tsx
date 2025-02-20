@@ -7,11 +7,7 @@ import { use } from "react";
 import { isCourseAddedToUser } from "@/lib/courses/actions";
 import { useState } from "react";
 import LoadingSpinner from "@/components/ui/loading-spinner";
-import ButtonsProvider from "@/components/ButtonsProvider";
-import EditBar from "@/components/workspace/courses/edit-bar";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Info } from "lucide-react";
+
 
 export interface PageData {
   title: string;
@@ -178,17 +174,7 @@ export default function EnroledModulePage({
 
   return (
     <div>
-      <ButtonsProvider>
-        <>
-          <Link href={`/workspace/course/${id}/about`}>
-            <Button variant="default" size="wide" className="flex">
-              <Info strokeWidth={3} className="mr-0 h-4 w-4" />
-              About
-            </Button>
-          </Link>
-          <EditBar id={id} />
-        </>
-      </ButtonsProvider>
+
       <PageHeader className="mb-10" title={data.title} />
       <ModuleProgression modules={data.modules} />
     </div>

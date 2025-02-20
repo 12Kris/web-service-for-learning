@@ -1,4 +1,4 @@
-import { Github, LifeBuoy, LogOut, Settings, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 
 import { getUser, logoutUser } from "@/lib/auth/actions";
 import { useRouter } from "next/navigation";
@@ -7,24 +7,20 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface AccountDropdownProps {
-  name?: string;
-}
 
-export function AccountDropdown({ name }: AccountDropdownProps) {
+
+export function AccountDropdown() {
   const router = useRouter();
-
   const handleLogout = async () => {
     try {
-      logoutUser();
-      router.push("/login");
+      const isLoggedOut = await logoutUser();
+      if (isLoggedOut) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -45,37 +41,25 @@ export function AccountDropdown({ name }: AccountDropdownProps) {
         <Button
           variant={"default"}
           size="icon"
-          className="shrink-0 rounded-full bg-zinc-100"
+          className="shrink-0 rounded-full bg-white pr-[-20px]"
         >
           <User strokeWidth={3} className="h-5 w-5 " />
           <span className="sr-only">User menu</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mr-2">
-        <DropdownMenuLabel>{name}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem onClick={handleProfileClick}>
-            <User />
-            <span>Profile</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <Settings />
-            <span>Settings</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem>
-          <Github />
-          <span>GitHub</span>
+        {/* <DropdownMenuLabel>{name}</DropdownMenuLabel>
+        <DropdownMenuSeparator /> */}
+        {/* <DropdownMenuGroup> */}
+        <DropdownMenuItem className="" onClick={handleProfileClick}>
+          <User />
+          <span>Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <LifeBuoy />
-          <span>Support</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
+
+        {/* </DropdownMenuGroup> */}
+        {/* <DropdownMenuSeparator /> */}
+
+        {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
           <span>Log out</span>
