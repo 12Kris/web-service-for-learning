@@ -172,7 +172,7 @@ export interface TestWithQuestions {
 export interface TestQuestion {
   id: number;
   question: string;
-  correct_answer?: number;
+  correct_answer?: number | { id: string };
   correct_id?: number;
   answers: TestAnswer[];
 }

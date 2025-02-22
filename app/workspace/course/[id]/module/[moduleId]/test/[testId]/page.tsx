@@ -223,7 +223,10 @@ export default function TestPage() {
         if (selectedAnswer === null) return;
 
         const currentQuestion = questions[currentQuestionIndex];
-        const isCorrect = selectedAnswer === currentQuestion.correct_answer?.id;
+        const isCorrect =
+            selectedAnswer === (typeof currentQuestion.correct_answer === 'object'
+                ? currentQuestion.correct_answer?.id
+                : currentQuestion.correct_answer);
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
