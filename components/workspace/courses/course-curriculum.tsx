@@ -7,11 +7,13 @@ import Link from "next/link";
 interface CourseCurriculumProps {
   modules: Module[] | undefined;
   onModuleClick?: (moduleId: number) => void;
+  courseId?: number;
 }
 
 const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
   modules,
   onModuleClick,
+  courseId,
 }) => {
   return (
     <div className="container mx-auto py-6">
@@ -36,7 +38,7 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
                     onClick={() => onModuleClick?.(module.id)}
                 >
                     <CardHeader>
-                        <Link href={`module/${module.id}`}>
+                        <Link href={`${courseId}/modules/${module.id}`}>
                             <div className="space-y-1">
                                 <h2 className="text-xl font-semibold">{module.title}</h2>
                                 <p className="text-sm text-muted-foreground">

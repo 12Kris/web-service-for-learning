@@ -62,7 +62,7 @@ export default function FlashcardPage({
         reviews={12}
       />
 
-      <CourseCurriculum modules={modules} />
+      <CourseCurriculum modules={modules} courseId={id}/>
 
       <MeetTutor
         name={course?.creator?.full_name}
