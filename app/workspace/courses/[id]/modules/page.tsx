@@ -40,7 +40,7 @@ export default function EnroledModulePage({
 
   useEffect(() => {
     if (isCourseAdded === false) {
-      window.location.href = `${id}/about`;
+      window.location.href = `/workspace/courses/${id}`;
     }
   }, [isCourseAdded, id]);
 

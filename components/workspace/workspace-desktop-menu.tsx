@@ -29,7 +29,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
       try {
         const currentUser = await getUser();
         if (!currentUser) {
-          throw new Error("User not authenticated");
+          return;
         }
         setUser({
           id: currentUser.id,

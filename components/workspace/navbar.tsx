@@ -33,7 +33,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
       try {
         const currentUser = await getUser();
         if (!currentUser) {
-          throw new Error("User not authenticated");
+return;
         }
 
        
