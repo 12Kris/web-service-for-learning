@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, PlayCircle, CheckCircle2, Trophy, Brain, Code } from 'lucide-react'
 import { cn } from "@/lib/utils"
-import { type Module } from "@/lib/types/learning"
+import { type Module } from "@/lib/types/modules"
 import { useState } from "react"
 
 interface ModuleCardProps {

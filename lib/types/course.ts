@@ -1,10 +1,5 @@
-import { User } from '@/lib/types/user';
-
-export interface Module {
-  id: number;
-  title: string;
-  description: string;
-}
+import { User } from "@/lib/types/user";
+import { Module } from "@/lib/types/modules";
 
 export interface WhatWillLearn {
   id: number;
@@ -26,6 +21,7 @@ export interface Course {
   course_details?: CourseDetails[];
   what_w_learn?: WhatWillLearn[];
   curriculum?: Module[];
+  created_at?: string;
 }
 
 export interface CourseWithStudents {
@@ -36,6 +32,7 @@ export interface CourseWithStudents {
   creator_id?: string;
   last_completion_date?: string;
   student_count: number;
+  created_at: string;
 }
 
 export interface CourseDetails {
@@ -47,4 +44,3 @@ export interface UserCourse {
   user_id: string;
   course_id: number;
 }
-

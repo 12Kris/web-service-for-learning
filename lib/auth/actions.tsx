@@ -128,7 +128,6 @@ export async function resendConfirmationEmail() {
   // This is where you would typically call your authentication service
   // to resend the confirmation email
 
-  console.log("Resending confirmation email...")
 
   // Revalidate the current path to reflect any changes
   revalidatePath("/confirm-email")

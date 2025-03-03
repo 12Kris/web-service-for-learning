@@ -1,6 +1,6 @@
 "use client";
 import ModuleProgression from "@/components/workspace/courses/modules/module-progression";
-import { Module } from "@/lib/types/learning";
+import { Module } from "@/lib/types/modules";
 import { PageHeader } from "@/components/ui/page-header";
 import { useEffect } from "react";
 import { use } from "react";

@@ -12,17 +12,20 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
 import { MaterialModal } from "@/components/workspace/modals/material";
 import { TestModal } from "@/components/workspace/modals/test";
-import { Card as CardDefinitions } from "@/lib/definitions";
-import { type Module } from "@/lib/types/learning";
+import { Card as CardDefinitions } from "@/lib/types/card";
+import { Module } from "@/lib/types/modules";
+
+
 import {
     type Course,
     CourseDetails,
     WhatWillLearn,
-    LearningMaterial,
-    MaterialData,
-    TestData,
-    TestDataWithQuestion,
-} from "@/lib/definitions";
+
+} from "@/lib/types/course";
+import { LearningMaterial } from "@/lib/types/learning";
+import { TestData, TestDataWithQuestion } from "@/lib/types/test";
+import { MaterialData } from "@/lib/types/learning";
+
 import {
     createMaterial,
     deleteMaterial,
@@ -78,8 +81,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
             const fetchedTests = await Promise.all(
                 modules.map((module) => getTestsByBlockId(module.id))
             );
-            console.log(fetchedMaterials.flat());
-            console.log(fetchedTests.flat());
+
             setMaterials(fetchedMaterials.flat());
             setTests(fetchedTests.flat());
         } catch (error) {

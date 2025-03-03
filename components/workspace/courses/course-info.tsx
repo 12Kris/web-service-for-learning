@@ -1,6 +1,6 @@
 import { Check, Star } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CourseDetails, WhatWillLearn } from "@/lib/definitions";
+import { CourseDetails, WhatWillLearn } from "@/lib/types/course";
 
 interface CourseInfo {
   course_details: CourseDetails[];

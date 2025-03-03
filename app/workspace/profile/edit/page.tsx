@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png";
 import { PageHeader } from "@/components/ui/page-header";
 import AvatarUpload from "@/components/workspace/avatar-upload";
-import { User } from "@/lib/definitions";
+import { User } from "@/lib/types/user";
 
 // interface UserMetadata {
 
@@ -63,7 +63,6 @@ export default function ProfileEdit() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("User data:", user);
   };
 
   return (

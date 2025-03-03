@@ -13,7 +13,7 @@ import { AccountDropdown } from "./account-dropdown";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { cn } from "@/lib/utils";
-import { MenuItems } from "@/lib/definitions";
+import { MenuItems } from "@/lib/types/ui";
 
 
 

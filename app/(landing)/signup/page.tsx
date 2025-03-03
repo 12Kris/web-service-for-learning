@@ -48,7 +48,6 @@ export default function RegisterPage() {
         router.push(`/auth/confirm?token=${encodeURIComponent(data.token)}`);
       }
 
-      console.log("Registration successful!", data);
     } catch (err) {
       setError((err as Error).message);
       console.error("Registration failed:", err);

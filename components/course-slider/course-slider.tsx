@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/course-card/course-card";
 import Link from "next/link";
-import { Course } from "@/lib/definitions";
+import { Course } from "@/lib/types/course";
 
 interface CourseCarouselProps {
   title: string;

@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import type { CourseDetails, WhatWillLearn } from "@/lib/definitions";
-import { Module } from "@/lib/types/learning";
+import type { CourseDetails, WhatWillLearn } from "@/lib/types/course";
+import { Module } from "@/lib/types/modules";
 
 
 type FormState = {

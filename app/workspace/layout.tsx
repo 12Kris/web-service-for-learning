@@ -31,9 +31,7 @@ export default function WorkspaceLayout({
   const [data, setData] = useState<React.ReactNode | null>(null);
   const pathname = usePathname();
 
-  useEffect(() => {
-    console.log("data", data);
-  }, [data]);
+
 
   useEffect(() => {
     setData(null);
