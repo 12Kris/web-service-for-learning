@@ -5,7 +5,8 @@ import Link from 'next/link';
 import {useEffect, useState} from 'react';
 import {Card} from '@/components/ui/card';
 import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions";
-import {LearningMaterial, Test} from "@/lib/definitions";
+import {Test} from "@/lib/types/test";
+import {LearningMaterial} from "@/lib/types/learning";
 
 export default function ModulePage() {
     const params = useParams();

@@ -1,22 +1,15 @@
+import { Dispatch, SetStateAction } from "react";
 export interface Block {
     id: number;
     course_id: number;
     name: string;
   }
   
-  export interface Card {
-    id: number;
-    block_id: number;
-    question: string;
-    answer: string;
-  }
+
   
-  export interface Test {
-    id: number;
-    block_id: number;
-    question: string;
-    answer: string;
-    correct: boolean;
+  export interface BlockSectionProps {
+    block: Block;
+    setModals: Dispatch<SetStateAction<{ block: boolean }>>;
+    handleOpenBlockModal: (block: Block | null) => void;
   }
-  
   

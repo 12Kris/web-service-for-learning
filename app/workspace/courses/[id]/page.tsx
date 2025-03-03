@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { use } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Module } from "@/lib/types/learning";
+import { Module } from "@/lib/types/modules";
 import { getCourseById, getModulesByCourseId } from "@/lib/courses/actions";
-import { Course } from "@/lib/definitions";
+import { Course } from "@/lib/types/course";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import EditBar from "@/components/workspace/courses/edit-bar";
 

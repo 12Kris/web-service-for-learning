@@ -2,7 +2,7 @@
 
 import { supabase } from "@/lib/supabaseClient";
 import { getUser } from "@/lib/auth/actions";
-import { Module } from "@/lib/types/learning";
+import { Module } from "@/lib/types/modules";
 
 // Helper function to check if user is authenticated
 async function checkAuth() {

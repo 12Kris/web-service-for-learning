@@ -47,7 +47,6 @@ export default function ConfirmEmailPage() {
       return;
     }
     const result = await alreadyConfirmed(email, password);
-    console.log(result);
     if (result.error == null) {
       router.push("/workspace");
     } else {

@@ -52,7 +52,6 @@
 
 
 //     useEffect(() => {
-//         console.log(answers);
 //     }, [answers])
 
 //     const handleSaveResults = async () => {

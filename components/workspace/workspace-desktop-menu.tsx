@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
-import { MenuItems } from "@/lib/definitions";
+import { MenuItems } from "@/lib/types/ui";
 import * as Icons from "lucide-react";
 import { AccountDropdown } from "./account-dropdown";
-import { User } from "@/lib/definitions";
+import { User } from "@/lib/types/user";
 import { getUser } from "@/lib/auth/actions";
 import { useState } from "react";
 import React from "react";

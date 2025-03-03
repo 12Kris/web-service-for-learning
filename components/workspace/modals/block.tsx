@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { FC } from "react";
-import { Module } from "@/lib/types/learning";
+import { Module } from "@/lib/types/modules";
 
 interface BlockModalProps {
   isOpen: boolean;

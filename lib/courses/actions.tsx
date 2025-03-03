@@ -4,13 +4,12 @@ import { getUser } from "@/lib/auth/actions";
 import {
   Course,
   CourseWithStudents,
-  LearningMaterial,
-  SaveTestResult,
-  Test,
-  TestQuestionForCourse,
-  UserTestAnswer,
-} from "@/lib/definitions";
-import { Module } from "@/lib/types/learning";
+
+} from "@/lib/types/course";
+import { LearningMaterial } from "@/lib/types/learning";
+import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
+import { SaveTestResult } from "@/lib/types/test";
+import { Module } from "@/lib/types/modules";
 
 export async function getCourseById(courseId: number) {
   const { data, error } = await supabase

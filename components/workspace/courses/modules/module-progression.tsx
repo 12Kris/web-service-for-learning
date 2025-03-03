@@ -1,4 +1,4 @@
-import { type Module } from "@/lib/types/learning"
+import {  Module } from "@/lib/types/modules";
 
 interface ModuleProgressionProps {
   modules: Module[]

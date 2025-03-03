@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
-import { Module } from "@/lib/types/learning";
+import { Module } from "@/lib/types/modules";
 import Link from "next/link";
 
 interface CourseCurriculumProps {

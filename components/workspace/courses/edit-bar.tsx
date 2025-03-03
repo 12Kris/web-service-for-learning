@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { deleteCourse } from "@/lib/courses/actions";
 import { useState, useEffect } from "react";
-import { Course } from "@/lib/definitions";
+import { Course } from "@/lib/types/course";
 
 
 import { getUser } from "@/lib/auth/actions";

@@ -1,8 +1,6 @@
 export interface Problem {
-    id: string
-    title: string
-    description: string
-    imageUrl: string
-  }
-  
-  
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+}

@@ -5,7 +5,7 @@ import Flashcard from "@/components/card/card";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import { getCardsByLearningMaterial } from "@/lib/courses/actions";
-import { FlashCards } from "@/lib/definitions";
+import { FlashCards } from "@/lib/types/card";
 
 export default function CardPage() {
   const params = useParams();
