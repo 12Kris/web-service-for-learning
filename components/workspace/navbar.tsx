@@ -17,7 +17,7 @@ import { MenuItems } from "@/lib/types/ui";
 
 
 
-import { getUser } from "@/lib/auth/actions";
+import { getUser } from "@/utils/supabase/client";
 
 interface NavbarProps {
   menuItems: MenuItems[];

@@ -1,6 +1,6 @@
 import { LogOut, User } from "lucide-react";
 
-import { getUser, logoutUser } from "@/lib/auth/actions";
+import { signOut } from "@/utils/supabase/actions";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,9 @@ export function AccountDropdown() {
   const router = useRouter();
   const handleLogout = async () => {
     try {
-      const isLoggedOut = await logoutUser();
-      if (isLoggedOut) {
+       await signOut();
         router.push("/");
-      }
+      
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -28,7 +27,7 @@ export function AccountDropdown() {
 
   const handleProfileClick = async () => {
     try {
-      getUser();
+      
       router.push("/workspace/profile");
     } catch (error) {
       console.error("Navigation failed:", error);
