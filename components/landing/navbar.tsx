@@ -12,7 +12,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import {getUser, signOut} from "@/utils/supabase/actions";
+import { signOut } from "@/utils/supabase/actions";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -23,31 +25,47 @@ const navItems = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   // setToken(null);
+  useEffect(() => {
+    async function featchUser() {
+      const supabase = await createClient();
+      const user = (await supabase.auth.getUser()).data.user;
 
-  //   async function fetchToken() {
+      if (user !== null) {
+        console.log("user, ok", user);
+        setUser(user);
+      }
+      //   if (user) {
+      //     const { user } = user;
+      //   }
+
+      // setUser(user);
+    }
+    featchUser();
+  }, []);
+
+  // useEffect(() => {
+  //   // setuser(null);
+
+  //   async function fetchuser() {
   //     const user = await getUser();
   //     console.log("user, ", user);
   //     // if (user) {
-  //     //   const { token } = user;
+  //     //   const { user } = user;
   //     // }
-  //     // setToken(token);
+  //     // setuser(user);
   //   }
-  //   fetchToken();
+  //   fetchuser();
 
   // });
-
-
 
   const handleLogout = async () => {
     try {
       signOut();
-      // setToken(null);
-      // router.push("/login");
+      setUser(null);
+      router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -73,7 +91,7 @@ export function Navbar() {
           ))}
         </div>
         <div className="hidden md:flex items-center space-x-4">
-          {token ? (
+          {user ? (
             <Button
               onClick={handleLogout}
               className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary]/80 shadow-none rounded-full"
@@ -126,7 +144,7 @@ export function Navbar() {
                     {item.name}
                   </Link>
                 ))}
-                {token ? (
+                {user ? (
                   <Button
                     onClick={() => {
                       handleLogout();

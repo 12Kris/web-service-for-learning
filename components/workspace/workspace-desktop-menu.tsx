@@ -7,7 +7,7 @@ import * as Icons from "lucide-react";
 import { AccountDropdown } from "./account-dropdown";
 import { User } from "@/lib/types/user";
 import { getUser } from "@/utils/supabase/client";
-import { use, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { useEffect } from "react";
 type IconNames = keyof typeof Icons;

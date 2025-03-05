@@ -1,11 +1,7 @@
 "use server";
 // import { supabase } from "@/utils/supabase/client";
 import { getUser } from "@/utils/supabase/server";
-import {
-  Course,
-  CourseWithStudents,
-
-} from "@/lib/types/course";
+import { Course, CourseWithStudents } from "@/lib/types/course";
 import { LearningMaterial } from "@/lib/types/learning";
 import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
 import { SaveTestResult } from "@/lib/types/test";

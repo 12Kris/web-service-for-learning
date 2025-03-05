@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/utils/supabase/client";
+// import { supabase } from "@/utils/supabase/client";
 import {
   Answer,
   Question,
@@ -18,6 +18,7 @@ import { LearningMaterial } from "@/lib/types/learning";
 import { Block } from "@/lib/types/block";
 // import { Module } from "@/lib/types/modules";
 import { Card } from "@/lib/types/card";
+import { createClient } from "@/utils/supabase/server";
 
 type SupabaseResponse<T> = { data: T | null; error: Error | null };
 
@@ -48,6 +49,8 @@ export async function createBlock(
   name: string,
   description: string
 ): Promise<Block | null> {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("Module")
     .insert([{ course_id, name, description }])
@@ -65,6 +68,8 @@ export async function updateBlock(
   name: string,
   description: string | undefined
 ): Promise<Block> {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("Module")
     .update({ name, description })
@@ -75,6 +80,8 @@ export async function updateBlock(
 }
 
 export async function deleteBlock(blockId: number): Promise<void> {
+  const supabase = await createClient();
+
   const { error } = await supabase.from("Module").delete().eq("id", blockId);
   if (error) throw new Error(`Error deleting block: ${error.message}`);
 }
@@ -82,6 +89,8 @@ export async function deleteBlock(blockId: number): Promise<void> {
 export async function getTestById(
   testId: number
 ): Promise<TestWithQuestions | null> {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("Test")
     .select(
@@ -164,6 +173,8 @@ export async function getTestById(
 export async function createTest(
   testData: TestDataWithQuestion
 ): Promise<Test | null> {
+  const supabase = await createClient();
+
   try {
     if (!testData.block_id) throw new Error("block_id is required.");
     if (!testData.questions || !Array.isArray(testData.questions)) {
@@ -266,6 +277,8 @@ export async function updateTest(
   testId: number,
   testData: TestDataWithQuestion
 ): Promise<Test | null> {
+  const supabase = await createClient();
+
   try {
     const { data: testDataResponse, error: testError } = await supabase
       .from("Test")
@@ -362,6 +375,8 @@ export async function updateTest(
 }
 
 export async function deleteTest(testId: number): Promise<void> {
+  const supabase = await createClient();
+
   const { error } = await supabase.from("Test").delete().eq("id", testId);
   if (error) throw new Error(`Error deleting test: ${error.message}`);
 }
@@ -370,6 +385,8 @@ export async function createMaterial(
   materialData: { title: string; block_id: number },
   materialContents: Card[]
 ): Promise<LearningMaterial | null> {
+  const supabase = await createClient();
+
   const { data, error } = await supabase
     .from("LearningMaterial")
     .insert(materialData)
@@ -400,6 +417,8 @@ export async function updateMaterial(
   materialData: Partial<LearningMaterial>,
   materialContents: Card[]
 ): Promise<void> {
+  const supabase = await createClient();
+
   const { error } = await supabase
     .from("LearningMaterial")
     .update(materialData)
@@ -428,6 +447,8 @@ export async function updateMaterial(
 }
 
 export async function deleteMaterial(materialId: number): Promise<void> {
+  const supabase = await createClient();
+
   const { error } = await supabase
     .from("LearningMaterial")
     .delete()

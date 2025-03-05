@@ -26,7 +26,7 @@ import defaultProfileImage from "@/public/images/115-1150152_default-profile-pic
 // import { logoutUser } from "@/lib/auth/utils";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
-import {  signOut } from "@/utils/supabase/actions";
+import { signOut } from "@/utils/supabase/actions";
 // import { supabase } from "@/utils/supabase/client";
 import { createClient } from "@/utils/supabase/client";
 
@@ -36,18 +36,12 @@ export default function UserProfile() {
   const [createdCourses, setCreatedCourses] = useState<Course[]>([]);
   const [studyingCourses, setStudyingCourses] = useState<Course[]>([]);
 
-  
   useEffect(() => {
     async function fetchData() {
-      const supabase = await createClient()
+      const supabase = await createClient();
 
       const currentUser = await (await supabase.auth.getUser()).data?.user;
       try {
-
-
-      
-
-
         console.log("currentUser, ", currentUser);
 
         if (!currentUser) {
@@ -80,19 +74,18 @@ export default function UserProfile() {
   }, []);
 
   const router = useRouter();
-    const handleLogout = async () => {
-      try {
-        await signOut();
-          router.push("/");
-        
-      } catch (error) {
-        console.error("Logout failed:", error);
-      }
-    };
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
-  // if (!user) {
-  //   return <LoadingSpinner className="mx-auto" />;
-  // }
+  if (!user) {
+    return <LoadingSpinner className="mx-auto" />;
+  }
 
   return (
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
@@ -149,10 +142,9 @@ export default function UserProfile() {
                 </Link>
               </Button>
               <Button onClick={handleLogout} className="w-full">
-              <LogOut />
-
+                <LogOut />
                 Log Out
-                </Button>
+              </Button>
             </CardFooter>
           </Card>
         </aside>
