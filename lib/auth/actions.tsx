@@ -1,38 +1,41 @@
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/utils/supabase/client";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
 
-export async function getToken() {
-  const token = (await cookies()).get("token")?.value;
-  return token || null;
-}
+// export async function getToken() {
+//   const token = (await cookies()).get("token")?.value;
+//   return token || null;
+// }
 
-export async function logoutUser() {
-  const cookieStore = await cookies();
-  cookieStore.delete("token");
-  // revalidatePath("/login");
-  return true;
-}
+// export async function logoutUser() {
+//   const cookieStore = await cookies();
+//   cookieStore.delete("token");
+//   // revalidatePath("/login");
+//   return true;
+// }
 
-export async function getUser() {
-  const token = await getToken();
-  if (!token) {
-    return null;
-  }
+// export async function getUser() {
+//   const token = await getToken();
+//   if (!token) {
+//     return null;
+//   }
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser(token);
-  if (error || !user) {
-    throw new Error("Failed to fetch user");
-  }
-  return user;
-}
+//   const {
+//     data: { user },
+//     error,
+//   } = await supabase.auth.getUser(token);
+//   if (error || !user) {
+//     throw new Error("Failed to fetch user");
+//   }
+//   return user;
+// }
+
+
+
 
 export async function registerUser(
   name: string,
@@ -95,26 +98,16 @@ export async function loginUser(email: string, password: string) {
     return {
       data: null,
       error: error.message,
-  };
+    };
   }
   const token = user.session?.access_token;
   if (!token) {
     return {
       data: null,
       error: "token not found",
-  };
+    };
   }
-  const cookieStore = await cookies();
-  cookieStore.set({
-    name: "token",
-    value: token,
-    // httpOnly: true,
-    secure: false,
-    // domain: "localhost",
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
+    
   return {
     data: {
       token: token,

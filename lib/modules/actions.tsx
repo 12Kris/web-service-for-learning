@@ -1,8 +1,10 @@
 "use server";
 
-import { supabase } from "@/lib/supabaseClient";
-import { getUser } from "@/lib/auth/actions";
+// import { supabase } from "@/utils/supabase/server";
+// import { getUser } from "@/lib/auth/utils";
 import { Module } from "@/lib/types/modules";
+import { getUser } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 
 // Helper function to check if user is authenticated
 async function checkAuth() {
@@ -14,6 +16,8 @@ async function checkAuth() {
 
 // Module CRUD operations
 export async function getModules(): Promise<Module[]> {
+    const supabase = await createClient();
+  
   await checkAuth();
   const { data, error } = await supabase
     .from("modules")
@@ -30,6 +34,8 @@ export async function getModules(): Promise<Module[]> {
 }
 
 export async function getModuleById(id: string): Promise<Module | null> {
+  const supabase = await createClient();
+
   await checkAuth();
   const { data, error } = await supabase
     .from("modules")
@@ -47,6 +53,8 @@ export async function getModuleById(id: string): Promise<Module | null> {
 }
 
 export async function createModule(input: Module): Promise<Module> {
+  const supabase = await createClient();
+
   await checkAuth();
   const { data, error } = await supabase
     .from("modules")
@@ -59,6 +67,8 @@ export async function createModule(input: Module): Promise<Module> {
 }
 
 export async function updateModule(id: string, input: Module): Promise<Module> {
+  const supabase = await createClient();
+
   await checkAuth();
   const { data, error } = await supabase
     .from("modules")
@@ -72,6 +82,8 @@ export async function updateModule(id: string, input: Module): Promise<Module> {
 }
 
 export async function deleteModule(id: string): Promise<void> {
+  const supabase = await createClient();
+
   await checkAuth();
   const { error } = await supabase.from("modules").delete().eq("id", id);
 

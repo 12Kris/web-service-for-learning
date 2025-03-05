@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
-import { getToken, logoutUser } from "@/lib/auth/actions";
+import {getUser, signOut} from "@/utils/supabase/actions";
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -26,19 +26,28 @@ export function Navbar() {
   const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    async function fetchToken() {
-      const token = await getToken();
-      setToken(token);
-    }
-    fetchToken();
-  }, []);
+  // useEffect(() => {
+  //   // setToken(null);
+
+  //   async function fetchToken() {
+  //     const user = await getUser();
+  //     console.log("user, ", user);
+  //     // if (user) {
+  //     //   const { token } = user;
+  //     // }
+  //     // setToken(token);
+  //   }
+  //   fetchToken();
+
+  // });
+
+
 
   const handleLogout = async () => {
     try {
-      logoutUser();
-      setToken(null);
-      router.push("/login");
+      signOut();
+      // setToken(null);
+      // router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }

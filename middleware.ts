@@ -1,48 +1,19 @@
-import { NextResponse, NextRequest } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
-
-const PUBLIC_PATHS = [
-  "/",
-  "/login",
-  "/signup",
-  "/about",
-  "/contact",
-  "/forgot-password",
-  "/how-it-works",
-  "/auth/",
-];
+import { type NextRequest } from 'next/server'
+import { updateSession } from '@/utils/supabase/middleware'
 
 export async function middleware(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
-  const { pathname } = request.nextUrl;
-
-  const isPublicPath = PUBLIC_PATHS.some(
-    (path) => pathname === path || (path !== "/" && pathname.startsWith(path))
-  );
-
-  if (!isPublicPath && !token) {
-    const loginUrl = new URL("/login", request.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  if (!isPublicPath) {
-    try {
-      const { data, error } = await supabase.auth.getUser(token);
-      if (error || !data?.user) {
-        const loginUrl = new URL("/login", request.url);
-        return NextResponse.redirect(loginUrl);
-      }
-    } catch (e) {
-      const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  return NextResponse.next();
+  return await updateSession(request)
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/|images/|public/|star.svg).*)",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
-};
+}

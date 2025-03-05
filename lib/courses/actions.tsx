@@ -1,6 +1,6 @@
 "use server";
-import { supabase } from "@/lib/supabaseClient";
-import { getUser } from "@/lib/auth/actions";
+// import { supabase } from "@/utils/supabase/client";
+import { getUser } from "@/utils/supabase/server";
 import {
   Course,
   CourseWithStudents,
@@ -10,8 +10,10 @@ import { LearningMaterial } from "@/lib/types/learning";
 import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
 import { SaveTestResult } from "@/lib/types/test";
 import { Module } from "@/lib/types/modules";
+import { createClient } from "@/utils/supabase/server";
 
 export async function getCourseById(courseId: number) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("Course")
     .select("*, creator:creator_id (id, email, full_name, description)")
@@ -27,6 +29,7 @@ export async function getCourseById(courseId: number) {
 }
 
 export async function getCardsByBlock(blockId: number) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("Card")
     .select("*")
@@ -41,6 +44,7 @@ export async function getCardsByBlock(blockId: number) {
 }
 
 export async function isCourseAddedToUser(courseId: number) {
+  const supabase = await createClient();
   const user = await getUser();
   if (!user) {
     throw new Error("User not authenticated");
@@ -61,6 +65,7 @@ export async function isCourseAddedToUser(courseId: number) {
 }
 
 export async function getUserCourses() {
+  const supabase = await createClient();
   try {
     const user = await getUser();
 
@@ -98,6 +103,7 @@ export async function getUserCourses() {
 export async function addCourseToUser(
   courseId: number
 ): Promise<{ success: boolean; message: string }> {
+  const supabase = await createClient();
   try {
     const user = await getUser();
 
@@ -148,6 +154,7 @@ export async function addCourseToUser(
 export async function removeCourseFromUser(
   courseId: number
 ): Promise<{ success: boolean; message: string }> {
+  const supabase = await createClient();
   try {
     const user = await getUser();
 
@@ -199,6 +206,7 @@ export async function removeCourseFromUser(
 }
 
 export async function getUserCreatedCourses(): Promise<Course[]> {
+  const supabase = await createClient();
   try {
     const user = await getUser();
     if (!user) throw new Error("User not authenticated");
@@ -228,6 +236,7 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
 }
 
 export async function getCourses(): Promise<Course[]> {
+  const supabase = await createClient();
   const { data, error } = await supabase.from("Course").select(`
         *,
         creator:creator_id (
@@ -248,6 +257,7 @@ export async function getCourses(): Promise<Course[]> {
 export async function createCourse(
   courseData: Omit<Course, "id" | "creator_id" | "creator">
 ): Promise<Course | null> {
+  const supabase = await createClient();
   try {
     const user = await getUser();
 
@@ -298,6 +308,7 @@ export async function createCourse(
 export async function deleteCourse(
   courseId: number
 ): Promise<{ success: boolean; message: string }> {
+  const supabase = await createClient();
   try {
     const user = await getUser();
 
@@ -348,6 +359,7 @@ export async function updateCourse(
   courseData?: Partial<Course>,
   creator_id?: string | undefined
 ) {
+  const supabase = await createClient();
   try {
     const user = await getUser();
 
@@ -419,6 +431,7 @@ export async function updateCourse(
 }
 
 export async function getUserById(userId: string) {
+  const supabase = await createClient();
   try {
     if (!userId) {
       throw new Error("User ID is required");
@@ -444,6 +457,7 @@ export async function getUserById(userId: string) {
 }
 
 export async function getStudentCountForCourse(courseId: string) {
+  const supabase = await createClient();
   try {
     const { data, error } = await supabase
       .from("UserCourse")
@@ -462,6 +476,7 @@ export async function getStudentCountForCourse(courseId: string) {
 }
 
 export async function getCardsByLearningMaterial(learningMaterialId: number) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("flashcards")
     .select("*")
@@ -478,6 +493,7 @@ export async function getCardsByLearningMaterial(learningMaterialId: number) {
 export async function getModulesByCourseId(
   courseId: number | null
 ): Promise<Module[]> {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("Module")
     .select("id, course_id, name, description")
@@ -502,6 +518,7 @@ export async function getModulesByCourseId(
   }));
 }
 export async function getTestsByBlockId(blockId: number): Promise<Test[]> {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("Test")
     .select("id, block_id, question")
@@ -523,6 +540,7 @@ export async function getTestQuestions(testId: number): Promise<
     answers: { id: number; answer: string; correct: boolean; text: string }[];
   }[]
 > {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("TestQuestions")
     .select(
@@ -562,6 +580,7 @@ export async function saveTestResults(
   testId: number,
   answers: UserTestAnswer[]
 ): Promise<SaveTestResult> {
+  const supabase = await createClient();
   try {
     const user = await getUser();
     if (!user) {
@@ -622,6 +641,7 @@ export async function saveTestResults(
 export async function getMaterialsByBlockId(
   blockId: number
 ): Promise<LearningMaterial[]> {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from("LearningMaterial")
     .select("id, block_id, title, content, material_type, order_number")
