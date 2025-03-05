@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Course } from "@/lib/types/course";
 
 
-import { getUser } from "@/lib/auth/actions";
+import { getUser } from "@/utils/supabase/client";
 import { getCourseById } from "@/lib/courses/actions";
 
 import { Trash2, Edit, BookCheck } from "lucide-react";

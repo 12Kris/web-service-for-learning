@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useTransition, useEffect } from "react";
-import { loginUser } from "@/lib/auth/actions";
+import { login } from "./actions";
+import { getUser } from "@/utils/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { getUser } from "@/lib/auth/actions";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -23,19 +23,19 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean|null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     setError("");
   };
+
   useEffect(() => {
     const checkSession = async () => {
       const userdata = await getUser();
       if (userdata) {
         router.push("/workspace");
-      }
-      else {
+      } else {
         setIsLoggedIn(false);
       }
     };
@@ -49,11 +49,20 @@ export default function LoginPage() {
 
     startTransition(async () => {
       try {
-        const { error } = await loginUser(formData.email, formData.password);
-        if (error) {
-          setError(error);
+        // Create a FormData instance to send to the login action.
+        const formdata = new FormData();
+        formdata.append("email", formData.email);
+        formdata.append("password", formData.password);
+
+        // Pass the FormData object (not the state object) to login.
+        const result = await login(formdata);
+
+        // Check if result is an AuthError
+        if (result instanceof Error) {
+          setError(result.message);
           return;
         }
+
         router.push("/workspace");
       } catch (err) {
         setError((err as Error).message);
@@ -61,6 +70,7 @@ export default function LoginPage() {
       }
     });
   };
+
   if (isLoggedIn === null) {
     return <LoadingSpinner className="mx-auto" />;
   }
@@ -184,3 +194,18 @@ export default function LoginPage() {
     </div>
   );
 }
+
+// import { login, signup } from './actions'
+
+// export default function LoginPage() {
+//   return (
+//     <form>
+//       <label htmlFor="email">Email:</label>
+//       <input id="email" name="email" type="email" required />
+//       <label htmlFor="password">Password:</label>
+//       <input id="password" name="password" type="password" required />
+//       <button formAction={login}>Log in</button>
+//       <button formAction={signup}>Sign up</button>
+//     </form>
+//   )
+// }

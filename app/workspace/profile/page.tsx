@@ -18,14 +18,17 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Book, Users, Clock, Award } from "lucide-react";
 import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
-import { getUser } from "@/lib/auth/actions";
+// import { getUser } from "@/lib/auth/utils";
 import { Course } from "@/lib/types/course";
 import { User } from "@/lib/types/user";
 import { Edit } from "lucide-react";
 import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png";
-import { logoutUser } from "@/lib/auth/actions";
+// import { logoutUser } from "@/lib/auth/utils";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
+import { signOut } from "@/utils/supabase/actions";
+// import { supabase } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("created");
@@ -35,8 +38,12 @@ export default function UserProfile() {
 
   useEffect(() => {
     async function fetchData() {
+      const supabase = await createClient();
+
+      const currentUser = await (await supabase.auth.getUser()).data?.user;
       try {
-        const currentUser = await getUser();
+        console.log("currentUser, ", currentUser);
+
         if (!currentUser) {
           throw new Error("User not authenticated");
         }
@@ -67,16 +74,14 @@ export default function UserProfile() {
   }, []);
 
   const router = useRouter();
-    const handleLogout = async () => {
-      try {
-        const isLoggedOut = await logoutUser();
-        if (isLoggedOut) {
-          router.push("/");
-        }
-      } catch (error) {
-        console.error("Logout failed:", error);
-      }
-    };
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   if (!user) {
     return <LoadingSpinner className="mx-auto" />;
@@ -137,10 +142,9 @@ export default function UserProfile() {
                 </Link>
               </Button>
               <Button onClick={handleLogout} className="w-full">
-              <LogOut />
-
+                <LogOut />
                 Log Out
-                </Button>
+              </Button>
             </CardFooter>
           </Card>
         </aside>
