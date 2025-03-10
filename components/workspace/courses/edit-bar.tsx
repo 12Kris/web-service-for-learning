@@ -8,7 +8,7 @@ import { Course } from "@/lib/types/course";
 import { getUser } from "@/utils/supabase/client";
 import { getCourseById } from "@/lib/courses/actions";
 
-import { Trash2, Edit, BookCheck } from "lucide-react";
+import { Trash2, Edit } from "lucide-react";
 
 import {
   AlertDialog,
