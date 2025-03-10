@@ -1,57 +1,89 @@
 "use client";
+import ModuleProgression from "@/components/workspace/courses/modules/module-progression";
+import { Module } from "@/lib/types/modules";
+import { PageHeader } from "@/components/ui/page-header";
+import { useEffect, useState } from "react";
+import { use } from "react";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import {
+  getCourseById,
+  getModulesByCourseId,
+  isCourseAddedToUser,
+} from "@/lib/courses/actions";
+import ModulePage from "@/components/workspace/courses/modules/tasks-and-tests";
 
-import {useParams} from 'next/navigation';
-import Link from 'next/link';
-import {useEffect, useState} from 'react';
-import {Card} from '@/components/ui/card';
-import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions";
-import {Test} from "@/lib/types/test";
-import {LearningMaterial} from "@/lib/types/learning";
+export interface PageData {
+  title: string;
+  logo: string;
+  modules: Module[];
+}
 
-export default function ModulePage() {
-    const params = useParams();
-    const moduleId = Number(params.moduleId);
+export default function EnroledModulePage({
+  params,
+}: {
+  params: Promise<{ id: number; moduleId: number }>;
+}) {
+  const [isCourseAdded, setIsCourseAdded] = useState<boolean | undefined>(
+    undefined
+  );
+  const [pageData, setPageData] = useState<PageData | null>(null);
+  const { id, moduleId } = use(params);
 
-    const [materials, setMaterials] = useState<LearningMaterial[]>([]);
-    const [tests, setTests] = useState<Test[]>([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const materialsData = await getMaterialsByBlockId(moduleId);
-            const testsData = await getTestsByBlockId(moduleId);
-            setMaterials(materialsData);
-            setTests(testsData);
-        };
+  useEffect(() => {
+    if (!id) return;
+    async function checkIfCourseIsAdded() {
+      try {
+        const result = await isCourseAddedToUser(id);
+        setIsCourseAdded(result);
+      } catch (err) {
+        console.error(err);
+        setIsCourseAdded(false);
+      }
+    }
+    checkIfCourseIsAdded();
+  }, [id]);
 
-        if (moduleId) {
-            fetchData();
+  useEffect(() => {
+    if (!id) return;
+    if (isCourseAdded === false) {
+      window.location.href = `/workspace/courses/${id}`;
+    }
+  }, [isCourseAdded, id]);
+
+  useEffect(() => {
+    if (!id) return;
+    async function fetchData() {
+      try {
+        const course = await getCourseById(id);
+        const modules = await getModulesByCourseId(id);
+        if (course && modules) {
+          setPageData({
+            title: course.name,
+            logo: course.logo || "",
+            modules,
+          });
         }
-    }, [moduleId]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
+  }, [id]);
 
+  if (!id || !moduleId || isCourseAdded !== true || !pageData) {
+    return <LoadingSpinner />;
+  }
 
-    return (
-        <div className='flex text-center space-x-10 justify-center'>
-            <div className='w-96 m-8'>
-                <h3 className='m-3'>Cards:</h3>
-                <div className='w-full'>
-                    {materials.map((material) => (
-                        <Link key={material.id} href={`${moduleId}/card/${material.id}`}>
-                            <Card className='p-3'>{material.title}</Card>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-
-            <div className='w-96 m-8'>
-                <h3 className='m-3'>Tests:</h3>
-                <div className='w-full'>
-                    {tests.map((test) => (
-                        <Link key={test.id} href={`${moduleId}/test/${test.id}`}>
-                            <Card className='p-3'>{test.question}</Card>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div>
+      <PageHeader className="mb-10" title={"Modules of " + pageData.title} />
+      <ModuleProgression
+        modules={pageData.modules}
+        currentModuleId={moduleId}
+        courseId={id}
+      />
+      <ModulePage />
+    </div>
+  );
 }

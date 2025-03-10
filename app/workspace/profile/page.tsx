@@ -42,7 +42,6 @@ export default function UserProfile() {
 
       const currentUser = await (await supabase.auth.getUser()).data?.user;
       try {
-        console.log("currentUser, ", currentUser);
 
         if (!currentUser) {
           throw new Error("User not authenticated");
