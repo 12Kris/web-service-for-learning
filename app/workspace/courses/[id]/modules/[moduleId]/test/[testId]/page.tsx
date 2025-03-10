@@ -70,7 +70,7 @@ export default function TestPage() {
                 console.error('Error saving results:', result.error);
             } else {
                 alert('Results saved successfully!');
-                window.location.href = `/workspace/course/${courseId}/module/${moduleId}`;
+                window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
             }
         } catch (error) {
             console.error('Error saving results:', error);
