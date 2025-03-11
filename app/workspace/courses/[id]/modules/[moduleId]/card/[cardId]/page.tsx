@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Flashcard from "@/components/card/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Check } from "lucide-react";
 import { useParams } from "next/navigation";
 import { getCardsByLearningMaterial } from "@/lib/courses/actions";
 import { FlashCards } from "@/lib/types/card";
@@ -52,17 +52,9 @@ export default function CardPage() {
   }
 
   return (
-    <div className="flex items-center justify-center p-8">
-      <div className="w-full max-w-2xl rounded-3xl p-8 shadow-sm">
+    <div className="flex flex-col items-center justify-center p-8">
+      <div className="w-full max-w-3xl rounded-3xl p-8">
         <div className="items-center gap-4">
-          {/* <button
-            onClick={handlePrev}
-            className="flex items-center justify-center h-10 px-4 rounded-lg bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
-            aria-label="Previous card"
-          >
-            <ChevronLeft className="mr-1" size={20} />
-            <span>Previous</span>
-          </button> */}
           <div className="flex-1">
             <div className="w-full h-[450px]">
               <Flashcard
@@ -73,36 +65,27 @@ export default function CardPage() {
               />
             </div>
           </div>
-          <div className="flex justify-center mt-5 space-x-5">
+          <div className="flex justify-center mt-5 space-x-5 items-center">
             <button
               onClick={handlePrev}
-              // className="flex items-center justify-center h-10 px-4 rounded-lg bg-zinc-300 text-zinc-900 hover:bg-zinc-200 transition-colors"
-              className="flex items-center justify-center h-10 px-4 rounded-lg bg-[--neutral] text-white hover:bg-[--neutral]/70 transition-colors"
+              className="flex items-center justify-center h-10 w-24 border rounded-full transition-colors"
               aria-label="Previous card"
             >
-              <ChevronLeft className="mr-1" size={20} />
-              <span className="w-28">Previous</span>
+              <X className="w-6 h-6 text-red-500" />
             </button>
+
+          {/* Лічильник карток */}
+          <div className="text-center text-lg font-medium text-gray-700 ">
+            {currentCard + 1} / {flashcards.length}
+          </div>
+
             <button
               onClick={handleNext}
-              className="flex items-center justify-center h-10 px-4 rounded-lg bg-[--neutral] text-white hover:bg-[--neutral]/70 transition-colors"
+              className="flex items-center justify-center h-10 w-24 border  rounded-full transition-colors"
               aria-label="Next card"
             >
-              <span className="w-28">Next</span>
-              <ChevronRight className="ml-1" size={20} />
+              <Check className="w-6 h-6 text-green-500" />
             </button>
-          </div>
-        </div>
-        <div className="mt-6 flex justify-center">
-          <div className="flex gap-1">
-            {flashcards.map((_, index) => (
-              <div
-                key={index}
-                className={`w-16 h-1 rounded-full ${
-                  index === currentCard ? "bg-[--neutral]" : "bg-zinc-200"
-                }`}
-              />
-            ))}
           </div>
         </div>
       </div>

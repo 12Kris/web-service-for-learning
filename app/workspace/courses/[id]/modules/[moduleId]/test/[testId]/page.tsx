@@ -112,56 +112,64 @@ export default function TestPage() {
     }
 
     return (
-        <Card className="max-w-2xl mx-auto mt-8">
-            <CardHeader className="text-center">
-                <CardTitle>Knowledge Test</CardTitle>
-                <Progress 
-                    value={((currentQuestionIndex + 1) / questions.length) * 100} 
-                    className="mt-4"
-                />
-            </CardHeader>
-            {questions.length > 0 ? (
-                <CardContent>
-                    <div className="space-y-6">
-                        <div className="text-sm text-muted-foreground text-center">
-                            Question {currentQuestionIndex + 1} of {questions.length}
-                        </div>
-                        <h3 className="text-xl font-semibold text-center">
-                            {questions[currentQuestionIndex].question}
-                        </h3>
-                        <RadioGroup
-                            value={selectedAnswer?.toString()}
-                            onValueChange={(value) => setSelectedAnswer(parseInt(value))}
-                            className="space-y-3"
-                        >
-                            {questions[currentQuestionIndex].answers.map((answer) => (
-                                <div
-                                    key={answer.id}
-                                    className="flex items-center space-x-2 rounded-lg border p-4 cursor-pointer hover:bg-accent"
-                                >
-                                    <RadioGroupItem value={answer.id.toString()} id={`answer-${answer.id}`} />
-                                    <Label htmlFor={`answer-${answer.id}`} className="flex-grow cursor-pointer">
-                                        {answer.answer}
-                                    </Label>
-                                </div>
-                            ))}
-                        </RadioGroup>
-                    </div>
-                </CardContent>
-            ) : (
-                <CardContent className="text-center py-8">
-                    <p className="text-muted-foreground">Loading questions...</p>
-                </CardContent>
-            )}
-            <CardFooter className="flex justify-center">
-                <Button 
-                    onClick={handleNext} 
-                    disabled={selectedAnswer === null}
-                    className="w-full max-w-xs"
+
+
+        <Card className="max-w-2xl mx-auto mt-8 shadow-custom relative">
+    {/* Лінія прогресу поверх картки */}
+    
+
+    <CardHeader className="text-center">
+        <CardTitle>Knowledge Test</CardTitle>
+        <Progress
+            value={((currentQuestionIndex + 1) / questions.length) * 100}
+            className="mt-4"
+        />
+    </CardHeader>
+    {questions.length > 0 ? (
+        <CardContent>
+            <div className="space-y-6">
+                <div className="text-sm text-muted-foreground text-center">
+                    Question {currentQuestionIndex + 1} of {questions.length}
+                </div>
+                <h3 className="text-xl font-semibold text-center">
+                    {questions[currentQuestionIndex].question}
+                </h3>
+                <RadioGroup
+                    value={selectedAnswer?.toString()}
+                    onValueChange={(value) => setSelectedAnswer(parseInt(value))}
+                    className="grid grid-cols-2 gap-4"
                 >
-                    Next question
-                </Button>
-            </CardFooter>
-        </Card>
+                    {questions[currentQuestionIndex].answers.map((answer) => (
+                        <div
+                            key={answer.id}
+                            onClick={() => setSelectedAnswer(answer.id)}
+                            className={`flex items-center justify-center rounded-lg border p-4 cursor-pointer hover:bg-accent ${
+                                selectedAnswer === answer.id ? 'bg-accent' : ''
+                            }`}
+                        >
+                            <Label className="cursor-pointer">
+                                {answer.answer}
+                            </Label>
+                        </div>
+                    ))}
+                </RadioGroup>
+            </div>
+        </CardContent>
+    ) : (
+        <CardContent className="text-center py-8">
+            <p className="text-muted-foreground">Loading questions...</p>
+        </CardContent>
+    )}
+    <CardFooter className="flex justify-center">
+        <Button
+            onClick={handleNext}
+            disabled={selectedAnswer === null}
+            className="w-full max-w-xs"
+        >
+            Next question
+        </Button>
+    </CardFooter>
+</Card>
+
     );
 }
