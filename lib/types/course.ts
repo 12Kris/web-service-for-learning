@@ -1,4 +1,4 @@
-import { User } from "@/lib/types/user";
+import { Profile } from "@/lib/types/user";
 import { Module } from "@/lib/types/modules";
 
 export interface WhatWillLearn {
@@ -17,7 +17,7 @@ export interface Course {
   rating?: number;
   lessons?: number;
   student_count?: number;
-  creator?: User;
+  creator?: Profile;
   course_details?: CourseDetails[];
   what_w_learn?: WhatWillLearn[];
   curriculum?: Module[];

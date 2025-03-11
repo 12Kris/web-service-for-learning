@@ -42,9 +42,9 @@ export default function FlashcardPage({
     fetchData();
   }, [id]);
 
-  if (!course) {
-    return <LoadingSpinner className="mx-auto" />;
-  }
+  // if (!course) {
+  //   return <LoadingSpinner className="mx-auto" />;
+  // }
 
   return (
     <div className="flex flex-wrap gap-4">
@@ -65,8 +65,8 @@ export default function FlashcardPage({
       <CourseCurriculum modules={modules} courseId={id}/>
 
       <MeetTutor
-        name={course?.creator?.full_name}
-        description={course?.creator?.description || undefined}
+        name={course?.creator?.full_name || undefined}
+        description={course?.creator?.bio || undefined}
         imageUrl=""
       />
       <EditBar id={id} />

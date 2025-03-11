@@ -29,10 +29,14 @@ import { LogOut } from "lucide-react";
 import { signOut } from "@/utils/supabase/actions";
 // import { supabase } from "@/utils/supabase/client";
 import { createClient } from "@/utils/supabase/client";
+import { getUser } from "@/utils/supabase/server";
+import { getProfileById } from "@/utils/supabase/actions";
+import type { Profile } from "@/lib/types/user";
+
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("created");
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Profile | null>(null);
   const [createdCourses, setCreatedCourses] = useState<Course[]>([]);
   const [studyingCourses, setStudyingCourses] = useState<Course[]>([]);
 
@@ -40,28 +44,38 @@ export default function UserProfile() {
     async function fetchData() {
       const supabase = await createClient();
 
-      const currentUser = await (await supabase.auth.getUser()).data?.user;
+      // const user = await getUser();
+
+      const currentUser = await getUser(); 
+      // await (await supabase.auth.getUser()).data?.user;
+      console.log('Current display name:', currentUser?.user_metadata?.displayName);
+
+      // editUser({ data: { displayName: 'Mykhailo Nyskohuz changed' } });
+
+   
+
       try {
 
         if (!currentUser) {
           throw new Error("User not authenticated");
         }
 
-        setUser({
-          id: currentUser.id,
-          email: currentUser.email || "",
-          full_name: currentUser.user_metadata?.name || "Unknown User",
-          name: currentUser.user_metadata?.displayName || "Unknown User",
-          avatar:
-            currentUser.user_metadata?.avatar_url || defaultProfileImage.src,
-          role: "Instructor & Student",
-          created_at: currentUser.created_at,
-          user_metadata: currentUser.user_metadata || {},
-          joinDate: new Date(currentUser.created_at).toLocaleDateString(),
-          description:
-            currentUser.user_metadata?.description ||
-            "No description available",
-        });
+        // setUser({
+        //   id: currentUser.id,
+        //   email: currentUser.email || "",
+        //   full_name: currentUser.user_metadata?.name || "Unknown User",
+        //   name: currentUser.user_metadata?.displayName || "Unknown User",
+        //   avatar:
+        //     currentUser.user_metadata?.avatar_url || defaultProfileImage.src,
+        //   role: "Instructor & Student",
+        //   created_at: currentUser.created_at,
+        //   user_metadata: currentUser.user_metadata || {},
+        //   joinDate: new Date(currentUser.created_at).toLocaleDateString(),
+        //   description:
+        //     currentUser.user_metadata?.description ||
+        //     "No description available",
+        // });
+        setUser(await getProfileById(currentUser.id));
         setCreatedCourses(await getUserCreatedCourses());
         setStudyingCourses(await getUserCourses());
       } catch (error) {
@@ -94,21 +108,21 @@ export default function UserProfile() {
             <CardHeader className="text-center">
               <Avatar className="w-32 h-32 mx-auto mb-4 border-4 border-primary">
                 <AvatarImage
-                  src={user?.avatar || "/placeholder.svg"}
-                  alt={user?.name || "Unknown User"}
+                  src={user?.avatar_url || "/placeholder.svg"}
+                  alt={user?.full_name || "Unknown User"}
                 />
                 <AvatarFallback>
-                  {user?.name
+                  {user?.full_name
                     ?.split(" ")
                     .map((n) => n[0])
                     .join("") || "?"}
                 </AvatarFallback>
               </Avatar>
               <CardTitle className="text-3xl font-bold">
-                {user?.name || "Unknown User"}
+                {user?.full_name || "Unknown User"}
               </CardTitle>
               <CardDescription className="text-lg">
-                {user?.role || "Instructor & Student"}
+                {user?.location || "Instructor & Student"}
               </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
@@ -129,7 +143,7 @@ export default function UserProfile() {
               </div>
               <Badge variant="secondary" className="mb-2">
                 <Clock className="w-4 h-4 mr-1" />
-                Joined {user?.joinDate || "Unknown Date"}
+                Joined {user?.website || "Unknown Website"}
               </Badge>
             </CardContent>
 

@@ -7,17 +7,20 @@ import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
 import { SaveTestResult } from "@/lib/types/test";
 import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
+import { get } from "http";
+// import { getUser } from "@/utils/supabase/server";
 
 export async function getCourseById(courseId: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("Course")
-    .select("*, creator:creator_id (id, email, full_name, description)")
+    // Removed "description" from the embedded profile selection
+    .select("*, creator:profiles!Course_creator_id_fkey1 (id, email, full_name, bio)")
     .eq("id", courseId)
     .single();
 
   if (error) {
-    console.error("Error fetching course:", error);
+    console.error("Error fetching course:", JSON.stringify(error, null, 2));
     return null;
   }
 
@@ -235,7 +238,7 @@ export async function getCourses(): Promise<Course[]> {
   const supabase = await createClient();
   const { data, error } = await supabase.from("Course").select(`
         *,
-        creator:creator_id (
+        creator:profiles!Course_creator_id_fkey1 (
           id,
           email,
           full_name
@@ -243,7 +246,7 @@ export async function getCourses(): Promise<Course[]> {
       `);
 
   if (error) {
-    console.error("Error fetching courses:", error);
+    console.error("Error fetching courses:", JSON.stringify(error, null, 2));
     return [];
   }
 
@@ -426,31 +429,7 @@ export async function updateCourse(
   }
 }
 
-export async function getUserById(userId: string) {
-  const supabase = await createClient();
-  try {
-    if (!userId) {
-      throw new Error("User ID is required");
-    }
-
-    const { data, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      throw new Error(
-        "User not found or error occurred while fetching user data"
-      );
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error fetching user by ID:", error);
-    return null;
-  }
-}
+// create
 
 export async function getStudentCountForCourse(courseId: string) {
   const supabase = await createClient();

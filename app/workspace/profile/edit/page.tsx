@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -9,75 +9,59 @@ import { PageHeader } from "@/components/ui/page-header";
 import AvatarUpload from "@/components/workspace/avatar-upload";
 import { User } from "@/lib/types/user";
 
-// interface UserMetadata {
+import { getUser } from "@/utils/supabase/client";
+import { editUser } from "@/utils/supabase/actions";
 
-//   bio?: string;
-//   location?: string;
-// }
 
-// interface User {
-//   id: string;
-//   email: string;
-//   full_name: string;
-//   description: string;
-//   name?: string;
-//   avatar: string;
-//   role: string;
-//   created_at: string;
-//   joinDate?: string;
-//   user_metadata: UserMetadata;
-// }
 
 export default function ProfileEdit() {
-  const [user, setUser] = useState<User>({
-    id: "",
-    email: "",
-    full_name: "",
-    description: "",
-    name: "",
-    avatar: defaultProfileImage.src,
-    role: "",
-    created_at: "",
-    user_metadata: {},
-  });
+  const [user, setUser] = useState<User | null>(null);
+  
+  useEffect(() => {
+    getUser().then((userData) => setUser(userData));
+  }, []);
 
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setUser((prev) => {
-      if (name.startsWith("user_metadata.")) {
-        const metadataField = name.split(".")[1];
-        return {
-          ...prev,
-          user_metadata: {
-            ...prev.user_metadata,
-            [metadataField]: value,
-          },
-        };
-      }
-      return { ...prev, [name]: value };
-    });
-  };
+  // function handeleEdit() {
+  //   console.log('Edit');
+  //   editUser({ data: { displayName: 'Mykhailo Nyskohuz changed' } });
+  // }
 
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!user) return; // ensure user is loaded
+    const formData = new FormData(e.currentTarget);
+    const updatedUser = {
+      // id: user.id,
+      email: formData.get("email") as string,
+      // created_at: user.created_at,
+      data: {
+        display_name: formData.get("name") as string,
+        full_name: formData.get("full_name") as string,
+        bio: formData.get("description") as string,
+        location: formData.get("location") as string,
+      },
+    };
+    const { error, user: updated } = await editUser(updatedUser);
+    if (error) {
+      console.error("Error updating user:", error);
+    } else {
+      console.log("User updated successfully:", updated);
+    }
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <PageHeader title="Edit profile" />
       <form onSubmit={handleSubmit} className="space-y-6 mt-5">
-        <AvatarUpload user={user} />
+        {/* <AvatarUpload user={user} /> */}
 
         <Input
           label="Full Name"
           type="text"
           id="full_name"
           name="full_name"
-          value={user.full_name}
-          onChange={handleInputChange}
+          defaultValue={user?.user_metadata.full_name || ""}
+          // onChange={handleInputChange}
           required
         />
 
@@ -86,8 +70,8 @@ export default function ProfileEdit() {
           id="name"
           label="Name"
           name="name"
-          value={user.name || ""}
-          onChange={handleInputChange}
+          defaultValue={user?.user_metadata.display_name || ""}
+          // onChange={handleInputChange}
         />
 
         <Input
@@ -95,8 +79,8 @@ export default function ProfileEdit() {
           id="email"
           label="Email"
           name="email"
-          value={user.email}
-          onChange={handleInputChange}
+          defaultValue={user?.email || ""}
+          // onChange={handleInputChange}
           required
         />
 
@@ -105,21 +89,21 @@ export default function ProfileEdit() {
           name="description"
           label="Biography"
           rows={3}
-          value={user.description}
-          onChange={handleInputChange}
+          defaultValue={user?.user_metadata.bio || ""}
+          // onChange={handleInputChange}
         />
 
         <Input
           type="text"
-          id="role"
-          label="Role"
-          name="role"
-          value={user.role}
-          onChange={handleInputChange}
+          id="location"
+          label="Location"
+          name="location"
+          defaultValue={user?.user_metadata.location || ""}
+          // onChange={handleInputChange}
           required
         />
 
-        <Button size={"wide"} type="submit">
+        <Button  size={"wide"} type="submit">
           Save Changes
         </Button>
       </form>

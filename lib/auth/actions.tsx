@@ -55,7 +55,10 @@ export async function registerUser(
     },
   });
 
+ 
+
   if (error) {
+    console.log("signUpData", error);
     return {
       data: null,
       error: error.message,
@@ -68,20 +71,20 @@ export async function registerUser(
       error: "Registration failed",
     };
   }
-  const secret = process.env.SUPABASE_JWT_SECRET;
-  if (!secret) {
-    throw new Error("SUPABASE_JWT_SECRET is not defined");
-  }
-  const token = jwt.sign({ email, password }, secret, { expiresIn: "1h" });
-  return {
-    data: {
-      id: user.id,
-      email: user.email,
-      name: user.user_metadata.displayName,
-      token: token,
-    },
-    error: null,
-  };
+  // const secret = process.env.SUPABASE_JWT_SECRET;
+  // if (!secret) {
+  //   throw new Error("SUPABASE_JWT_SECRET is not defined");
+  // }
+  // const token = jwt.sign({ email, password }, secret, { expiresIn: "1h" });
+  // return {
+  //   data: {
+  //     id: user.id,
+  //     email: user.email,
+  //     name: user.user_metadata.displayName,
+  //     token: token,
+  //   },
+  //   error: null,
+  // };
 }
 
 export async function loginUser(email: string, password: string) {
