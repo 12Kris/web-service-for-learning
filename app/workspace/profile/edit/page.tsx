@@ -33,7 +33,7 @@ export default function ProfileEdit() {
       email: formData.get("email") as string,
       // created_at: user.created_at,
       data: {
-        display_name: formData.get("name") as string,
+        displayName: formData.get("name") as string,
         full_name: formData.get("full_name") as string,
         bio: formData.get("description") as string,
         location: formData.get("location") as string,
