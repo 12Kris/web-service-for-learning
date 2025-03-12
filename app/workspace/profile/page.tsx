@@ -37,8 +37,8 @@ import type { Profile } from "@/lib/types/user";
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("created");
   const [user, setUser] = useState<Profile | null>(null);
-  const [createdCourses, setCreatedCourses] = useState<Course[]>([]);
-  const [studyingCourses, setStudyingCourses] = useState<Course[]>([]);
+  const [createdCourses, setCreatedCourses] = useState<Course[] | null>(null);
+  const [studyingCourses, setStudyingCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -96,7 +96,7 @@ export default function UserProfile() {
     }
   };
 
-  if (!user) {
+  if (!user || !createdCourses || !studyingCourses) {
     return <LoadingSpinner className="mx-auto" />;
   }
 

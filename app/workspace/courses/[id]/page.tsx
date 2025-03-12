@@ -42,9 +42,9 @@ export default function FlashcardPage({
     fetchData();
   }, [id]);
 
-  // if (!course) {
-  //   return <LoadingSpinner className="mx-auto" />;
-  // }
+  if (!course) {
+    return <LoadingSpinner className="mx-auto" />;
+  }
 
   return (
     <div className="flex flex-wrap gap-4">

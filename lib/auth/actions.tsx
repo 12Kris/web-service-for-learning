@@ -47,30 +47,38 @@ export async function registerUser(
     };
   }
 
-  const { data: signUpData, error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      data: { displayName: name },
+      data: {
+        displayName: name,
+        full_name: name,
+      },
     },
-  });
+  })
 
- 
 
-  if (error) {
-    console.log("signUpData", error);
-    return {
-      data: null,
-      error: error.message,
-    };
-  }
-  const user = signUpData.user;
-  if (!user) {
-    return {
-      data: null,
-      error: "Registration failed",
-    };
-  }
+ //return data or errors
+  return {
+    data: data,
+    reg_error: error,
+  };
+
+  // if (error) {
+  //   console.log("signUpData", error);
+  //   return {
+  //     data: null,
+  //     error: error.message,
+  //   };
+  // }
+  // const user = data.user;
+  // if (!user) {
+  //   return {
+  //     data: null,
+  //     error: "Registration failed",
+  //   };
+  // }
   // const secret = process.env.SUPABASE_JWT_SECRET;
   // if (!secret) {
   //   throw new Error("SUPABASE_JWT_SECRET is not defined");

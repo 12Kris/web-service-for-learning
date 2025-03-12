@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { getTestById } from "@/lib/tests/actions";
 import { Button } from "@/components/ui/button";
-import {TestDataWithQuestion} from "@/lib/definitions";
+import {TestDataWithQuestion} from "@/lib/types/test";
 
 export function TestModal({
     isOpen,
@@ -171,9 +171,9 @@ export function TestModal({
         }
       };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
+    // if (isLoading) {
+    //     return <div>Loading...</div>;
+    // }
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>

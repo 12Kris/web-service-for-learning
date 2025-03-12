@@ -32,21 +32,34 @@ export default function RegisterPage() {
     const { name, email, password, confirmPassword } = formData;
 
     try {
-      const { data, error } = await registerUser(
+
+     const {data, reg_error} = await registerUser(
         name,
         email,
         password,
         confirmPassword
-      );
-      if (error) {
-        setError(error);
+      )
+
+      if (reg_error) {
+        setError(reg_error.message || "Registration failed");
+        console.log("Registration failed:", reg_error);
         return;
       }
-      // if
-      // router.push("/auth/confrim");
-      if (data) {
-        router.push(`/auth/confirm?token=${encodeURIComponent(data.token)}`);
+
+      if(data){
+        router.push(`/login`);
       }
+
+      // const { data, error } = () || { data: null, error: "" };
+      // if (error) {
+      //   setError(error);
+      //   return;
+      // }
+      // // if
+      // // router.push("/auth/confrim");
+      // if (data) {
+      //   router.push(`/auth/confirm?token=${encodeURIComponent(data.token)}`);
+      // }
 
     } catch (err) {
       setError((err as Error).message);

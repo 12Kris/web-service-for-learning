@@ -1,7 +1,7 @@
 export interface UserMetadata {
   // username?: string;
   full_name?: string;
-  display_name?: string;
+  displayName?: string;
   website?: string;
   bio?: string;
   location?: string;

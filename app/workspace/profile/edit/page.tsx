@@ -11,11 +11,14 @@ import { User } from "@/lib/types/user";
 
 import { getUser } from "@/utils/supabase/client";
 import { editUser } from "@/utils/supabase/actions";
+import { redirect } from "next/dist/server/api-utils";
+import { useRouter } from "next/navigation";
 
 
 
 export default function ProfileEdit() {
   const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
   
   useEffect(() => {
     getUser().then((userData) => setUser(userData));
@@ -47,6 +50,8 @@ export default function ProfileEdit() {
     } else {
       console.log("User updated successfully:", updated);
     }
+    router.push("/workspace/profile");
+    // redirect("/workspace/profile", "push");
   };
 
   return (
@@ -70,7 +75,7 @@ export default function ProfileEdit() {
           id="name"
           label="Name"
           name="name"
-          defaultValue={user?.user_metadata.display_name || ""}
+          defaultValue={user?.user_metadata.displayName || ""}
           // onChange={handleInputChange}
         />
 
@@ -100,7 +105,7 @@ export default function ProfileEdit() {
           name="location"
           defaultValue={user?.user_metadata.location || ""}
           // onChange={handleInputChange}
-          required
+          // required
         />
 
         <Button  size={"wide"} type="submit">

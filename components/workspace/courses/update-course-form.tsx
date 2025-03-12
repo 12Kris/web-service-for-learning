@@ -15,7 +15,6 @@ import { TestModal } from "@/components/workspace/modals/test";
 import { Card as CardDefinitions } from "@/lib/types/card";
 import { Module } from "@/lib/types/modules";
 
-
 import {
     type Course,
     CourseDetails,
@@ -36,6 +35,7 @@ import {
 } from "@/lib/tests/actions";
 import { getMaterialsByBlockId, getTestsByBlockId } from "@/lib/courses/actions";
 import BlockModal from "@/components/workspace/modals/block";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 type FormState = {
     name: string | undefined;
@@ -222,7 +222,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
     };
 
     if (isLoading || materials === null || tests === null) {
-        return <Skeleton height={200} className="mb-4" />;
+        return <LoadingSpinner className="mx-auto" />;
+        // return <Skeleton height={200} className="mb-4" />;
     }
 
     const updateFormState = <K extends keyof FormState>(
@@ -265,6 +266,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
     return (
         <Card className="w-full max-w-3xl mx-auto">
+            
             <CardHeader>
                 <CardTitle>Edit Course: {course.name}</CardTitle>
             </CardHeader>
