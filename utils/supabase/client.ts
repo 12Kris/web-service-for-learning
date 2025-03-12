@@ -8,6 +8,7 @@
 
 
 import { createBrowserClient } from '@supabase/ssr'
+import type { User } from "@/lib/types/user";
 
 // export const supabase = await createClient()
 
@@ -26,5 +27,12 @@ export async function signOut() {
 export async function getUser() {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()
-  return data.user
+  return data.user as User;
 }
+
+
+// export async function editUser(changes: { email?: string; data?: {displayName: string} }) {
+//   const supabase = await createClient();
+//   const { data, error } = await supabase.auth.updateUser(changes);
+//   return { user: data.user, error };
+// }

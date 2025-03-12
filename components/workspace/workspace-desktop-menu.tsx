@@ -32,20 +32,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
         if (!currentUser) {
           return;
         }
-        setUser({
-          id: currentUser.id,
-          email: currentUser.email || "",
-          full_name: currentUser.user_metadata?.name || "Unknown User",
-          name: currentUser.user_metadata?.displayName || "Unknown User",
-          avatar: currentUser.user_metadata?.avatar_url || "/placeholder.svg",
-          role: "Instructor & Student",
-          created_at: currentUser.created_at,
-          user_metadata: currentUser.user_metadata || {},
-          joinDate: new Date(currentUser.created_at).toLocaleDateString(),
-          description:
-            currentUser.user_metadata?.description ||
-            "No description available",
-        });
+        setUser(currentUser);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -99,7 +86,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
           style={{ marginLeft: 6 }}
           className="ml-0 whitespace-nowrap overflow-hidden text-ellipsis font-bold "
         >
-          {user?.name || "Loading..."}
+          {user?.user_metadata.full_name || "Loading..."}
         </div>
       </Link>
     </div>

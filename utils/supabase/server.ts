@@ -37,3 +37,10 @@ export async function getUser() {
   const { data, error } = await supabase.auth.getUser();
   return data.user;
 }
+
+// New editUser function to update user details.
+// export async function editUser(changes: { email?: string; data?: {displayName: string} }) {
+//   const supabase = await createClient();
+//   const { data, error } = await supabase.auth.updateUser(changes);
+//   return { user: data.user, error };
+// }
