@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -51,12 +50,11 @@ export default function UserProfile() {
 
    
 
-
       try {
-        if (!currentUser) {
-          throw new Error("User not authenticated")
-        }
 
+        if (!currentUser) {
+          throw new Error("User not authenticated");
+        }
 
         // setUser({
         //   id: currentUser.id,
@@ -76,43 +74,29 @@ export default function UserProfile() {
         setUser(await getProfileById(currentUser.id));
         setCreatedCourses(await getUserCreatedCourses());
         setStudyingCourses(await getUserCourses());
-
       } catch (error) {
-        console.error("Error fetching user data:", error)
-      } finally {
-        setIsLoading(false)
+        console.error("Error fetching user data:", error);
       }
     }
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
+  const router = useRouter();
   const handleLogout = async () => {
     try {
-      await signOut()
-      router.push("/")
+      await signOut();
+      router.push("/");
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-  }
-
+  };
 
   if (!user || !createdCourses || !studyingCourses) {
     return <LoadingSpinner className="mx-auto" />;
-
   }
 
-  const menuItems = [
-    { id: "profile", label: "Profile" },
-    { id: "analytics", label: "Analytics" },
-    { id: "courses-enrolled", label: "Courses Enroled" },
-    { id: "courses-created", label: "Courses Created" },
-    { id: "certificates", label: "Certificates" },
-    { id: "settings", label: "Settings" },
-  ]
-
   return (
-
     <div className="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col lg:flex-row gap-8">
         <aside className="w-full lg:w-1/3">
@@ -227,41 +211,48 @@ export default function UserProfile() {
                     </CardFooter>
                   </Card>
                 ))}
-
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[#5c7d73] text-lg">Password</label>
-              <div className="relative">
-                <Input
-                  className="border-gray-300 rounded-lg py-6 px-4 text-gray-700"
-                  type="password"
-                  value="**********"
-                  readOnly
-                />
-                <Button variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-                  <Pencil className="h-5 w-5" />
-                </Button>
+            </TabsContent>
+            <TabsContent value="studying">
+              <div className="space-y-6">
+                {studyingCourses.map((course) => (
+                  <Card
+                    key={course.id}
+                    className="shadow-md hover:shadow-lg transition-shadow"
+                  >
+                    <CardHeader>
+                      <CardTitle className="text-xl">{course.name}</CardTitle>
+                      <CardDescription>
+                        Instructor: {course.creator_id}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-2">
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm font-medium text-primary">
+                            Progress
+                          </span>
+                          <span className="text-sm font-medium text-primary">
+                            {course.progress}%
+                          </span>
+                        </div>
+                        <Progress value={course.progress} className="w-full" />
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button asChild className="w-full">
+                        <Link href={`/workspace/courses/${course.id}`}>
+                          Continue Learning
+                        </Link>
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
               </div>
-            </div>
-
-            <div>
-              <Button className="bg-[#f39d8e] text-white rounded-full px-10">Save</Button>
-            </div>
-          </div>
-        )}
-
-        {activeMenuItem !== "profile" && (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-lg text-gray-500">
-              {activeMenuItem.charAt(0).toUpperCase() + activeMenuItem.slice(1).replace("-", " ")} content will be
-              displayed here
-            </p>
-          </div>
-        )}
+            </TabsContent>
+          </Tabs>
+        </main>
       </div>
     </div>
-  )
+  );
 }
-
