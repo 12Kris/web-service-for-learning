@@ -7,7 +7,6 @@ import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
 import { SaveTestResult } from "@/lib/types/test";
 import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
-import { get } from "http";
 // import { getUser } from "@/utils/supabase/server";
 
 export async function getCourseById(courseId: number) {
@@ -15,7 +14,9 @@ export async function getCourseById(courseId: number) {
   const { data, error } = await supabase
     .from("Course")
     // Removed "description" from the embedded profile selection
-    .select("*, creator:profiles!Course_creator_id_fkey1 (id, email, full_name, bio)")
+    .select(
+      "*, creator:profiles!Course_creator_id_fkey1 (id, email, full_name, bio)"
+    )
     .eq("id", courseId)
     .single();
 

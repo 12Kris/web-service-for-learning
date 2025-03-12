@@ -13,7 +13,7 @@ export default async function Page() {
 
   return (
     <div>
-      { !courses && <LoadingSpinner /> }
+      {!courses && <LoadingSpinner />}
 
       <div className="container bg-[--background] mx-auto space-y-12">
         <div className="flex items-center justify-between mt-6">
@@ -31,7 +31,7 @@ export default async function Page() {
             </Button>
           </div>
         </div>
-        { courses.length === 0 ? (
+        {courses.length === 0 ? (
           <div className="text-center text-lg">No courses available!</div>
         ) : (
           <>
@@ -39,7 +39,7 @@ export default async function Page() {
             <CourseCarousel title="Popular" courses={courses} />
             <CourseGrid title="All courses" courses={courses} />
           </>
-        ) }
+        )}
       </div>
     </div>
   );

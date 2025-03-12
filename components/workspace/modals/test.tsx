@@ -35,11 +35,11 @@ export function TestModal({
             answers: { id: string; text: string; correct: boolean }[];
         }[]
     >([]);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchTest = async () => {
-            setIsLoading(true);
+            // setIsLoading(true);
             const currentTest = await getTestById(testId);
             if (currentTest) {
                 setTestTitle(currentTest.question || "");
@@ -57,7 +57,7 @@ export function TestModal({
                     },
                 ]);
             }
-            setIsLoading(false);
+            // setIsLoading(false);
         };
 
         if (isOpen) {

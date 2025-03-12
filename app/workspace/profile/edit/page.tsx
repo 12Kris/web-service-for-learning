@@ -1,25 +1,20 @@
 "use client";
 
-import { useState, useEffect, type ChangeEvent, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png";
 import { PageHeader } from "@/components/ui/page-header";
-import AvatarUpload from "@/components/workspace/avatar-upload";
 import { User } from "@/lib/types/user";
 
 import { getUser } from "@/utils/supabase/client";
 import { editUser } from "@/utils/supabase/actions";
-import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
-
-
 
 export default function ProfileEdit() {
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
-  
+
   useEffect(() => {
     getUser().then((userData) => setUser(userData));
   }, []);
@@ -108,7 +103,7 @@ export default function ProfileEdit() {
           // required
         />
 
-        <Button  size={"wide"} type="submit">
+        <Button size={"wide"} type="submit">
           Save Changes
         </Button>
       </form>

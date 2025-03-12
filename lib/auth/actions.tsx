@@ -2,36 +2,7 @@
 
 // import { supabase } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
-import jwt from "jsonwebtoken";
 import { createClient } from "@/utils/supabase/server";
-
-// export async function getToken() {
-//   const token = (await cookies()).get("token")?.value;
-//   return token || null;
-// }
-
-// export async function logoutUser() {
-//   const cookieStore = await cookies();
-//   cookieStore.delete("token");
-//   // revalidatePath("/login");
-//   return true;
-// }
-
-// export async function getUser() {
-//   const token = await getToken();
-//   if (!token) {
-//     return null;
-//   }
-
-//   const {
-//     data: { user },
-//     error,
-//   } = await supabase.auth.getUser(token);
-//   if (error || !user) {
-//     throw new Error("Failed to fetch user");
-//   }
-//   return user;
-// }
 
 export async function registerUser(
   name: string,
@@ -56,43 +27,12 @@ export async function registerUser(
         full_name: name,
       },
     },
-  })
+  });
 
-
- //return data or errors
   return {
     data: data,
     reg_error: error,
   };
-
-  // if (error) {
-  //   console.log("signUpData", error);
-  //   return {
-  //     data: null,
-  //     error: error.message,
-  //   };
-  // }
-  // const user = data.user;
-  // if (!user) {
-  //   return {
-  //     data: null,
-  //     error: "Registration failed",
-  //   };
-  // }
-  // const secret = process.env.SUPABASE_JWT_SECRET;
-  // if (!secret) {
-  //   throw new Error("SUPABASE_JWT_SECRET is not defined");
-  // }
-  // const token = jwt.sign({ email, password }, secret, { expiresIn: "1h" });
-  // return {
-  //   data: {
-  //     id: user.id,
-  //     email: user.email,
-  //     name: user.user_metadata.displayName,
-  //     token: token,
-  //   },
-  //   error: null,
-  // };
 }
 
 export async function loginUser(email: string, password: string) {

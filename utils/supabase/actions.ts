@@ -14,12 +14,22 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut();
 }
 
-export async function editUser(changes: { email?: string; data?: {display_name?: string; full_name?:string; avatar_url?: string; website?: string; bio?: string; location?: string;} }) {
+export async function editUser(changes: {
+  email?: string;
+  data?: {
+    display_name?: string;
+    full_name?: string;
+    avatar_url?: string;
+    website?: string;
+    bio?: string;
+    location?: string;
+  };
+}) {
   if (!changes || Object.keys(changes).length === 0) {
     return { error: "No data provided" };
   }
 
-  console.log('changes', changes);
+  console.log("changes", changes);
   const supabase = await createClient();
   const { data, error } = await supabase.auth.updateUser({
     email: changes.email,
@@ -37,6 +47,10 @@ export async function editUser(changes: { email?: string; data?: {display_name?:
 
 export async function getProfileById(userId: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("profiles").select().eq("id", userId).single();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select()
+    .eq("id", userId)
+    .single();
   return data as Profile;
 }

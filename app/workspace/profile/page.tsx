@@ -20,15 +20,12 @@ import { Book, Users, Clock, Award } from "lucide-react";
 import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
 // import { getUser } from "@/lib/auth/utils";
 import { Course } from "@/lib/types/course";
-import { User } from "@/lib/types/user";
 import { Edit } from "lucide-react";
-import defaultProfileImage from "@/public/images/115-1150152_default-profile-picture-avatar-png-green.png";
 // import { logoutUser } from "@/lib/auth/utils";
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { signOut } from "@/utils/supabase/actions";
 // import { supabase } from "@/utils/supabase/client";
-import { createClient } from "@/utils/supabase/client";
 import { getUser } from "@/utils/supabase/server";
 import { getProfileById } from "@/utils/supabase/actions";
 import type { Profile } from "@/lib/types/user";
@@ -42,7 +39,6 @@ export default function UserProfile() {
 
   useEffect(() => {
     async function fetchData() {
-      const supabase = await createClient();
 
       // const user = await getUser();
 
