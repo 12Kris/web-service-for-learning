@@ -173,7 +173,8 @@ import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
 import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/types/test';
 import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioGroup } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"

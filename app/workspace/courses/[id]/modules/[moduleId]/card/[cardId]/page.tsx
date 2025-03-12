@@ -115,7 +115,8 @@
 
 import { useEffect, useState } from "react";
 import Flashcard from "@/components/card/card";
-import { X, Check, ChevronLeft, ChevronRight } from "lucide-react";
+// import { X, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import { getCardsByLearningMaterial } from "@/lib/courses/actions";
 import { FlashCards } from "@/lib/types/card";

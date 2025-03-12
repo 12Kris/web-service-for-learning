@@ -263,8 +263,8 @@ import { useState, useEffect } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import LoadingSpinner from "@/components/ui/loading-spinner"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Pencil } from "lucide-react"
+// import { Input } from "@/components/ui/input"
+// import { Pencil } from "lucide-react"
 import {
   Card,
   CardContent,
@@ -279,7 +279,7 @@ import { Book, Users, Award } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
 import { signOut } from "@/utils/supabase/actions"
-import { createClient } from "@/utils/supabase/client"
+// import { createClient } from "@/utils/supabase/client"
 import type { Profile } from "@/lib/types/user"
 import { getProfileById } from "@/utils/supabase/actions";
 import { Course } from "@/lib/types/course"
