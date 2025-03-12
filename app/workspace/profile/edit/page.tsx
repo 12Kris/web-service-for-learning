@@ -40,6 +40,7 @@ export default function ProfileEdit() {
       },
     };
     const { error, user: updated } = await editUser(updatedUser);
+    window.location.href = `/workspace/profile`;
     if (error) {
       console.error("Error updating user:", error);
     } else {
@@ -68,7 +69,7 @@ export default function ProfileEdit() {
         <Input
           type="text"
           id="name"
-          label="Name"
+          label="Display Name"
           name="name"
           defaultValue={user?.user_metadata.displayName || ""}
           // onChange={handleInputChange}
