@@ -7,6 +7,7 @@ import { Module } from "@/lib/types/learning";
 import { getCourseById, getModulesByCourseId } from "@/lib/courses/actions";
 import { Course } from "@/lib/definitions";
 import LoadingSpinner from "@/components/ui/loading-spinner";
+import EditBar from "@/components/workspace/courses/edit-bar";
 
 import CourseDescriptionJumpotron from "@/components/workspace/courses/course-description-jumbotron";
 
@@ -68,6 +69,7 @@ export default function FlashcardPage({
         description={course?.creator?.description || undefined}
         imageUrl=""
       />
+      <EditBar id={id} />
     </div>
   );
 }

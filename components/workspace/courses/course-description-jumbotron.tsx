@@ -8,6 +8,7 @@ import {
   isCourseAddedToUser,
   removeCourseFromUser,
 } from "@/lib/courses/actions";
+import Link from "next/link";
 
 interface CourseDescriptionJumbotronProps {
   title?: string;
@@ -23,7 +24,8 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   type,
   id,
 }) => {
-  const [isCourseAdded, setIsCourseAdded] = useState(false);
+  const [isCourseAdded, setIsCourseAdded] = useState<boolean | null>(null);
+  
 
   useEffect(() => {
     async function fetchData() {
@@ -44,7 +46,6 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     if (!id) return;
     await addCourseToUser(id);
     setIsCourseAdded(true);
-    window.location.href = `/workspace/course/${id}`;
   }
   async function handleRemoveCourse(id: number) {
     if (!id) return;
@@ -91,7 +92,25 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
         )}
       </p>
 
+      {isCourseAdded === null && (
+        <Skeleton
+          baseColor="#a2d5c6"
+          highlightColor="#d8f8e3"
+          width={300}
+          height={32}
+          count={1}
+        />
+      )}
+    {
+      isCourseAdded !== null && (
       <div className="flex gap-2">
+        {
+          isCourseAdded && <Button variant={"solid"}>
+            <Link href={`/workspace/courses/${id}/modules`}>
+              Go to modules
+            </Link>
+          </Button>
+        }
         <Button
           variant={isCourseAdded ? "destructive" : "solid"}
           onClick={() =>
@@ -118,6 +137,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
           )}
         </Button>
       </div>
+      )}
     </section>
   );
 };

@@ -1,5 +1,6 @@
+import LoadingSpinner from "@/components/ui/loading-spinner";
 function Loading() {
-  return <div>Loading...</div>;
+  return <LoadingSpinner className="mx-auto" />;
 }
 
 export default Loading;

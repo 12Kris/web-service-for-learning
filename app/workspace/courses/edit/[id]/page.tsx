@@ -171,7 +171,7 @@ export default async function CourseEditPage({ params }: PageProps) {
 //                     />
 //                 </div>
 //                 <div className="flex justify-between">
-//                     <Link href={`/workspace/course/${course?.id}`}>
+//                     <Link href={`/workspace/courses/${course?.id}`}>
 //                         <Button variant="outline">Back</Button>
 //                     </Link>
 //                     <Button variant="primary">Save</Button>

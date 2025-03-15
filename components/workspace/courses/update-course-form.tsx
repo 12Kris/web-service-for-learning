@@ -155,7 +155,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
         e.preventDefault();
         try {
             await updateCourse(course.id, formState, course.creator_id);
-            router.push(`/workspace/course/${course.id}`);
+            router.push(`/workspace/courses/${course.id}`);
         } catch (err) {
             console.error("Error updating course:", err);
         }
