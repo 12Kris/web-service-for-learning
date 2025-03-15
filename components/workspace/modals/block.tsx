@@ -77,7 +77,13 @@ const BlockModal: FC<BlockModalProps> = ({
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onSave}>Save</AlertDialogAction>
+          <AlertDialogAction
+              onClick={() => {
+                onSave();
+              }}
+          >
+            Save
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

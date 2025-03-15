@@ -65,7 +65,7 @@ export async function deleteBlock(blockId: number): Promise<void> {
 }
 
 
-export async function getTestById(testId: number): Promise<TestWithQuestions | null> {
+export async function getTestById(testId: number | null): Promise<TestWithQuestions | null> {
     const {data, error} = await supabase
         .from("Test")
         .select(`
@@ -78,7 +78,8 @@ export async function getTestById(testId: number): Promise<TestWithQuestions | n
                 correct_id,
                 TestAnswers!TestAnswers_question_id_fkey (
                     id,
-                    answer
+                    answer,
+                    order
                 )
             )
         `)
@@ -104,6 +105,7 @@ export async function getTestById(testId: number): Promise<TestWithQuestions | n
                 id: Number(a.id),
                 text: a.answer,
                 correct: a.id === q.correct_id,
+                order: a.order
             })),
         })),
     };
@@ -342,7 +344,7 @@ export async function deleteTest(testId: number): Promise<void> {
 export async function createMaterial(
     materialData: { title: string; block_id: number },
     materialContents: Card[]
-): Promise<LearningMaterial | null> {
+): Promise<null | LearningMaterial> {
     const {data, error} = await supabase
         .from("LearningMaterial")
         .insert(materialData)
@@ -369,7 +371,7 @@ export async function updateMaterial(
     materialId: number,
     materialData: Partial<LearningMaterial>,
     materialContents: Card[]
-): Promise<void> {
+): Promise<null | LearningMaterial> {
     const {error} = await supabase
         .from("LearningMaterial")
         .update(materialData)

@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { updateCourse } from "@/lib/courses/actions";
-import { createBlock, updateBlock, deleteBlock } from "@/lib/tests/actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {useState, useCallback, useEffect} from "react";
+import {useRouter} from "next/navigation";
+import {updateCourse} from "@/lib/courses/actions";
+import {createBlock, updateBlock, deleteBlock} from "@/lib/tests/actions";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {Label} from "@/components/ui/label";
+import {Card, CardHeader, CardTitle, CardContent} from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
-import { MaterialModal } from "@/components/workspace/modals/material";
-import { TestModal } from "@/components/workspace/modals/test";
-import { Card as CardDefinitions } from "@/lib/definitions";
-import { type Module } from "@/lib/types/learning";
+import {MaterialModal} from "@/components/workspace/modals/material";
+import {TestModal} from "@/components/workspace/modals/test";
+import {Card as CardDefinitions} from "@/lib/definitions";
+import {type Module} from "@/lib/types/learning";
 import {
     type Course,
     CourseDetails,
@@ -31,7 +31,7 @@ import {
     updateTest,
     deleteTest,
 } from "@/lib/tests/actions";
-import { getMaterialsByBlockId, getTestsByBlockId } from "@/lib/courses/actions";
+import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions";
 import BlockModal from "@/components/workspace/modals/block";
 
 type FormState = {
@@ -43,7 +43,7 @@ type FormState = {
     what_w_learn: WhatWillLearn[];
 };
 
-export function CourseEditForm({ course, modules }: { course: Course; modules: Module[] }) {
+export function CourseEditForm({course, modules}: { course: Course; modules: Module[] }) {
     const [formState, setFormState] = useState<FormState>({
         name: course.name,
         description: course.description,
@@ -78,8 +78,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
             const fetchedTests = await Promise.all(
                 modules.map((module) => getTestsByBlockId(module.id))
             );
-            console.log(fetchedMaterials.flat());
-            console.log(fetchedTests.flat());
             setMaterials(fetchedMaterials.flat());
             setTests(fetchedTests.flat());
         } catch (error) {
@@ -93,13 +91,49 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
         fetchBlockData();
     }, [fetchBlockData]);
 
-    const handleSaveMaterial = async (blockId: number, materialData: MaterialData, materialContents: { front: string; back: string }[]) => {
+    // useEffect(() => {
+    //     const updatedMaterials = formState.curriculum.flatMap(block => block.materials || []);
+    //     console.log(updatedMaterials);
+    //     setMaterials(updatedMaterials);
+    //     console.log("In: ", materials)
+    // }, [formState.curriculum]);
+
+    const handleSaveMaterial = async (blockId: number, materialData: MaterialData, materialContents: {
+        front: string;
+        back: string
+    }[]) => {
         setIsLoading(true);
+        let updatedMaterial: LearningMaterial | null;
         try {
             if (!currentMaterial?.id) {
-                await createMaterial({ title: materialData.title, block_id: blockId }, materialContents);
+                updatedMaterial = await createMaterial({
+                    title: materialData.title,
+                    block_id: blockId
+                }, materialContents);
             } else {
-                await updateMaterial(currentMaterial.id, { title: materialData.title }, materialContents);
+                updatedMaterial = await updateMaterial(currentMaterial.id, {title: materialData.title}, materialContents);
+            }
+            if (updatedMaterial) {
+                const nonNullUpdatedMaterial = updatedMaterial;
+                setFormState((prev) => ({
+                    ...prev,
+                    curriculum: prev.curriculum.map((block) =>
+                        block.id === blockId
+                            ? {
+                                ...block,
+                                materials: block.materials
+                                    ? [
+                                        ...block.materials.filter(
+                                            (m) => m.id !== nonNullUpdatedMaterial.id
+                                        ),
+                                        nonNullUpdatedMaterial,
+                                    ]
+                                    : [nonNullUpdatedMaterial],
+                            }
+                            : block
+                    ),
+                }));
+                window.location.reload();
             }
             await fetchBlockData();
             setMaterialModalOpen(false);
@@ -165,22 +199,25 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
         try {
             const newModule = await createBlock(course.id, blockName, blockDescription);
             if (newModule) {
-              setFormState((prev) => ({
-                ...prev,
-                curriculum: [
-                  ...prev.curriculum,
-                  {
-                    id: newModule.id,
-                    title: blockName, // was "name" before
-                    description: blockDescription,
-                    duration: "",     // Provide an appropriate default or calculated value
-                    lessons: [],      // Initially empty
-                    isActive: false,  // Default value; adjust as needed
-                    isCompleted: false,
-                    progress: 0,
-                  },
-                ],
-              }));
+                setFormState((prev) => ({
+                    ...prev,
+                    curriculum: [
+                        ...prev.curriculum,
+                        {
+                            course_id: course.id,
+                            id: newModule.id,
+                            name: blockName, // was "name" before
+                            description: blockDescription,
+                            duration: "",     // Provide an appropriate default or calculated value
+                            lessons: [],      // Initially empty
+                            materials: [],
+                            tests: [],
+                            isActive: false,  // Default value; adjust as needed
+                            isCompleted: false,
+                            progress: 0,
+                        },
+                    ],
+                }));
             }
         } catch (error) {
             console.error("Error saving block:", error);
@@ -193,15 +230,16 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
     const handleUpdateBlock = async (blockId: number, newName: string | undefined, newDescription: string | undefined) => {
         try {
-            if(newName){
+            if (newName) {
                 await updateBlock(blockId, newName, newDescription);
             }
             setFormState((prev) => ({
                 ...prev,
                 curriculum: prev.curriculum.map((block) =>
-                    block.id === blockId ? { ...block, name: newName, description: newDescription ?? "" } : block
+                    block.id === blockId ? {...block, name: newName, description: newDescription ?? ""} : block
                 ),
             }));
+            setBlockModalOpen(false)
         } catch (error) {
             console.error("Error updating block:", error);
         }
@@ -220,46 +258,46 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
     };
 
     if (isLoading || materials === null || tests === null) {
-        return <Skeleton height={200} className="mb-4" />;
+        return <Skeleton height={200} className="mb-4"/>;
     }
 
     const updateFormState = <K extends keyof FormState>(
         key: K,
         value: FormState[K]
-      ) => {
-        setFormState((prev) => ({ ...prev, [key]: value }));
-      };
-    
-      const updateItem = <
+    ) => {
+        setFormState((prev) => ({...prev, [key]: value}));
+    };
+
+    const updateItem = <
         K extends "course_details" | "what_w_learn",
         F extends keyof FormState[K][number]
-      >(
+    >(
         key: K,
         index: number,
         field: F,
         value: string
-      ) => {
+    ) => {
         setFormState((prev) => ({
-          ...prev,
-          [key]: prev[key].map((item, i) =>
-            i === index ? { ...item, [field]: value } : item
-          ),
+            ...prev,
+            [key]: prev[key].map((item, i) =>
+                i === index ? {...item, [field]: value} : item
+            ),
         }));
-      };
-    
-      const addItem = <K extends "course_details" | "what_w_learn">(key: K) => {
+    };
+
+    const addItem = <K extends "course_details" | "what_w_learn">(key: K) => {
         setFormState((prev) => ({
-          ...prev,
-          [key]: [
-            ...prev[key],
-            {
-              id: prev[key].length + 1,
-              description: "",
-              ...(key === "course_details" ? { course_detail: "" } : {}),
-            },
-          ],
+            ...prev,
+            [key]: [
+                ...prev[key],
+                {
+                    id: prev[key].length + 1,
+                    description: "",
+                    ...(key === "course_details" ? {course_detail: ""} : {}),
+                },
+            ],
         }));
-      };
+    };
 
     return (
         <Card className="w-full max-w-3xl mx-auto">
@@ -268,114 +306,96 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* <div className="space-y-2">
-                        <Label>Course Name</Label>
+                    <div className="space-y-2">
+                        <Label htmlFor="name">Course Name</Label>
                         <Input
+                            id="name"
                             type="text"
                             value={formState.name}
-                            onChange={(e) => setFormState((prev) => ({ ...prev, name: e.target.value }))}
+                            onChange={(e) => updateFormState("name", e.target.value)}
                             required
+                            aria-required="true"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="description">Description</Label>
+                        <Textarea
+                            id="description"
+                            value={formState.description}
+                            onChange={(e) => updateFormState("description", e.target.value)}
+                            aria-label="Course description"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="type">Course Type</Label>
+                        <Input
+                            id="type"
+                            type="text"
+                            value={formState.type}
+                            onChange={(e) => updateFormState("type", e.target.value)}
+                            aria-label="Course type"
                         />
                     </div>
 
-                    <div className="space-y-2">
-                        <Label>Description</Label>
-                        <Textarea
-                            value={formState.description}
-                            onChange={(e) => setFormState((prev) => ({ ...prev, description: e.target.value }))}
-                        />
-                    </div> */}
+                    {/* Course Details */}
+                    <fieldset className="space-y-2">
+                        <legend className="text-sm font-medium">Course Details</legend>
+                        {formState.course_details.map((detail, index) => (
+                            <div key={detail.id} className="space-y-2">
+                                <Textarea
+                                    placeholder={`Course Detail ${detail.id}`}
+                                    value={detail.course_detail}
+                                    onChange={(e) =>
+                                        updateItem(
+                                            "course_details",
+                                            index,
+                                            "course_detail",
+                                            e.target.value
+                                        )
+                                    }
+                                    aria-label={`Course detail ${detail.id}`}
+                                />
+                            </div>
+                        ))}
+                        <Button
+                            type="button"
+                            onClick={() => addItem("course_details")}
+                            variant="outline"
+                        >
+                            Add Course Detail
+                        </Button>
+                    </fieldset>
 
-          <div className="space-y-2">
-            <Label htmlFor="name">Course Name</Label>
-            <Input
-              id="name"
-              type="text"
-              value={formState.name}
-              onChange={(e) => updateFormState("name", e.target.value)}
-              required
-              aria-required="true"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formState.description}
-              onChange={(e) => updateFormState("description", e.target.value)}
-              aria-label="Course description"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="type">Course Type</Label>
-            <Input
-              id="type"
-              type="text"
-              value={formState.type}
-              onChange={(e) => updateFormState("type", e.target.value)}
-              aria-label="Course type"
-            />
-          </div>
-
-          {/* Course Details */}
-          <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">Course Details</legend>
-            {formState.course_details.map((detail, index) => (
-              <div key={detail.id} className="space-y-2">
-                <Textarea
-                  placeholder={`Course Detail ${detail.id}`}
-                  value={detail.course_detail}
-                  onChange={(e) =>
-                    updateItem(
-                      "course_details",
-                      index,
-                      "course_detail",
-                      e.target.value
-                    )
-                  }
-                  aria-label={`Course detail ${detail.id}`}
-                />
-              </div>
-            ))}
-            <Button
-              type="button"
-              onClick={() => addItem("course_details")}
-              variant="outline"
-            >
-              Add Course Detail
-            </Button>
-          </fieldset>
-
-          {/* What Students Will Learn */}
-          <fieldset className="space-y-2">
-            <legend className="text-sm font-medium">
-              What Students Will Learn
-            </legend>
-            {formState.what_w_learn.map((item, index) => (
-              <div key={item.id} className="space-y-2">
-                <Textarea
-                  placeholder={`Learning Outcome ${item.id}`}
-                  value={item.description}
-                  onChange={(e) =>
-                    updateItem(
-                      "what_w_learn",
-                      index,
-                      "description",
-                      e.target.value
-                    )
-                  }
-                  aria-label={`Learning outcome ${item.id}`}
-                />
-              </div>
-            ))}
-            <Button
-              type="button"
-              onClick={() => addItem("what_w_learn")}
-              variant="outline"
-            >
-              Add Learning Outcome
-            </Button>
-          </fieldset>
+                    {/* What Students Will Learn */}
+                    <fieldset className="space-y-2">
+                        <legend className="text-sm font-medium">
+                            What Students Will Learn
+                        </legend>
+                        {formState.what_w_learn.map((item, index) => (
+                            <div key={item.id} className="space-y-2">
+                                <Textarea
+                                    placeholder={`Learning Outcome ${item.id}`}
+                                    value={item.description}
+                                    onChange={(e) =>
+                                        updateItem(
+                                            "what_w_learn",
+                                            index,
+                                            "description",
+                                            e.target.value
+                                        )
+                                    }
+                                    aria-label={`Learning outcome ${item.id}`}
+                                />
+                            </div>
+                        ))}
+                        <Button
+                            type="button"
+                            onClick={() => addItem("what_w_learn")}
+                            variant="outline"
+                        >
+                            Add Learning Outcome
+                        </Button>
+                    </fieldset>
 
                     <div className="space-y-4">
                         <Label className="text-lg font-semibold">Curriculum</Label>
@@ -385,7 +405,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                     <Label>Module Title</Label>
                                     <Input
                                         type="text" disabled
-                                        value={module.title}
+                                        value={module.name}
                                         onChange={(e) =>
                                             handleUpdateBlock(module.id, e.target.value, module.description)
                                         }
@@ -420,7 +440,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                         onClick={(e) => {
                                             e.preventDefault();
                                             setMaterialModalOpen(true);
-                                            setCurrentMaterial({ id: 0, title: "", content: "" });
+                                            setCurrentMaterial({id: 0, title: "", content: ""});
                                             setMaterialTitle("");
                                             setMaterialContents([]);
                                             setCurrentBlockId(module.id);
@@ -463,15 +483,16 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                                 className="mx-3"
                                                 onClick={(e) => {
                                                     e.preventDefault();
+                                                    setMaterialTitle(material.title)
                                                     setCurrentMaterial(material);
-                                                    // setCurrentBlock(module);
                                                     setCurrentBlockId(module.id);
                                                     setMaterialModalOpen(true);
                                                 }}
                                             >
                                                 Edit Cards
                                             </Button>
-                                            <Button variant="destructive" onClick={() => deleteMaterialItem(material.id)}>
+                                            <Button variant="destructive"
+                                                    onClick={() => deleteMaterialItem(material.id)}>
                                                 Delete Cards
                                             </Button>
                                         </div>
@@ -488,7 +509,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                                 onClick={(e) => {
                                                     e.preventDefault();
                                                     setCurrentTest(test);
-                                                    // setCurrentBlock(module);
                                                     setCurrentBlockId(module.id);
                                                     setTestModalOpen(true);
                                                 }}
@@ -524,14 +544,11 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 isOpen={isMaterialModalOpen}
                 onClose={() => setMaterialModalOpen(false)}
                 onSave={(materialTitle: string, materialContents: CardDefinitions[]) =>
-                    // handleSaveMaterial(formState.curriculum[0].id ?? null, { title: materialTitle }, materialContents)
-                    handleSaveMaterial(currentBlockId, { title: materialTitle }, materialContents) 
+                    handleSaveMaterial(currentBlockId, {title: materialTitle}, materialContents)
                 }
                 materialTitle={materialTitle}
                 setMaterialTitle={setMaterialTitle}
                 currentMaterial={currentMaterial}
-                // blockId={formState?.curriculum[0]?.id ?? null}
-                // blockId={currentMaterial?.block_id ?? null}
                 blockId={currentBlock?.id ?? null}
                 materialContents={materialContents}
                 setMaterialContents={setMaterialContents}
@@ -543,17 +560,12 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 onSave={handleSaveTest}
                 testId={currentTest?.id || null}
                 blockId={currentBlockId}
-                // blockId={formState?.curriculum[0]?.id ?? null}
-                // blockId={currentTest?.block_id ?? null}
             />
 
             <BlockModal
                 isOpen={isBlockModalOpen}
                 onClose={() => setBlockModalOpen(false)}
-                onSave={currentBlock
-                    ? () => handleUpdateBlock(currentBlock.id, blockName, blockDescription)
-                    : () => handleSaveBlock()
-                }
+                onSave={currentBlock ? () => handleUpdateBlock(currentBlock.id, blockName, blockDescription) : () => handleSaveBlock()}
                 blockName={blockName}
                 setBlockName={setBlockName}
                 blockDescription={blockDescription}

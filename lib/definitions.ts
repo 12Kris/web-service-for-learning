@@ -225,6 +225,7 @@ export interface TestQuestionDataFromDB {
 export interface TestAnswerDataFromDB {
   id: number;
   answer: string;
+  order: number
 }
 
 export interface Answer {

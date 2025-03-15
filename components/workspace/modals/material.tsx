@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import {useEffect} from "react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -10,9 +10,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { getCardsByLearningMaterial } from "@/lib/courses/actions";
-import { Card, LearningMaterial } from "@/lib/definitions";
+import {Button} from "@/components/ui/button";
+import {getCardsByLearningMaterial} from "@/lib/courses/actions";
+import {Card, LearningMaterial} from "@/lib/definitions";
 
 export function MaterialModal({
                                   isOpen,
@@ -51,7 +51,7 @@ export function MaterialModal({
     }, [currentMaterial, setMaterialContents]);
 
     const handleAddCard = () => {
-        setMaterialContents([...materialContents, { front: "", back: "" }]);
+        setMaterialContents([...materialContents, {front: "", back: ""}]);
     };
 
     const handleRemoveCard = (index: number) => {
@@ -61,7 +61,7 @@ export function MaterialModal({
     const handleCardChange = (index: number, side: "front" | "back", value: string) => {
         setMaterialContents((prev: Card[]) =>
             prev.map((card, i) =>
-                i === index ? { ...card, [side]: value } : card
+                i === index ? {...card, [side]: value} : card
             )
         );
     };
@@ -74,7 +74,7 @@ export function MaterialModal({
 
     return (
         <AlertDialog open={isOpen} onOpenChange={onClose}>
-            <AlertDialogTrigger />
+            <AlertDialogTrigger/>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
