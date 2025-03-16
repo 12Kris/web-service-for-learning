@@ -209,9 +209,20 @@ export interface SaveTestResult {
   error?: string;
 }
 
+// export interface UserTestAnswer {
+//   questionId: number;
+//   answerId: number;
+//   isCorrect: boolean;
+// }
 export interface UserTestAnswer {
-  questionId: number;
-  answerId: number;
+  question: {
+    id: number,
+    title: string;
+  };
+  answer: {
+    id: number;
+    title: string | undefined;
+  };
   isCorrect: boolean;
 }
 
