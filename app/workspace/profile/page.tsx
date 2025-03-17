@@ -520,7 +520,7 @@ export default function UserProfile() {
                       <div className="flex justify-between mb-2">
                         <Badge variant="secondary">
                           <Book className="w-4 h-4 mr-1" />
-                          {course.lessons} Lessons
+                          {course.type}
                         </Badge>
                         <Badge variant="secondary">
                           <Users className="w-4 h-4 mr-1" />
@@ -528,13 +528,16 @@ export default function UserProfile() {
                         </Badge>
                       </div>
                       <div className="flex items-center">
-                        <Award className="w-5 h-5 text-yellow-500 mr-1" />
+                        {/* <Award className="w-5 h-5 text-yellow-500 mr-1" />
                         <span className="font-bold">
                           {course.rating || "N/A"}
                         </span>
                         <span className="text-muted-foreground ml-1">
                           / 5.0
-                        </span>
+                        </span> */}
+                        {/* <span className="font-bold">
+                          {course.type}
+                        </span> */}
                       </div>
                     </CardContent>
                     <CardFooter>
@@ -561,17 +564,24 @@ export default function UserProfile() {
                     <CardHeader>
                       <CardTitle className="text-xl">{course.name}</CardTitle>
                       <CardDescription>
-                        Instructor: {course.creator_id}
+                        {/* Instructor: {course.creator_id} */}
+                        {course.description}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="mb-2">
                         <div className="flex justify-between mb-1">
-                          <span className="text-sm font-medium text-primary">
+                          {/* <span className="text-sm font-medium text-primary">
                             Progress
                           </span>
                           <span className="text-sm font-medium text-primary">
                             {course.progress}%
+                          </span> */}
+                          <span className="text-sm font-medium text-primary">
+                            Type:
+                          </span>
+                          <span className="text-sm font-medium text-primary">
+                            {course.type}
                           </span>
                         </div>
                         <Progress value={course.progress} className="w-full" />
