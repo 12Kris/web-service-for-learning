@@ -14,8 +14,8 @@ import {Progress} from "@/components/ui/progress";
 export default function TestPage() {
     const params = useParams();
     const testId = Number(params.testId);
-    const courseId = params.id;
-    const moduleId = params.moduleId;
+    // const courseId = params.id;
+    // const moduleId = params.moduleId;
 
     const [questions, setQuestions] = useState<TestQuestion[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);

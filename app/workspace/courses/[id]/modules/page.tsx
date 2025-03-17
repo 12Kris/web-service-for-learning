@@ -58,6 +58,7 @@ export default function EnroledModulePage({
         isActive: true,
         isCompleted: true,
         progress: 100,
+        materials: null,
         lessons: [
           {
             id: 1,
@@ -97,6 +98,7 @@ export default function EnroledModulePage({
         isActive: true,
         isCompleted: false,
         progress: 100,
+        materials: null,
         lessons: [
           {
             id: 1,
@@ -136,6 +138,7 @@ export default function EnroledModulePage({
         isActive: false,
         isCompleted: false,
         progress: 100,
+        materials: null,
         lessons: [
           {
             id: 1,

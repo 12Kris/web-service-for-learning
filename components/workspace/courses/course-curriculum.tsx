@@ -3,7 +3,9 @@ import {Card, CardHeader} from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
 import {Module} from "@/lib/types/learning";
 import Link from "next/link";
-import {usePathname, useRouter} from "next/navigation";
+// import {usePathname, useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
+
 
 interface CourseCurriculumProps {
     modules: Module[] | undefined;

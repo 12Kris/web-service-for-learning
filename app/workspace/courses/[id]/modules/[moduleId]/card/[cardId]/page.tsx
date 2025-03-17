@@ -47,10 +47,10 @@ export default function CardPage() {
         );
     };
 
-    const handleSelectionChange = (flashcardId: number, value: boolean) => {
+    const handleSelectionChange = (flashcardId: number | undefined, value: boolean) => {
         setSelection((prevSelection) => ({
             ...prevSelection,
-            [flashcardId]: value,
+            [flashcardId ? flashcardId : 0]: value,
         }));
     };
 
