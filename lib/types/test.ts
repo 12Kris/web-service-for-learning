@@ -53,9 +53,21 @@ export interface SaveTestResult {
   error?: string;
 }
 
+// export interface UserTestAnswer {
+//   questionId: number;
+//   answerId: number;
+//   isCorrect: boolean;
+// }
+
 export interface UserTestAnswer {
-  questionId: number;
-  answerId: number;
+  question: {
+    id: number,
+    title: string;
+  };
+  answer: {
+    id: number;
+    title: string | undefined;
+  };
   isCorrect: boolean;
 }
 
@@ -140,4 +152,9 @@ export interface TestQuestion {
   correct_answer?: number | { id: string };
   correct_id?: number;
   answers: TestAnswer[];
+}
+
+export interface SaveTestResult {
+  id?: number;
+  error?: string;
 }
