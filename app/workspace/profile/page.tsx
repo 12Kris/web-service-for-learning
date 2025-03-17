@@ -275,7 +275,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { Book, Users, Award } from "lucide-react";
+// import { Book, Users, Award } from "lucide-react";
+import { Book, Users } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
 import { signOut } from "@/utils/supabase/actions"
