@@ -217,7 +217,7 @@ export default function CourseCreationForm() {
                 </label>
                 <Textarea
                     id={`cards-${module.id}`}
-                    placeholder="What is your desired amount of card sets for this module?"
+                    placeholder="What is your desired amount of card sets for this module? (up to 5)"
                     className="border-[#4a7a72] border-opacity-30 bg-transparent"
                 />
                 </div>
@@ -228,7 +228,7 @@ export default function CourseCreationForm() {
                 </label>
                 <Textarea
                     id={`cards-${module.id}`}
-                    placeholder="What is your desired amount of cards for this for each card set?"
+                    placeholder="What is your desired amount of cards for each card set? (up to 30)"
                     className="border-[#4a7a72] border-opacity-30 bg-transparent"
                 />
                 </div>
@@ -241,7 +241,7 @@ export default function CourseCreationForm() {
                 </label>
                 <Textarea
                     id={`tests-${module.id}`}
-                    placeholder="What is your desired amount of test sets for this module?"
+                    placeholder="What is your desired amount of test sets for this module? (up to 5)"
                     className="border-[#4a7a72] border-opacity-30 bg-transparent"
                 />
                 </div>
@@ -252,7 +252,7 @@ export default function CourseCreationForm() {
                 </label>
                 <Textarea
                     id={`tests-${module.id}`}
-                    placeholder="What is your desired amount of tests for this for each test set?"
+                    placeholder="What is your desired amount of tests for each test set? (up to 30)"
                     className="border-[#4a7a72] border-opacity-30 bg-transparent"
                 />
                 </div>
