@@ -17,7 +17,7 @@
     --text-inverse: #fef9f2;
 
     --primary-hover: #92c0b2;
-    --primary-light: #d8f8e3;
+    --primary-light: #ffffff;
 
     --accent-hover: #e67c73;
     --accent-light: #ff9c9b;
@@ -65,5 +65,11 @@
 
   .course-card-space:last-child {
     margin-right: -0.5rem !important;
+  }
+  
+  /* Spinner size variant */
+  .spinner-sm {
+    width: 1rem;
+    height: 1rem;
   }
 }
