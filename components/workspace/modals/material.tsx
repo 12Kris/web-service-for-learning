@@ -1,3 +1,4 @@
+// import { useEffect, useState } from "react";
 import { useEffect } from "react";
 import {
   AlertDialog,
@@ -36,10 +37,17 @@ export function MaterialModal({
   materialContents: Card[];
   setMaterialContents: (contents: Card[] | ((prev: Card[]) => Card[])) => void;
 }) {
+  // const [cardTitle, setCardTitle] = useState<string>("");
+
   useEffect(() => {
     if (currentMaterial?.id) {
       const loadCards = async () => {
         const cards = await getCardsByLearningMaterial(currentMaterial.id);
+        // materialTitle = currentMaterial.title
+        // setCardTitle(currentMaterial.title || "")
+        // setCardTitle(materialTitle)
+        // console.log(currentMaterial.title);
+        
         setMaterialContents(
           cards.map((card: Card) => ({
             front: card.front || "",
@@ -94,6 +102,7 @@ export function MaterialModal({
             <label className="font-medium">Title:</label>
             <input
               type="text"
+              // value={cardTitle}
               value={materialTitle}
               onChange={(e) => setMaterialTitle(e.target.value)}
               placeholder="Enter title"

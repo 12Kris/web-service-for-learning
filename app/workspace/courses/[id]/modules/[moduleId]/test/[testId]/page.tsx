@@ -169,8 +169,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
-import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/types/test';
+// import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
+import { getTestQuestions } from '@/lib/courses/actions';
+import {saveTestResults} from "@/lib/results/actions"
+// import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/types/test';
+import { TestQuestion, UserTestAnswer } from '@/lib/types/test';
 import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 // import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -192,24 +195,68 @@ export default function TestPage() {
     const [score, setScore] = useState<number>(0);
     // const [attempts, setAttempts] = useState<number>(1);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+    const [startTime, setStartTime] = useState<number | null>(null);
 
     useEffect(() => {
         async function fetchQuestions() {
             const data: TestQuestion[] = await getTestQuestions(testId);
             setQuestions(data);
+            setStartTime(Date.now());
         }
 
         fetchQuestions();
     }, [testId]);
 
+    // const handleNext = () => {
+    //     if (selectedAnswer === null) return;
+
+    //     const currentQuestion = questions[currentQuestionIndex];
+    //     const isCorrect =
+    //         selectedAnswer === (typeof currentQuestion.correct_answer === 'object'
+    //             ? currentQuestion.correct_answer?.id
+    //             : currentQuestion.correct_answer);
+
+    //     if (isCorrect) {
+    //         setScore((prev) => prev + 1);
+    //     }
+
+    //     setAnswers((prev) => [
+    //         ...prev,
+    //         {
+    //             questionId: Number(currentQuestion.id),
+    //             answerId: selectedAnswer,
+    //             isCorrect,
+    //         },
+    //     ]);
+
+    //     if (currentQuestionIndex + 1 === questions.length) {
+    //         setIsTestComplete(true);
+    //     } else {
+    //         setCurrentQuestionIndex((prev) => prev + 1);
+    //         setSelectedAnswer(null);
+    //     }
+    // };
+
+    // const handleSaveResults = async () => {
+    //     try {
+    //         const result: SaveTestResult = await saveTestResults(testId, answers);
+    //         if (result?.error) {
+    //             console.error('Error saving results:', result.error);
+    //         } else {
+    //             alert('Results saved successfully!');
+    //             window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
+    //         }
+    //     } catch (error) {
+    //         console.error('Error saving results:', error);
+    //     }
+    // };
+
     const handleNext = () => {
         if (selectedAnswer === null) return;
 
         const currentQuestion = questions[currentQuestionIndex];
-        const isCorrect =
-            selectedAnswer === (typeof currentQuestion.correct_answer === 'object'
-                ? currentQuestion.correct_answer?.id
-                : currentQuestion.correct_answer);
+        const selectedAnswerObj = currentQuestion.answers.find(a => a.id === selectedAnswer);
+        const isCorrect = selectedAnswer === (typeof currentQuestion.correct_answer === 'object' ? currentQuestion.correct_answer.id : currentQuestion.correct_answer);
 
         if (isCorrect) {
             setScore((prev) => prev + 1);
@@ -218,8 +265,11 @@ export default function TestPage() {
         setAnswers((prev) => [
             ...prev,
             {
-                questionId: Number(currentQuestion.id),
-                answerId: selectedAnswer,
+                question: {id: currentQuestion.id, title: currentQuestion.question},
+                answer: selectedAnswerObj ? {id: selectedAnswerObj.id, title: selectedAnswerObj.answer} : {
+                    id: 0,
+                    title: ""
+                },
                 isCorrect,
             },
         ]);
@@ -234,15 +284,18 @@ export default function TestPage() {
 
     const handleSaveResults = async () => {
         try {
-            const result: SaveTestResult = await saveTestResults(testId, answers);
-            if (result?.error) {
-                console.error('Error saving results:', result.error);
-            } else {
-                alert('Results saved successfully!');
+            if(!startTime) return;
+            const endTime = Date.now();
+            const duration = Math.floor((endTime - startTime) / 1000) // in seconds
+            const result = await saveTestResults(testId, answers, duration);
+            console.log(result);
+            if (result) {
+                alert("Results saved successfully!");
+                // window.location.href = `/workspace/courses/${courseId}/module/${moduleId}`;
                 window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
             }
         } catch (error) {
-            console.error('Error saving results:', error);
+            console.error("Error saving results:", error);
         }
     };
 

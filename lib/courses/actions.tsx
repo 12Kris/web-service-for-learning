@@ -3,8 +3,9 @@
 import { getUser } from "@/utils/supabase/server";
 import { Course, CourseWithStudents } from "@/lib/types/course";
 import { LearningMaterial } from "@/lib/types/learning";
-import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
-import { SaveTestResult } from "@/lib/types/test";
+// import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
+import { Test, TestQuestionForCourse } from "@/lib/types/test";
+// import { SaveTestResult } from "@/lib/types/test";
 import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
 // import { getUser } from "@/utils/supabase/server";
@@ -552,67 +553,67 @@ export async function getTestQuestions(testId: number): Promise<
   });
 }
 
-export async function saveTestResults(
-  testId: number,
-  answers: UserTestAnswer[]
-): Promise<SaveTestResult> {
-  const supabase = await createClient();
-  try {
-    const user = await getUser();
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
+// export async function saveTestResults(
+//   testId: number,
+//   answers: UserTestAnswer[]
+// ): Promise<SaveTestResult> {
+//   const supabase = await createClient();
+//   try {
+//     const user = await getUser();
+//     if (!user) {
+//       throw new Error("User not authenticated");
+//     }
 
-    const userId = user.id;
+//     const userId = user.id;
 
-    const { data: previousAttempts, error: attemptsError } = await supabase
-      .from("user_test_results")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("test_id", testId);
+//     const { data: previousAttempts, error: attemptsError } = await supabase
+//       .from("user_test_results")
+//       .select("id")
+//       .eq("user_id", userId)
+//       .eq("test_id", testId);
 
-    if (attemptsError) {
-      throw new Error(`Error fetching attempts: ${attemptsError.message}`);
-    }
+//     if (attemptsError) {
+//       throw new Error(`Error fetching attempts: ${attemptsError.message}`);
+//     }
 
-    const attemptNumber = (previousAttempts?.length || 0) + 1;
+//     const attemptNumber = (previousAttempts?.length || 0) + 1;
 
-    const { data: testResult, error: testResultError } = await supabase
-      .from("user_test_results")
-      .insert([
-        {
-          user_id: userId,
-          test_id: testId,
-          score: answers.filter((a) => a.isCorrect).length,
-          attempt_number: attemptNumber,
-        },
-      ])
-      .select("id")
-      .single();
+//     const { data: testResult, error: testResultError } = await supabase
+//       .from("user_test_results")
+//       .insert([
+//         {
+//           user_id: userId,
+//           test_id: testId,
+//           score: answers.filter((a) => a.isCorrect).length,
+//           attempt_number: attemptNumber,
+//         },
+//       ])
+//       .select("id")
+//       .single();
 
-    if (testResultError) {
-      throw new Error(`Error saving test result: ${testResultError.message}`);
-    }
+//     if (testResultError) {
+//       throw new Error(`Error saving test result: ${testResultError.message}`);
+//     }
 
-    const { error: answersError } = await supabase.from("test_answers").insert(
-      answers.map((answer) => ({
-        user_test_result_id: testResult.id,
-        question_id: answer.questionId,
-        answer: answer.answerId,
-        is_correct: answer.isCorrect,
-      }))
-    );
+//     const { error: answersError } = await supabase.from("test_answers").insert(
+//       answers.map((answer) => ({
+//         user_test_result_id: testResult.id,
+//         question_id: answer.questionId,
+//         answer: answer.answerId,
+//         is_correct: answer.isCorrect,
+//       }))
+//     );
 
-    if (answersError) {
-      throw new Error(`Error saving answers: ${answersError.message}`);
-    }
+//     if (answersError) {
+//       throw new Error(`Error saving answers: ${answersError.message}`);
+//     }
 
-    return { id: testResult.id };
-  } catch (error) {
-    console.error("Error saving test results:", error);
-    return { error: (error as Error).message };
-  }
-}
+//     return { id: testResult.id };
+//   } catch (error) {
+//     console.error("Error saving test results:", error);
+//     return { error: (error as Error).message };
+//   }
+// }
 
 export async function getMaterialsByBlockId(
   blockId: number

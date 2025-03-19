@@ -491,59 +491,131 @@ export function CourseEditForm({
                   </Button>
                 </div>
 
+                <div className="border rounded-xl shadow p-4">
                 {materials
                   .filter((material) => material.block_id == module.id)
                   .map((material) => (
-                    <div key={material.id}>
-                      <Label>{material.title}</Label>
-                      <Button
-                        variant="outline"
-                        className="mx-3"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentMaterial(material);
-                          // setCurrentBlock(module);
-                          setCurrentBlockId(module.id);
-                          setMaterialModalOpen(true);
-                        }}
-                      >
-                        Edit Cards
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        onClick={() => deleteMaterialItem(material.id)}
-                      >
-                        Delete Cards
-                      </Button>
+                    <div key={material.id} className="mb-3 border rounded-xl shadow p-4">
+                      <div className="mb-4">
+                        <Label>{material.title}</Label>
+                        <Button
+                          variant="outline"
+                          className="mx-3"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentMaterial(material);
+                            // setCurrentBlock(module);
+                            setCurrentBlockId(module.id);
+                            setMaterialModalOpen(true);
+                          }}
+                        >
+                          Edit Cards
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => deleteMaterialItem(material.id)}
+                        >
+                          Delete Cards
+                        </Button>
+                      </div>
+
+                      <hr></hr>
+
+                      <ul className="my-1 pt-2">
+                        <li className="my-2">
+                          - card1
+                          <Button
+                            variant="outline"
+                            className="mx-3"
+                          >
+                            Edit Card
+                          </Button>
+                          <Button
+                            variant="destructive"
+                          >
+                            Delete Card
+                          </Button>
+                        </li>
+                        <li className="my-2">
+                          - card2
+                          <Button
+                            variant="outline"
+                            className="mx-3"
+                          >
+                            Edit Card
+                          </Button>
+                          <Button
+                            variant="destructive"
+                          >
+                            Delete Card
+                          </Button>
+                        </li>
+                      </ul>
                     </div>
                   ))}
 
                 {tests
                   .filter((test) => test.block_id === module.id)
                   .map((test) => (
-                    <div key={test.id}>
-                      <Label>{test.question}</Label>
-                      <Button
-                        variant="outline"
-                        className="mx-3"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCurrentTest(test);
-                          // setCurrentBlock(module);
-                          setCurrentBlockId(module.id);
-                          setTestModalOpen(true);
-                        }}
-                      >
-                        Edit Test
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        onClick={() => deleteTestItem(test.id)}
-                      >
-                        Delete Test
-                      </Button>
+                    <div key={test.id} className="border rounded-xl shadow p-4">
+                      <div className="mb-4">
+                        <Label>{test.question}</Label>
+                        <Button
+                          variant="outline"
+                          className="mx-3"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCurrentTest(test);
+                            // setCurrentBlock(module);
+                            setCurrentBlockId(module.id);
+                            setTestModalOpen(true);
+                          }}
+                        >
+                          Edit Test
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          onClick={() => deleteTestItem(test.id)}
+                        >
+                          Delete Test
+                        </Button>
+                      </div>
+
+                      <hr></hr>
+
+                      <ul className="my-1 pt-2">
+                        <li className="my-2">
+                          - question1
+                          <Button
+                            variant="outline"
+                            className="mx-3"
+                          >
+                            Edit Question
+                          </Button>
+                          <Button
+                            variant="destructive"
+                          >
+                            Delete Question
+                          </Button>
+                        </li>
+                        <li className="my-2">
+                          - question2
+                          <Button
+                            variant="outline"
+                            className="mx-3"
+                          >
+                            Edit Question
+                          </Button>
+                          <Button
+                            variant="destructive"
+                          >
+                            Delete Question
+                          </Button>
+                        </li>
+                      </ul>
                     </div>
                   ))}
+                </div>
               </Card>
             ))}
           </div>

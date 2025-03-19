@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import type { CourseDetails, WhatWillLearn } from "@/lib/types/course";
 import { Module } from "@/lib/types/modules";
+import Link from "next/link";
 
 
 type FormState = {
@@ -232,6 +233,11 @@ export default function CreateCourseForm() {
           )}
           <Button type="submit" className="w-full">
             Create Course
+          </Button>
+          <Button type="submit" className="w-full">
+            <Link href="create/create-with-ai">
+              Click here to create course by using AI
+            </Link>
           </Button>
         </form>
       </CardContent>
