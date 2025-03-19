@@ -11,6 +11,7 @@ export interface LearningMaterial {
   title: string;
   content: string;
   block_id?: number;
+  flashcards?: {id: number, front: string, back: string}[]
 }
 
 export interface MaterialData {
