@@ -6,7 +6,7 @@ import { CourseGrid } from "@/components/course-grid";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Plus, Filter } from "lucide-react";
+import { Plus, Filter, Sparkles } from "lucide-react";
 
 export default async function Page() {
   const courses = await getCourses();
@@ -23,6 +23,12 @@ export default async function Page() {
               <Button variant="default" size="wide" className="flex">
                 <Plus strokeWidth={3} className="mr-0 h-4 w-4" />
                 Create New
+              </Button>
+            </Link>
+            <Link href="/workspace/courses/create-ai">
+              <Button variant="outline" size="wide" className="flex">
+                <Sparkles strokeWidth={3} className="mr-0 h-4 w-4" />
+                AI Generate
               </Button>
             </Link>
             <Button variant="default" size="wide" className="hidden sm:flex">
