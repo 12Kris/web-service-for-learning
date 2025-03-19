@@ -1,10 +1,7 @@
 import { createCourse } from "@/lib/courses/actions";
 import { createBlock } from "@/lib/tests/actions";
-import { createTest } from "@/lib/tests/actions";
 import { createMaterial } from "@/lib/tests/actions";
-import { Course } from "@/lib/types/course";
-import { Module } from "@/lib/types/modules";
-import { TestDataWithQuestion } from "@/lib/types/test";
+
 import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
 
@@ -43,17 +40,21 @@ interface GeneratedCourse {
 }
 
 async function generateCourseContent(
-  inputText: string
+  inputText: string, coursesAmount: number, difficultyLevel: string
 ): Promise<GeneratedCourse | null> {
   try {
-    const prompt = `Create a course outline based on the following topic: "${inputText}". 
+    if (coursesAmount>6) {
+      return null;
+    }
+
+    const prompt = `Create a course with difficulty level of ${difficultyLevel} outline based on the following topic: "${inputText}". 
         The course should include:
         - Course Name
         - Course Description
         - Course Type (e.g., programming, science, history)
         - Course Details (e.g., prerequisites, target audience)
         - A list of Learning Outcomes (at least 3). Each outcome should be a clear statement of what the learner will be able to do after completing the course.
-        - A list of Modules (at least 3). Each module should have:
+        - A list of Modules exactly ${coursesAmount}. Each module should have:
           - Module Title
           - Module Description
           - List of Learning Materials. Create at least 3 learning materials for each module. Each learning material should have:
@@ -291,10 +292,19 @@ async function generateCourseContent(
 }
 
 export async function createCourseWithAI(
-  inputText: string
+  inputText: string, modulesAmount: number, difficultyLevel: string
 ): Promise<{ success: boolean; message: string; courseId?: number }> {
   try {
-    const generatedCourse = await generateCourseContent(inputText);
+    if (!inputText) {
+      return { success: false, message: "Input text is required." };
+    }
+    if (!modulesAmount || modulesAmount < 1) {
+      return { success: false, message: "Modules amount must be greater than 0." };
+    }
+    if (!difficultyLevel) {
+      return { success: false, message: "Difficulty level is required." };
+    }
+    const generatedCourse = await generateCourseContent(inputText, modulesAmount, difficultyLevel);
     console.log("Generated content:", generatedCourse);
 
 
