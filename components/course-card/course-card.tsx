@@ -56,7 +56,7 @@ export function CourseCard({
   author,
 }: CourseCardProps) {
   return (
-    <Card className="flex flex-col p-4 space-y-3">
+    <Card className="flex flex-col justify-center p-4 space-y-3 h-[170px]">
       <CardHeader className="p-0">
         <h3 className="text-lg font-semibold">{title}</h3>
       </CardHeader>
