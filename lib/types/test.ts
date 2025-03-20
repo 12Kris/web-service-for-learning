@@ -3,7 +3,21 @@ export interface Test {
   block_id: number;
   question: string;
   answer?: { question_id: number; answer: string } | string;
+  TestQuestions?: {id: number, question: string}[];
   correct: boolean;
+}
+
+export interface TestData {
+  id: number;
+  block_id: number;
+  question: string;
+  correct?: boolean;
+  answer?: { question_id: number; answer: string }[];
+  TestQuestions?: {
+      id: number,
+      question: string
+  }[];
+  Block?: BlockData;
 }
 
 export interface TestWithQuestions {
@@ -19,6 +33,7 @@ export interface TestQuestion {
   correct_answer?: number | { id: string };
   correct_id?: number;
   answers: TestAnswer[];
+  TestQuestions?: { id: number; question: string }[];
 }
 
 export interface TestAnswerForCourse {
@@ -61,12 +76,12 @@ export interface SaveTestResult {
 
 export interface UserTestAnswer {
   question: {
-    id: number,
-    title: string;
+      id: number,
+      title: string;
   };
   answer: {
-    id: number;
-    title: string | undefined;
+      id: number;
+      title: string | undefined;
   };
   isCorrect: boolean;
 }
@@ -108,12 +123,12 @@ export interface TestDataWithQuestion {
   answers: Answer[];
 }
 
-export interface TestData {
-  id: number;
-  question: string;
-  block_id: number;
-  Block?: BlockData;
-}
+// export interface TestData {
+//   id: number;
+//   question: string;
+//   block_id: number;
+//   Block?: BlockData;
+// }
 
 export interface BlockData {
   id: number;
