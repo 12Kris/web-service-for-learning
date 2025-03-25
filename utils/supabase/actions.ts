@@ -29,7 +29,6 @@ export async function editUser(changes: {
     return { error: "No data provided" };
   }
 
-  console.log("changes", changes);
   const supabase = await createClient();
   const { data, error } = await supabase.auth.updateUser({
     email: changes.email,

@@ -288,7 +288,6 @@ export default function TestPage() {
             const endTime = Date.now();
             const duration = Math.floor((endTime - startTime) / 1000) // in seconds
             const result = await saveTestResults(testId, answers, duration);
-            console.log(result);
             if (result) {
                 alert("Results saved successfully!");
                 // window.location.href = `/workspace/courses/${courseId}/module/${moduleId}`;

@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CourseCard } from "@/components/course-card/course-card";
 import { Course } from "@/lib/types/course";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import type { Swiper as SwiperType } from "swiper";
 
 interface CourseCarouselProps {
   title: string;
@@ -31,19 +31,21 @@ export function CourseCarousel({
   showPagination = false,
 }: CourseCarouselProps) {
   // Custom navigation references
-  const [swiperInstance, setSwiperInstance] = useState<any>(null);
+  const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
-  
+
   // Responsive breakpoints
-  const isDesktop = useMediaQuery("(min-width: 1024px)");
-  const isTablet = useMediaQuery("(min-width: 640px)");
-  
+  // const isDesktop = useMediaQuery("(min-width: 1024px)");
+  // const isTablet = useMediaQuery("(min-width: 640px)");
+
   // Handle empty courses array
   if (!courses || courses.length === 0) {
     return (
       <div className="w-full p-8 text-center bg-muted rounded-lg">
-        <p className="text-muted-foreground">No courses available at the moment.</p>
+        <p className="text-muted-foreground">
+          No courses available at the moment.
+        </p>
       </div>
     );
   }
@@ -87,7 +89,9 @@ export function CourseCarousel({
             1280: { slidesPerView: 3, spaceBetween: 24 },
           }}
           pagination={showPagination ? { clickable: true } : false}
-          autoplay={autoplay ? { delay: 5000, disableOnInteraction: false } : false}
+          autoplay={
+            autoplay ? { delay: 5000, disableOnInteraction: false } : false
+          }
           onSwiper={(swiper) => setSwiperInstance(swiper)}
           onSlideChange={(swiper) => {
             setIsBeginning(swiper.isBeginning);
@@ -98,8 +102,10 @@ export function CourseCarousel({
           {courses.map((course, index) => (
             <SwiperSlide key={course.id || index} className="h-auto all">
               <CourseCard
+                id={course.id}
                 title={course.name}
                 topic={course.type}
+                color={course.color}
                 studentsCount={course.student_count}
                 description={course.description}
                 instructor={course.creator?.full_name || "Unknown Instructor"}
