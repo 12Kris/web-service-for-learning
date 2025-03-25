@@ -10,6 +10,7 @@ export interface Course {
   id: number;
   name: string;
   description?: string;
+  color?: string;
   type?: string;
   creator_id?: string;
   last_completion_date?: string;

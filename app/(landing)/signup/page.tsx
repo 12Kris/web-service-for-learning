@@ -41,7 +41,6 @@ export default function RegisterPage() {
 
       if (reg_error) {
         setError(reg_error.message || "Registration failed");
-        console.log("Registration failed:", reg_error);
         return;
       }
 

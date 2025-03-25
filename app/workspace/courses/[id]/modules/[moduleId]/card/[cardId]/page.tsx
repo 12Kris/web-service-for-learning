@@ -183,14 +183,8 @@ const saveCardResultsHandler = async () => {
         alert("Please provide a rating.");
         return;
     }
-    console.log(cardId, startTime, endTime, selection, rating)
-    const result = await saveCardResult(cardId, startTime, endTime, selection, rating);
-    if (result) {
-        console.log("Success");
-        console.log(result)
-    } else {
-        console.log(result)
-    }
+    await saveCardResult(cardId, startTime, endTime, selection, rating);
+
     window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
 };
 

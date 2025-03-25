@@ -3,7 +3,7 @@ export interface Test {
   block_id: number;
   question: string;
   answer?: { question_id: number; answer: string } | string;
-  TestQuestions?: {id: number, question: string}[];
+  TestQuestions?: { id: number; question: string }[];
   correct: boolean;
 }
 
@@ -14,8 +14,8 @@ export interface TestData {
   correct?: boolean;
   answer?: { question_id: number; answer: string }[];
   TestQuestions?: {
-      id: number,
-      question: string
+    id: number;
+    question: string;
   }[];
   Block?: BlockData;
 }
@@ -76,12 +76,12 @@ export interface SaveTestResult {
 
 export interface UserTestAnswer {
   question: {
-      id: number,
-      title: string;
+    id: number;
+    title: string;
   };
   answer: {
-      id: number;
-      title: string | undefined;
+    id: number;
+    title: string | undefined;
   };
   isCorrect: boolean;
 }
@@ -119,7 +119,7 @@ export interface TestDataModal {
 export interface TestDataWithQuestion {
   block_id: number;
   questions?: Question[];
-  question?: Question;
+  question?: string;
   answers: Answer[];
 }
 

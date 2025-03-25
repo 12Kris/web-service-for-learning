@@ -34,7 +34,6 @@ export function Navbar() {
       const user = (await supabase.auth.getUser()).data.user;
 
       if (user !== null) {
-        console.log("user, ok", user);
         setUser(user);
       }
       //   if (user) {
