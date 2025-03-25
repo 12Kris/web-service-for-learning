@@ -420,7 +420,7 @@ export default function UserProfile() {
             </Avatar>
           </div>
           <h2 className="text-2xl font-medium text-[#5c7d73] mb-1">{user?.username}</h2>
-          <p className="text-sm text-gray-500">joined {user?.website || "Unknown Date"}</p>
+          <p className="text-sm text-gray-500">{user?.email || "Unknown Email"}</p>
         </div>
 
         <nav className="mt-4">
