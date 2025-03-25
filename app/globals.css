@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --background: #fdf9f3;
-    --workspace-background: rgb(253, 249, 243);
+    --workspace-background: rgb(244, 244, 244);
     --primary: #a2d5c6;
     --accent: #ff8a80;
     --secondary: #ffe0b2;
@@ -28,7 +28,7 @@
     --neutral-light: #7aa197;
     --neutral-dark: #345b51;
 
-    --border: rgb(188, 219, 199);
+    --border: rgb(223, 223, 223);
     --input: 165 19% 40%;
     --ring: 0 0% 3.9%;
     --error: #d32f2f;

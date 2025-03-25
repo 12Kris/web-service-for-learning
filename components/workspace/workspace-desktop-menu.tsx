@@ -42,7 +42,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
 
   const pathname = usePathname();
   return (
-    <div className="hidden lg:flex sticky top-0 flex-col h-screen w-64 bg-background border-r">
+    <div className="hidden lg:flex sticky top-0 flex-col h-screen w-64 bg-[--surface] border-r">
       <div className="p-6">
         <Link href="/workspace" className="flex items-center space-x-2">
           <span className="text-2xl text-[--neutral] font-black">Memoria</span>

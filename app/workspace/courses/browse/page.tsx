@@ -15,8 +15,8 @@ export default async function Page() {
     <div>
       {!courses && <LoadingSpinner />}
 
-      <div className="container bg-[--background] mx-auto space-y-12">
-        <div className="flex items-center justify-between mt-6">
+      <div className="container  mx-auto space-y-12">
+        <div className="flex items-center justify-between mt-6 lg:sticky top-0 z-10 bg-[--workspace-background] backdrop-blur-sm border-b border-b-[--border] py-4 px-4">
           <PageHeader className="mt-0" title="Browse courses" />
           <div className="flex items-center space-x-4">
             <Link href="/workspace/courses/create">

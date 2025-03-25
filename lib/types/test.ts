@@ -119,7 +119,7 @@ export interface TestDataModal {
 export interface TestDataWithQuestion {
   block_id: number;
   questions?: Question[];
-  question?: Question;
+  question?: string;
   answers: Answer[];
 }
 

@@ -51,13 +51,13 @@ export default function WorkspaceLayout({
   return (
     <DataContext.Provider key={pathname} value={{ data, setData }}>
       <div
-        className={`${jura.className} bg-[--background] flex w-full flex-col min-h-screen md:flex-row`}
+        className={`${jura.className} bg-[--workspace-background] flex w-full flex-col min-h-screen md:flex-row`}
       >
         <DesktopMenu menuItems={menuItems} />
         <div className="flex flex-col w-full">
           <Navbar data={data} menuItems={menuItems} />
 
-          <main className="flex-1 bg-[--background] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <main className="flex-1 bg-[--workspace-background] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
             {children}
           </main>
           <Footer />

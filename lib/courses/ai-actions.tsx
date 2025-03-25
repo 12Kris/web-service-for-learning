@@ -1,6 +1,10 @@
 import { createCourse } from "@/lib/courses/actions";
 import { createBlock } from "@/lib/tests/actions";
 import { createMaterial } from "@/lib/tests/actions";
+import { createTest } from "@/lib/tests/actions";
+import { TestData } from "@/lib/types/test";
+import { TestDataWithQuestion } from "@/lib/types/test";
+
 
 import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
@@ -342,6 +346,10 @@ export async function createCourseWithAI(
       })),
     });
 
+
+
+    
+
     if (!createdCourse) {
       return { success: false, message: "Failed to create the course." };
     }
@@ -378,6 +386,37 @@ export async function createCourseWithAI(
           }
         }
       }
+
+      if (generatedModule.tests) {
+        for (const generatedTest of generatedModule.tests) {
+
+          
+
+          // Build testData based on generated test details
+          const testData: TestDataWithQuestion = {
+            block_id: blockId, // using module id as block id
+            question: generatedTest.question || "", // updated property from q.text to q.question
+            questions: (generatedTest.questions || []).map((q: any, idx: number) => ({
+              id: idx + 1,
+              question: q.question || "", // updated property from q.text to q.question
+              answers: (q.answers || []).map((opt: any, i: number) => ({
+                id: `${i + 1}`,
+                text: opt.text || "",
+                correct: Boolean(opt.correct)
+              }))
+            })),
+            answers: (generatedTest.questions || []).flatMap((q: any) =>
+              (q.answers || []).map((opt: any) => ({
+                text: opt.text || "",
+                correct: Boolean(opt.correct)
+              }))
+            ),
+          };
+
+          await createTest(testData);
+        }
+      }
+
     }
 
     return {
