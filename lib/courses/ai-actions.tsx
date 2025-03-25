@@ -55,7 +55,9 @@ interface GeneratedTestQuestion {
 async function generateCourseContent(
   inputText: string,
   coursesAmount: number,
-  difficultyLevel: string
+  difficultyLevel: string,
+  testsAmount: number, // added parameter
+  learningMaterialsAmount: number // added parameter
 ): Promise<GeneratedCourse | null> {
   try {
     if (coursesAmount > 6) {
@@ -73,12 +75,12 @@ async function generateCourseContent(
         - A list of Modules exactly ${coursesAmount}. Each module should have:
           - Module Title
           - Module Description
-          - List of Learning Materials. Create at least 3 learning materials for each module. Each learning material should have:
+          - List of Learning Materials. Create exactly ${learningMaterialsAmount} learning materials for each module. Each learning material should have:
             - Learning Material Title
             - A list of flashcards (at least 3). Each flashcard should have:
               - Front text
               - Back text
-          - List of Tests. Create at least 3 tests for each module. Each test should have:
+          - List of Tests. Create exactly ${testsAmount} tests for each module. Each test should have:
             - A general question/prompt for the test.
             - A list of specific questions (at least 3). Each question should have:
               - Question text
@@ -298,7 +300,9 @@ async function generateCourseContent(
 export async function createCourseWithAI(
   inputText: string,
   modulesAmount: number,
-  difficultyLevel: string
+  difficultyLevel: string,
+  testsAmount: number, // added parameter
+  learningMaterialsAmount: number // added parameter
 ): Promise<{ success: boolean; message: string; courseId?: number }> {
   try {
     if (!inputText) {
@@ -316,7 +320,9 @@ export async function createCourseWithAI(
     const generatedCourse = await generateCourseContent(
       inputText,
       modulesAmount,
-      difficultyLevel
+      difficultyLevel,
+      testsAmount, // pass parameter
+      learningMaterialsAmount // pass parameter
     );
 
     if (!generatedCourse) {
