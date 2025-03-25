@@ -43,6 +43,7 @@ export function CourseCard({
       // onMouseEnter={() => setIsHovered(true)}
       // onMouseLeave={() => setIsHovered(false)}
     >
+      <Link href={`/workspace/courses/${id}`}>
       <div className="relative overflow-hidden bg-slate-300">
         <div style={{ backgroundColor: color }} className={`w-full h-[45px]`} />
         <Badge className="absolute top-3 right-3 bg-white/90 hover:bg-white">
@@ -87,6 +88,7 @@ export function CourseCard({
           </div>
         </CardFooter>
       </div>
+      </Link>
     </Card>
   );
 }
