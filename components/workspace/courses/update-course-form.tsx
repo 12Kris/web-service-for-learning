@@ -1847,6 +1847,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 onClick={() => addItem("what_w_learn")}
                 variant="outline"
                 className="text-[#5c8d89] border-[#5c8d89]"
+                size="sm"
               >
                 Add Learning Outcome
               </Button>
@@ -1890,6 +1891,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       setCurrentBlockId(module.id)
                     }}
                     className="text-[#5c8d89] border-[#5c8d89]"
+                    size="sm"
                   >
                     Add Tests
                   </Button>
@@ -1905,6 +1907,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       setCurrentBlockId(module.id)
                     }}
                     className="text-[#5c8d89] border-[#5c8d89]"
+                    size="sm"
                   >
                     Add Cards
                   </Button>
@@ -1919,6 +1922,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       setBlockDescription(module.description ?? "")
                     }}
                     className="text-[#5c8d89] border-[#5c8d89]"
+                    size="sm"
                   >
                     Edit Module
                   </Button>
@@ -1930,6 +1934,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       handleDeleteBlock(module.id)
                     }}
                     className="bg-red-100 text-red-600 hover:bg-red-200"
+                    size="sm"
                   >
                     Delete Module
                   </Button>
@@ -2005,6 +2010,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
                         <Button
                           className="mt-3 bg-[#5c8d89] text-white hover:bg-[#4a7a76]"
+                          size="sm"
                           onClick={(e) => {
                             e.preventDefault()
                             // Set the current material but initialize empty content
@@ -2095,6 +2101,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
                         <Button
                           className="mt-3 bg-[#5c8d89] text-white hover:bg-[#4a7a76]"
+                          size="sm"
                           onClick={(e) => {
                             e.preventDefault()
                             // Create a new empty question for the current test
@@ -2133,6 +2140,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
               }}
               variant="outline"
               className="text-[#5c8d89] border-[#5c8d89] mb-6"
+              size="sm"
             >
               Add New Module
             </Button>
@@ -2140,7 +2148,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
           <Button
             type="submit"
-            className="w-full bg-[#5c8d89] text-white hover:bg-[#4a7a76] py-6 rounded-lg text-lg font-medium"
+            className="w-1/3 bg-[#5c8d89] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
+            size="sm"
           >
             Update Course
           </Button>
@@ -2192,4 +2201,3 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
     </div>
   )
 }
-
