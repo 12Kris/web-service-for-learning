@@ -86,10 +86,58 @@ export async function deleteBlock(blockId: number): Promise<void> {
   if (error) throw new Error(`Error deleting block: ${error.message}`);
 }
 
-export async function getTestById(
-  testId: number
-): Promise<TestWithQuestions | null> {
-  const supabase = await createClient();
+// export async function getTestById(
+//   testId: number
+// ): Promise<TestWithQuestions | null> {
+//   const supabase = await createClient();
+
+//   const { data, error } = await supabase
+//     .from("Test")
+//     .select(
+//       `
+//             id,
+//             block_id,
+//             question,
+//             TestQuestions (
+//                 id,
+//                 question,
+//                 correct_id,
+//                 TestAnswers!TestAnswers_question_id_fkey (
+//                     id,
+//                     answer
+//                 )
+//             )
+//         `
+//     )
+//     .eq("id", testId);
+
+//   if (error) {
+//     console.error("Error fetching test:", error);
+//     return null;
+//   }
+
+//   if (!data || data.length === 0) return null;
+
+//   const testData = data[0];
+
+//   return {
+//     id: testData.id,
+//     blockId: testData.block_id,
+//     question: testData.question,
+//     questions: testData.TestQuestions.map((q: TestQuestionDataFromDB) => ({
+//       id: Number(q.id),
+//       question: q.question,
+//       answers: q.TestAnswers.map((a: TestAnswerDataFromDB) => ({
+//         id: Number(a.id),
+//         text: a.answer,
+//         correct: a.id === q.correct_id,
+//       })),
+//     })),
+//   };
+// }
+
+export async function getTestById(testId: number): Promise<TestWithQuestions | null> {
+  const supabase = await createClient()
 
   const { data, error } = await supabase
     .from("Test")
@@ -107,18 +155,18 @@ export async function getTestById(
                     answer
                 )
             )
-        `
+        `,
     )
-    .eq("id", testId);
+    .eq("id", testId)
 
   if (error) {
-    console.error("Error fetching test:", error);
-    return null;
+    console.error("Error fetching test:", error)
+    return null
   }
 
-  if (!data || data.length === 0) return null;
+  if (!data || data.length === 0) return null
 
-  const testData = data[0];
+  const testData = data[0]
 
   return {
     id: testData.id,
@@ -133,7 +181,7 @@ export async function getTestById(
         correct: a.id === q.correct_id,
       })),
     })),
-  };
+  }
 }
 
 // export async function getTestAnswers(testId: number) {
@@ -190,7 +238,7 @@ export async function createTest(
         throw new Error(`Each question must have at least one answer.`);
       }
       if (
-        !question.answers.some((answer: { correct: boolean }) => answer.correct)
+        !question.answers.some((answer: { correct: boolean | number }) => answer.correct)
       ) {
         throw new Error(`Each question must have at least one correct answer.`);
       }
@@ -227,7 +275,7 @@ export async function createTest(
       const questionId = questionData?.id;
 
       const answersToInsert = question.answers.map(
-        (answer: { text: string; correct: boolean }) => ({
+        (answer: { text: string; correct: boolean | number }) => ({
           question_id: questionId,
           answer: answer.text,
         })
@@ -245,7 +293,7 @@ export async function createTest(
         throw new Error(`Error creating answers: ${answersError.message}`);
 
       const correctAnswer = question.answers.find(
-        (answer: { text: string; correct: boolean }) => answer.correct
+        (answer: { text: string; correct: boolean | number }) => answer.correct
       );
       if (correctAnswer) {
         const correctAnswerData = insertedAnswers?.find(
