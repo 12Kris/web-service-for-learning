@@ -180,9 +180,9 @@ export function MaterialModal({
   materialTitle,
   setMaterialTitle,
   currentMaterial,
-  blockId,
-  materialContents,
-  setMaterialContents,
+  // blockId,
+  // materialContents,
+  // setMaterialContents,
 }: {
   isOpen: boolean;
   onClose: () => void;
