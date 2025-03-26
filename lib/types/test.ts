@@ -55,7 +55,7 @@ export interface TestAnswer {
   answer?: string;
   id: number;
   text: string;
-  correct: boolean | number;
+  correct: boolean;
 }
 
 export interface AnswerDataQuestion {
@@ -99,9 +99,9 @@ export interface TestAnswerDataFromDB {
 }
 
 export interface Answer {
-  id: string;
+  id: string | number;
   text: string;
-  correct: boolean;
+  correct: number | boolean;
 }
 
 export interface Question {
@@ -120,7 +120,7 @@ export interface TestDataWithQuestion {
   block_id: number;
   questions?: Question[];
   question?: string;
-  answers: Answer[];
+  answers?: Answer[];
 }
 
 // export interface TestData {
