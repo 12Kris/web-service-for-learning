@@ -17,10 +17,10 @@ export default async function Page() {
 
   const repeatCourses = coursesWithUserProgress.filter(course => {
     try {
-      const spacedRepetition = course.user_progress?.[0]?.spaced_repetition ? JSON.parse(course.user_progress[0].spaced_repetition) : null;
+      const spacedRepetition = course.user_progress?.[0]?.spaced_repetition;
       return spacedRepetition && spacedRepetition.next_review_dates.includes(today);
     } catch (error) {
-      console.error("Error parsing spaced_repetition for course", course.id, error);
+      console.error("Error accessing spaced_repetition for course", course.id, error);
       return false;
     }
   });
@@ -55,7 +55,9 @@ export default async function Page() {
               <div className="text-center text-lg">No courses available!</div>
           ) : (
               <>
-                <CourseCarousel title="Repeat" courses={repeatCourses} />
+                {repeatCourses.length >= 1 ? (
+                  <CourseCarousel title="Repeat" courses={repeatCourses} />
+                ) : null}
                 <CourseCarousel title="Latest" courses={courses} />
                 <CourseCarousel title="Popular" courses={courses} />
                 <CourseGrid title="All courses" courses={courses} />

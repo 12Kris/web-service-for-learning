@@ -276,6 +276,7 @@ export async function getCourses(): Promise<Course[]> {
 
 export async function getCoursesWithUserProgress(): Promise<Course[]> {
     const supabase = await createClient();
+    const user = await getUser();
     const { data, error } = await supabase.from("Course").select(`
       *,
       creator:profiles!Course_creator_id_fkey1 (
@@ -286,7 +287,7 @@ export async function getCoursesWithUserProgress(): Promise<Course[]> {
       user_progress:UserCourse!inner (
         spaced_repetition
       )
-    `);
+    `).eq("user_progress.user_id", user.id);
 
     if (error) {
         console.error("Error fetching courses:", JSON.stringify(error, null, 2));

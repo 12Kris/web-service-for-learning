@@ -24,7 +24,13 @@ export interface Course {
   curriculum?: Module[];
   created_at?: string;
   spaced_repetition?: string;
-  user_progress?: { spaced_repetition?: string }[];
+  user_progress?: {
+    spaced_repetition?: {
+      schedule: number[];
+      start_date: string;
+      next_review_dates: string[];
+    };
+  }[];
 }
 
 export interface CourseWithStudents {
