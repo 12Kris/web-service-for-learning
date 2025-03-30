@@ -23,6 +23,8 @@ export interface Course {
   what_w_learn?: WhatWillLearn[];
   curriculum?: Module[];
   created_at?: string;
+  spaced_repetition?: string;
+  user_progress?: { spaced_repetition?: string }[];
 }
 
 export interface CourseWithStudents {

@@ -9,6 +9,7 @@ import {
   removeCourseFromUser,
 } from "@/lib/courses/actions";
 import Link from "next/link";
+import {SpacedRepetitionModal} from "@/components/workspace/modals/SpacedRepetitionModal";
 
 interface CourseDescriptionJumbotronProps {
   title?: string;
@@ -25,7 +26,8 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   id,
 }) => {
   const [isCourseAdded, setIsCourseAdded] = useState<boolean | null>(null);
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -136,8 +138,14 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
             )
           )}
         </Button>
+        {isCourseAdded && (
+            <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+              Edit Spaced Repetition
+            </Button>
+        )}
       </div>
       )}
+      {isModalOpen && <SpacedRepetitionModal courseId={id} onClose={() => setIsModalOpen(false)} />}
     </section>
   );
 };
