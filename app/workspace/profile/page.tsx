@@ -565,7 +565,7 @@ export default function UserProfile() {
                     <CardHeader>
                       <CardTitle className="text-xl">{course.name}</CardTitle>
                       <CardDescription>
-                        {/* Instructor: {course.creator_id} */}
+                        {/* Instructor: {course.creator?.full_name} */}
                         {course.description}
                       </CardDescription>
                     </CardHeader>

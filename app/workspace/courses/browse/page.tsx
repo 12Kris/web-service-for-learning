@@ -30,14 +30,13 @@ export default function Page() {
         const fetchedCourses = await getCourses()
         // const fetchedCoursesWithProgress = await getCoursesWithUserProgress()
 
-        // Sort courses by creation date
         fetchedCourses.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
 
         setCourses(fetchedCourses)
         setFilteredCourses(fetchedCourses)
         // setCoursesWithUserProgress(fetchedCoursesWithProgress)
 
-        // Find courses to repeat today
+
         // const today = new Date().toISOString().split("T")[0]
         // const coursesToRepeat = fetchedCoursesWithProgress.filter((course) => {
         //   try {
