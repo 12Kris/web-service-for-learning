@@ -393,7 +393,7 @@ export default function UserProfile() {
   const menuItems = [
     { id: "profile", label: "Profile" },
     { id: "analytics", label: "Analytics" },
-    { id: "courses-enrolled", label: "Courses Enroled" },
+    { id: "courses-enrolled", label: "Courses Enrolled" },
     { id: "courses-created", label: "Courses Created" },
     { id: "certificates", label: "Certificates" },
     { id: "settings", label: "Settings" },
@@ -506,7 +506,7 @@ export default function UserProfile() {
         )}
 
 
-        {activeMenuItem === "courses-enrolled" && (
+        {activeMenuItem === "courses-created" && (
           <div className="flex items-center justify-center mt-4">
               <div className="grid gap-6 md:grid-cols-2">
                  {createdCourses?.map((course) => (
@@ -554,7 +554,7 @@ export default function UserProfile() {
           </div>
         )}
 
-        {activeMenuItem === "courses-created" && (
+        {activeMenuItem === "courses-enrolled" && (
                 <div className="flex items-center justify-center mt-4">
                   <div className="space-y-6">
                 {studyingCourses?.map((course) => (
