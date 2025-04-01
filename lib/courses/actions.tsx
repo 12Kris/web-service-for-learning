@@ -225,6 +225,88 @@ export async function removeCourseFromUser(
     }
 }
 
+// export async function getUserCreatedCourses(): Promise<Course[]> {
+//     const supabase = await createClient();
+//     try {
+//         const user = await getUser();
+//         if (!user) throw new Error("User not authenticated");
+
+//         const {data, error} = await supabase
+//             .from("Course")
+//             .select("*, student_count: user_courses(count)")
+//             .eq("creator_id", user.id);
+
+//         if (error) {
+//             console.error("Error fetching courses from Supabase:", error);
+//             return [];
+//         }
+
+//         if (!data) return [];
+
+//         return data.map((course) => ({
+//             ...course,
+//             student_count: course.student_count ? course.student_count[0]?.count || 0 : 0,
+//         })) as CourseWithStudents[];
+//     } catch (error) {
+//         console.error("Error fetching user created courses:", error);
+//         return [];
+//     }
+// }
+
+// export async function getCourses(): Promise<Course[]> {
+//     const supabase = await createClient()
+//     const { data, error } = await supabase.from("Course").select(`
+//         *,
+//         creator:profiles!Course_creator_id_fkey1 (
+//           id,
+//           email,
+//           full_name
+//         ),
+//         student_count:user_courses(count)
+//       `)
+  
+//     if (error) {
+//       console.error("Error fetching courses:", JSON.stringify(error, null, 2))
+//       return []
+//     }
+  
+//     // Transform the data to include the student count
+//     return data.map((course) => ({
+//       ...course,
+//       student_count: course.student_count?.[0]?.count || 0,
+//     })) as Course[]
+//   }
+
+// export async function getCoursesWithUserProgress(): Promise<Course[]> {
+//   const supabase = await createClient()
+//   const user = await getUser()
+//   const { data, error } = await supabase
+//     .from("Course")
+//     .select(`
+//       *,
+//       creator:profiles!Course_creator_id_fkey1 (
+//         id,
+//         email,
+//         full_name
+//       ),
+//       user_progress:UserCourse!inner (
+//         spaced_repetition
+//       ),
+//       student_count:user_courses(count)
+//     `)
+//     .eq("user_progress.user_id", user.id)
+
+//   if (error) {
+//     console.error("Error fetching courses:", JSON.stringify(error, null, 2))
+//     return []
+//   }
+
+//   return data.map((course) => ({
+//     ...course,
+//     student_count: course.student_count?.[0]?.count || 0,
+//   })) as Course[]
+// }
+
 export async function getUserCreatedCourses(): Promise<Course[]> {
     const supabase = await createClient();
     try {
@@ -245,7 +327,9 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
 
         return data.map((course) => ({
             ...course,
-            student_count: course.student_count ? course.student_count[0]?.count || 0 : 0,
+            student_count: course.student_count
+                ? course.student_count[0]?.count || 0
+                : 0,
         })) as CourseWithStudents[];
     } catch (error) {
         console.error("Error fetching user created courses:", error);
@@ -254,35 +338,28 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
 }
 
 export async function getCourses(): Promise<Course[]> {
-    const supabase = await createClient()
-    const { data, error } = await supabase.from("Course").select(`
+    const supabase = await createClient();
+    const {data, error} = await supabase.from("Course").select(`
         *,
         creator:profiles!Course_creator_id_fkey1 (
           id,
           email,
           full_name
-        ),
-        student_count:user_courses(count)
-      `)
-  
+        )
+      `);
+
     if (error) {
-      console.error("Error fetching courses:", JSON.stringify(error, null, 2))
-      return []
+        console.error("Error fetching courses:", JSON.stringify(error, null, 2));
+        return [];
     }
-  
-    // Transform the data to include the student count
-    return data.map((course) => ({
-      ...course,
-      student_count: course.student_count?.[0]?.count || 0,
-    })) as Course[]
-  }
+
+    return data as Course[];
+}
 
 export async function getCoursesWithUserProgress(): Promise<Course[]> {
-  const supabase = await createClient()
-  const user = await getUser()
-  const { data, error } = await supabase
-    .from("Course")
-    .select(`
+    const supabase = await createClient();
+    const user = await getUser();
+    const { data, error } = await supabase.from("Course").select(`
       *,
       creator:profiles!Course_creator_id_fkey1 (
         id,
@@ -291,20 +368,15 @@ export async function getCoursesWithUserProgress(): Promise<Course[]> {
       ),
       user_progress:UserCourse!inner (
         spaced_repetition
-      ),
-      student_count:user_courses(count)
-    `)
-    .eq("user_progress.user_id", user.id)
+      )
+    `).eq("user_progress.user_id", user.id);
 
-  if (error) {
-    console.error("Error fetching courses:", JSON.stringify(error, null, 2))
-    return []
-  }
+    if (error) {
+        console.error("Error fetching courses:", JSON.stringify(error, null, 2));
+        return [];
+    }
 
-  return data.map((course) => ({
-    ...course,
-    student_count: course.student_count?.[0]?.count || 0,
-  })) as Course[]
+    return data as Course[];
 }
 
 
