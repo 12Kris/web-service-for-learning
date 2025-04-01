@@ -235,7 +235,7 @@ export default function CreateCourseForm() {
             Create Course
           </Button>
           <Button type="submit" className="w-full">
-            <Link href="create/create-with-ai">
+            <Link href="create-ai">
               Click here to create course by using AI
             </Link>
           </Button>
