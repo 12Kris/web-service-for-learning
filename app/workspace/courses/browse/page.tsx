@@ -135,14 +135,14 @@ export default function Page() {
 
             <CourseCarousel title="Latest" courses={courses} />
             <CourseCarousel title="Popular" courses={courses} />
+            <CourseGrid title="All courses" courses={filteredCourses} />
             
-            {/* {courseTypes.map((type) => (
+            {courseTypes.map((type) => (
               <div key={type} className="mb-12">
                 <CourseCarousel title={coursesByType[type].displayName} courses={coursesByType[type].courses} />
               </div>
-            ))} */}
-
-            <CourseGrid title="All courses" courses={filteredCourses} />
+            ))}
+            
           </>
         )}
       </div>
