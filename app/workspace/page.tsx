@@ -12,7 +12,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getCourses, getCoursesWithUserProgress } from "@/lib/courses/actions"
+// import { getCourses, getCoursesWithUserProgress } from "@/lib/courses/actions"
+import { getCourses } from "@/lib/courses/actions"
 import { PageHeader } from "@/components/ui/page-header"
 import { CourseCarousel } from "@/components/course-slider/course-slider"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
@@ -25,8 +26,8 @@ import type { Course } from "@/lib/types/course"
 export default function HomePage() {
   const [courses, setCourses] = useState<Course[]>([])
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([])
-  const [coursesWithUserProgress, setCoursesWithUserProgress] = useState<Course[]>([])
-  const [repeatCourses, setRepeatCourses] = useState<Course[]>([])
+  // const [coursesWithUserProgress, setCoursesWithUserProgress] = useState<Course[]>([])
+  // const [repeatCourses, setRepeatCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
   // Add a new state variable to track if filters are applied
@@ -37,27 +38,27 @@ export default function HomePage() {
       setIsLoading(true)
       try {
         const fetchedCourses = await getCourses()
-        const fetchedCoursesWithProgress = await getCoursesWithUserProgress()
+        // const fetchedCoursesWithProgress = await getCoursesWithUserProgress()
 
         // Sort courses by creation date
         fetchedCourses.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
 
         setCourses(fetchedCourses)
         setFilteredCourses(fetchedCourses)
-        setCoursesWithUserProgress(fetchedCoursesWithProgress)
+        // setCoursesWithUserProgress(fetchedCoursesWithProgress)
 
         // Find courses to repeat today
-        const today = new Date().toISOString().split("T")[0]
-        const coursesToRepeat = fetchedCoursesWithProgress.filter((course) => {
-          try {
-            const spacedRepetition = course.user_progress?.[0]?.spaced_repetition
-            return spacedRepetition && spacedRepetition.next_review_dates.includes(today)
-          } catch (error) {
-            console.error("Error accessing spaced_repetition for course", course.id, error)
-            return false
-          }
-        })
-        setRepeatCourses(coursesToRepeat)
+        // const today = new Date().toISOString().split("T")[0]
+        // const coursesToRepeat = fetchedCoursesWithProgress.filter((course) => {
+        //   try {
+        //     const spacedRepetition = course.user_progress?.[0]?.spaced_repetition
+        //     return spacedRepetition && spacedRepetition.next_review_dates.includes(today)
+        //   } catch (error) {
+        //     console.error("Error accessing spaced_repetition for course", course.id, error)
+        //     return false
+        //   }
+        // })
+        // setRepeatCourses(coursesToRepeat)
       } catch (error) {
         console.error("Error fetching courses:", error)
       } finally {

@@ -3,22 +3,23 @@
 import { useEffect, useState } from "react"
 import { PageHeader } from "@/components/ui/page-header"
 import { CourseCarousel } from "@/components/course-slider/course-slider"
-import { CourseGrid } from "@/components/course-grid"
+// import { CourseGrid } from "@/components/course-grid"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Plus, Filter, Sparkles } from "lucide-react"
 import { FilterModal } from "@/components/workspace/modals/filter-modal"
-import { getCourses, getCoursesWithUserProgress } from "@/lib/courses/actions"
+// import { getCourses, getCoursesWithUserProgress } from "@/lib/courses/actions"
+import { getCourses } from "@/lib/courses/actions"
 import type { Course } from "@/lib/types/course"
 
 export default function Page() {
   const [courses, setCourses] = useState<Course[]>([])
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([])
-  const [coursesWithUserProgress, setCoursesWithUserProgress] = useState<Course[]>([])
+  // const [coursesWithUserProgress, setCoursesWithUserProgress] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
-  const [repeatCourses, setRepeatCourses] = useState<Course[]>([])
+  // const [repeatCourses, setRepeatCourses] = useState<Course[]>([])
   const [coursesByType, setCoursesByType] = useState<Record<string, { displayName: string; courses: Course[] }>>({})
   const [courseTypes, setCourseTypes] = useState<string[]>([])
 
@@ -27,27 +28,27 @@ export default function Page() {
       setIsLoading(true)
       try {
         const fetchedCourses = await getCourses()
-        const fetchedCoursesWithProgress = await getCoursesWithUserProgress()
+        // const fetchedCoursesWithProgress = await getCoursesWithUserProgress()
 
         // Sort courses by creation date
         fetchedCourses.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
 
         setCourses(fetchedCourses)
         setFilteredCourses(fetchedCourses)
-        setCoursesWithUserProgress(fetchedCoursesWithProgress)
+        // setCoursesWithUserProgress(fetchedCoursesWithProgress)
 
         // Find courses to repeat today
-        const today = new Date().toISOString().split("T")[0]
-        const coursesToRepeat = fetchedCoursesWithProgress.filter((course) => {
-          try {
-            const spacedRepetition = course.user_progress?.[0]?.spaced_repetition
-            return spacedRepetition && spacedRepetition.next_review_dates.includes(today)
-          } catch (error) {
-            console.error("Error accessing spaced_repetition for course", course.id, error)
-            return false
-          }
-        })
-        setRepeatCourses(coursesToRepeat)
+        // const today = new Date().toISOString().split("T")[0]
+        // const coursesToRepeat = fetchedCoursesWithProgress.filter((course) => {
+        //   try {
+        //     const spacedRepetition = course.user_progress?.[0]?.spaced_repetition
+        //     return spacedRepetition && spacedRepetition.next_review_dates.includes(today)
+        //   } catch (error) {
+        //     console.error("Error accessing spaced_repetition for course", course.id, error)
+        //     return false
+        //   }
+        // })
+        // setRepeatCourses(coursesToRepeat)
 
         // Group courses by type
         groupCoursesByType(fetchedCourses)

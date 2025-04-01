@@ -67,7 +67,7 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
 
     // Filter by selected types
     const activeTypes = Object.entries(selectedTypes)
-      .filter(([_, isSelected]) => isSelected)
+      .filter(([, isSelected]) => isSelected)
       .map(([type]) => type)
 
     if (activeTypes.length > 0) {

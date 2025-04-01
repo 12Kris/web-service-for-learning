@@ -15,7 +15,7 @@ import type { Course } from "@/lib/types/course"
 export default function BookmarksPage() {
   const [courses, setCourses] = useState<Course[]>([])
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([])
-  const [coursesWithUserProgress, setCoursesWithUserProgress] = useState<Course[]>([])
+  // const [coursesWithUserProgress, setCoursesWithUserProgress] = useState<Course[]>([])
   const [enrolledCourses, setEnrolledCourses] = useState<Course[]>([])
   const [filteredEnrolledCourses, setFilteredEnrolledCourses] = useState<Course[]>([])
   const [repeatCourses, setRepeatCourses] = useState<Course[]>([])
@@ -35,7 +35,7 @@ export default function BookmarksPage() {
 
         setCourses(fetchedCourses)
         setFilteredCourses(fetchedCourses)
-        setCoursesWithUserProgress(fetchedCoursesWithProgress)
+        // setCoursesWithUserProgress(fetchedCoursesWithProgress)
         setEnrolledCourses(fetchedEnrolledCourses)
         setFilteredEnrolledCourses(fetchedEnrolledCourses)
 
@@ -109,7 +109,7 @@ export default function BookmarksPage() {
                 <CourseGrid title="Enrolled Courses" courses={filteredEnrolledCourses} />
               ) : (
                 <div className="text-center text-lg mt-8">
-                  You haven't enrolled in any courses yet.
+                  You haven`&apos`t enrolled in any courses yet.
                   <div className="mt-4">
                     <Link href="/workspace/courses/browse">
                       <Button variant="default">Browse Courses</Button>
