@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import Image from "next/image";
+import Link from 'next/link';
 
 interface CardProps {
     title: string
@@ -27,9 +28,10 @@ export function Card({
             className="w-96 aspect-[1.6] rounded-[2rem] p-8 overflow-hidden relative"
             style={{backgroundColor}}
         >
-            <div
-                className={`absolute ${arrowPosition === 'top-left' ? 'top-8' : 'bottom-8'} left-8 size-10 rounded-full bg-white p-2.5 flex items-center justify-center z-10`}>
-                <ArrowUpRight className="size-5" style={{ color: backgroundColor }} strokeWidth={3}/>
+            <div className={`absolute ${arrowPosition === 'top-left' ? 'top-8' : 'bottom-8'} left-8 size-10 rounded-full bg-white p-2.5 flex items-center justify-center z-10`}>
+                <Link href={`/login`}>
+                    <ArrowUpRight className="size-5" style={{ color: backgroundColor }} strokeWidth={3}/>
+                </Link>
             </div>
 
             <div

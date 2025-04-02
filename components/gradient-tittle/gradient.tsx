@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Gradient() {
     return (
         <div className="h-[50vh] w-full relative bg-gradient-custom bg-[length:120%_120%] bg-[position:center_-80px] bg-no-repeat">
@@ -13,7 +15,9 @@ export default function Gradient() {
                 </p>
 
                 <button className="px-6 py-3 bg-[#ff7b7b] hover:bg-[#ff6b6b] transition-colors text-white rounded-full font-medium">
-                    Start learning today
+                    <Link href={`/login`}>
+                        Start learning today
+                    </Link>
                 </button>
             </div>
         </div>
