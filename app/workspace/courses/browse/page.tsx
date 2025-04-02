@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { PageHeader } from "@/components/ui/page-header"
 import { CourseCarousel } from "@/components/course-slider/course-slider"
-import { CourseGrid } from "@/components/course-grid"
+// import { CourseGrid } from "@/components/course-grid"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -132,9 +132,9 @@ export default function Page() {
           <>
             {/* {repeatCourses.length >= 1 && <CourseCarousel title="Repeat Today" courses={repeatCourses} />} */}
 
-            <CourseCarousel title="Latest" courses={courses} />
-            <CourseCarousel title="Popular" courses={courses} />
-            <CourseGrid title="All courses" courses={filteredCourses} />
+            {/* <CourseCarousel title="Latest" courses={courses} />
+            <CourseCarousel title="Popular" courses={courses} /> */}
+            {/* <CourseGrid title="All courses" courses={filteredCourses} /> */}
             
             {courseTypes.map((type) => (
               <div key={type} className="mb-12">
