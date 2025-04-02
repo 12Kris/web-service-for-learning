@@ -50,6 +50,7 @@
     "react-remove-scroll": "^2.6.3",
     "react-router-dom": "^7.3.0",
     "react-tooltip": "^5.28.0",
+    "sonner": "^2.0.3",
     "supabase": "^1.219.2",
     "swiper": "^11.2.6",
     "tailwind-merge": "^2.5.4",

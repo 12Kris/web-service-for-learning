@@ -275,8 +275,8 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-// import { Book, Users, Award } from "lucide-react";
-import { Book, Users } from "lucide-react";
+import { Book, Users, Award } from "lucide-react";
+// import { Book, Users } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation"
 import { signOut } from "@/utils/supabase/actions"
@@ -284,6 +284,7 @@ import { signOut } from "@/utils/supabase/actions"
 import type { Profile } from "@/lib/types/user"
 import { getProfileById } from "@/utils/supabase/actions";
 import { Course } from "@/lib/types/course"
+// import { getCourses, getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions"
 import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions"
 import { getUser } from "@/utils/supabase/server";
 import ProfileEdit from "./edit/page"
@@ -366,6 +367,7 @@ export default function UserProfile() {
         setUser(await getProfileById(currentUser.id));
         setCreatedCourses(await getUserCreatedCourses());
         setStudyingCourses(await getUserCourses());
+        // setStudyingCourses(await getCourses());
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -393,7 +395,7 @@ export default function UserProfile() {
   const menuItems = [
     { id: "profile", label: "Profile" },
     { id: "analytics", label: "Analytics" },
-    { id: "courses-enrolled", label: "Courses Enroled" },
+    { id: "courses-enrolled", label: "Courses Enrolled" },
     { id: "courses-created", label: "Courses Created" },
     { id: "certificates", label: "Certificates" },
     { id: "settings", label: "Settings" },
@@ -506,7 +508,7 @@ export default function UserProfile() {
         )}
 
 
-        {activeMenuItem === "courses-enrolled" && (
+        {activeMenuItem === "courses-created" && (
           <div className="flex items-center justify-center mt-4">
               <div className="grid gap-6 md:grid-cols-2">
                  {createdCourses?.map((course) => (
@@ -529,13 +531,13 @@ export default function UserProfile() {
                         </Badge>
                       </div>
                       <div className="flex items-center">
-                        {/* <Award className="w-5 h-5 text-yellow-500 mr-1" />
+                        <Award className="w-5 h-5 text-yellow-500 mr-1" />
                         <span className="font-bold">
-                          {course.rating || "N/A"}
+                          {course.rating?.toFixed(1) || "N/A"}
                         </span>
                         <span className="text-muted-foreground ml-1">
                           / 5.0
-                        </span> */}
+                        </span>
                         {/* <span className="font-bold">
                           {course.type}
                         </span> */}
@@ -554,7 +556,7 @@ export default function UserProfile() {
           </div>
         )}
 
-        {activeMenuItem === "courses-created" && (
+        {activeMenuItem === "courses-enrolled" && (
                 <div className="flex items-center justify-center mt-4">
                   <div className="space-y-6">
                 {studyingCourses?.map((course) => (
@@ -565,7 +567,7 @@ export default function UserProfile() {
                     <CardHeader>
                       <CardTitle className="text-xl">{course.name}</CardTitle>
                       <CardDescription>
-                        {/* Instructor: {course.creator_id} */}
+                        {/* Instructor: {course.creator?.full_name} */}
                         {course.description}
                       </CardDescription>
                     </CardHeader>
@@ -578,12 +580,15 @@ export default function UserProfile() {
                           <span className="text-sm font-medium text-primary">
                             {course.progress}%
                           </span> */}
-                          <span className="text-sm font-medium text-primary">
-                            Type:
-                          </span>
-                          <span className="text-sm font-medium text-primary">
+
+                          <Badge variant="secondary">
+                            <Book className="h-4 mr-1" />
                             {course.type}
-                          </span>
+                          </Badge>
+                          <Badge variant="secondary">
+                            <Users className="h-4 mr-1" />
+                            {course.creator?.full_name}
+                          </Badge>
                         </div>
                         <Progress value={course.progress} className="w-full" />
                       </div>

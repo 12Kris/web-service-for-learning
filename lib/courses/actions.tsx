@@ -1,13 +1,16 @@
 "use server";
 // import { supabase } from "@/utils/supabase/client";
 import {getUser} from "@/utils/supabase/server";
-import {Course, CourseWithStudents} from "@/lib/types/course";
+// import {Course, CourseWithStudents} from "@/lib/types/course";
+import {Course} from "@/lib/types/course";
+
 import {LearningMaterial} from "@/lib/types/learning";
 // import { Test, TestQuestionForCourse, UserTestAnswer } from "@/lib/types/test";
 import {TestData, TestQuestionForCourse} from "@/lib/types/test";
 // import { SaveTestResult } from "@/lib/types/test";
 import {Module} from "@/lib/types/modules";
 import {createClient} from "@/utils/supabase/server";
+import { getCourseRating } from "./rating-actions";
 
 // import { getUser } from "@/utils/supabase/server";
 
@@ -66,7 +69,115 @@ export async function isCourseAddedToUser(courseId: number) {
     return data.length > 0;
 }
 
-export async function getUserCourses() {
+// export async function getUserCourses() {
+//     const supabase = await createClient();
+//     try {
+//         const user = await getUser();
+
+//         if (!user) {
+//             throw new Error("User not authenticated");
+//         }
+
+//         const {data, error} = await supabase
+//             .from("UserCourse")
+//             .select("course_id")
+//             .eq("user_id", user.id);
+
+//         if (error) {
+//             return [];
+//         }
+
+//         const courseIds = data.map((item) => item.course_id);
+
+//         const {data: courses, error: courseError} = await supabase
+//             .from("Course")
+//             .select("*")
+//             .in("id", courseIds);
+
+//         if (courseError) {
+//             return [];
+//         }
+
+//         return courses;
+//     } catch (error) {
+//         console.error("Error fetching user courses:", error);
+//         return [];
+//     }
+// }
+
+// export async function getUserCourses(): Promise<Course[]> {
+//   const supabase = await createClient();
+//   try {
+//     const user = await getUser();
+
+//     if (!user) {
+//       throw new Error("User not authenticated");
+//     }
+
+//     // Отримуємо зв’язки користувача з курсами через таблицю UserCourse
+//     const { data: userCourses, error: userCourseError } = await supabase
+//       .from("UserCourse")
+//       .select(`
+//         course_id,
+//         progress
+//       `)
+//       .eq("user_id", user.id);
+
+//     if (userCourseError) {
+//       console.error("Error fetching user course relations:", userCourseError);
+//       return [];
+//     }
+
+//     if (!userCourses?.length) {
+//       return [];
+//     }
+
+//     const courseIds = userCourses.map((item) => item.course_id);
+
+//     // Отримуємо деталі курсів
+//     const { data: courses, error: courseError } = await supabase
+//       .from("Course")
+//       .select(`
+//         *,
+//         creator:profiles!Course_creator_id_fkey1 (
+//           id,
+//           email,
+//           full_name,
+//           avatar_url,
+//           bio,
+//           username
+//         ),
+//         rating_count
+//       `)
+//       .in("id", courseIds);
+
+//     if (courseError) {
+//       console.error("Error fetching courses:", courseError);
+//       return [];
+//     }
+
+//     // Обчислюємо рейтинг для кожного курсу
+//     const coursesWithRating = await Promise.all(
+//       courses.map(async (course) => {
+//         const ratingData = await getCourseRating(course.id);
+//         const userCourse = userCourses.find((uc) => uc.course_id === course.id);
+//         return {
+//           ...course,
+//           rating: ratingData.rating, // Додаємо середній рейтинг
+//           student_count: course.rating_count || 0, // Використовуємо rating_count як кількість студентів (оцінок)
+//           progress: userCourse?.progress || 0, // Додаємо прогрес із UserCourse
+//         };
+//       })
+//     );
+
+//     return coursesWithRating as Course[];
+//   } catch (error) {
+//     console.error("Error fetching user courses:", error);
+//     return [];
+//   }
+// }
+
+export async function getUserCourses(): Promise<Course[]> {
     const supabase = await createClient();
     try {
         const user = await getUser();
@@ -75,27 +186,44 @@ export async function getUserCourses() {
             throw new Error("User not authenticated");
         }
 
-        const {data, error} = await supabase
+        const {data: userCourses, error: userCourseError} = await supabase
             .from("UserCourse")
             .select("course_id")
             .eq("user_id", user.id);
 
-        if (error) {
+        if (userCourseError) {
+            console.error("Error fetching user course relations:", userCourseError);
             return [];
         }
 
-        const courseIds = data.map((item) => item.course_id);
+        if (!userCourses?.length) {
+            return [];
+        }
+
+        const courseIds = userCourses.map((item) => item.course_id);
 
         const {data: courses, error: courseError} = await supabase
             .from("Course")
-            .select("*")
+            .select(`
+                *,
+                creator:profiles!Course_creator_id_fkey1 (
+                    id,
+                    email,
+                    full_name,
+                    student_count: UserCourse(count)
+                )
+            `)
             .in("id", courseIds);
 
         if (courseError) {
+            console.error("Error fetching courses:", courseError);
             return [];
         }
 
-        return courses;
+        return courses.map((course) => ({
+            ...course,
+            student_count: course.student_count?.[0]?.count || 0,
+        })) as Course[];
     } catch (error) {
         console.error("Error fetching user courses:", error);
         return [];
@@ -228,32 +356,50 @@ export async function removeCourseFromUser(
 export async function getUserCreatedCourses(): Promise<Course[]> {
     const supabase = await createClient();
     try {
-        const user = await getUser();
-        if (!user) throw new Error("User not authenticated");
-
-        const {data, error} = await supabase
-            .from("Course")
-            .select("*, student_count: user_courses(count)")
-            .eq("creator_id", user.id);
-
-        if (error) {
-            console.error("Error fetching courses from Supabase:", error);
-            return [];
-        }
-
-        if (!data) return [];
-
-        return data.map((course) => ({
-            ...course,
-            student_count: course.student_count
-                ? course.student_count[0]?.count || 0
-                : 0,
-        })) as CourseWithStudents[];
-    } catch (error) {
-        console.error("Error fetching user created courses:", error);
+      const user = await getUser();
+      if (!user) throw new Error("User not authenticated");
+  
+      const { data, error } = await supabase
+        .from("Course")
+        .select(`
+          *,
+          creator:profiles!Course_creator_id_fkey1 (
+            id,
+            email,
+            full_name,
+            avatar_url,
+            bio,
+            username
+          ),
+          rating_count
+        `)
+        .eq("creator_id", user.id);
+  
+      if (error) {
+        console.error("Error fetching courses from Supabase:", error);
         return [];
+      }
+  
+      if (!data) return [];
+  
+      // Обчислюємо рейтинг для кожного курсу
+      const coursesWithRating = await Promise.all(
+        data.map(async (course) => {
+          const ratingData = await getCourseRating(course.id);
+          return {
+            ...course,
+            rating: ratingData.rating, // Додаємо середній рейтинг
+            student_count: course.rating_count || 0, // Використовуємо rating_count як кількість студентів (оцінок)
+          };
+        })
+      );
+  
+      return coursesWithRating as Course[];
+    } catch (error) {
+      console.error("Error fetching user created courses:", error);
+      return [];
     }
-}
+  }
 
 export async function getCourses(): Promise<Course[]> {
     const supabase = await createClient();
@@ -262,7 +408,8 @@ export async function getCourses(): Promise<Course[]> {
         creator:profiles!Course_creator_id_fkey1 (
           id,
           email,
-          full_name
+          full_name, 
+          student_count: UserCourse(count)
         )
       `);
 
@@ -271,7 +418,10 @@ export async function getCourses(): Promise<Course[]> {
         return [];
     }
 
-    return data as Course[];
+    return data.map((course) => ({
+        ...course,
+        student_count: course.student_count?.[0]?.count || 0,
+    })) as Course[]
 }
 
 export async function getCoursesWithUserProgress(): Promise<Course[]> {
@@ -286,7 +436,8 @@ export async function getCoursesWithUserProgress(): Promise<Course[]> {
       ),
       user_progress:UserCourse!inner (
         spaced_repetition
-      )
+      ), 
+      student_count: UserCourse(count)
     `).eq("user_progress.user_id", user.id);
 
     if (error) {
@@ -294,7 +445,10 @@ export async function getCoursesWithUserProgress(): Promise<Course[]> {
         return [];
     }
 
-    return data as Course[];
+    return data.map((course) => ({
+        ...course,
+        student_count: course.student_count?.[0]?.count || 0,
+    })) as Course[]
 }
 
 
