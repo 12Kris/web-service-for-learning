@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -9,85 +9,85 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import { Search } from "lucide-react"
-import type { Course } from "@/lib/types/course"
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Search } from "lucide-react";
+import type { Course } from "@/lib/types/course";
 
 interface FilterModalProps {
-  isOpen: boolean
-  onClose: () => void
-  courses: Course[]
-  onFilter: (filteredCourses: Course[]) => void
+  isOpen: boolean;
+  onClose: () => void;
+  courses: Course[];
+  onFilter: (filteredCourses: Course[], activeTypes: string[]) => void; // Оновлюємо сигнатуру
 }
 
 export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalProps) {
-  const [searchText, setSearchText] = useState("")
-  const [selectedTypes, setSelectedTypes] = useState<Record<string, boolean>>({})
+  const [searchText, setSearchText] = useState("");
+  const [selectedTypes, setSelectedTypes] = useState<Record<string, boolean>>({});
 
-  // Extract unique course types (case-insensitive)
   const uniqueTypes = Array.from(
     new Set(courses.map((course) => course.type || "Uncategorized").map((type) => type.toLowerCase())),
   ).map((type) => ({
     value: type,
     label: type.charAt(0).toUpperCase() + type.slice(1),
-  }))
+  }));
 
-  // Initialize selected types
   useEffect(() => {
-    const initialSelectedTypes: Record<string, boolean> = {}
+    const initialSelectedTypes: Record<string, boolean> = {};
     uniqueTypes.forEach((type) => {
-      initialSelectedTypes[type.value] = false
-    })
-    setSelectedTypes(initialSelectedTypes)
-  }, [courses])
+      initialSelectedTypes[type.value] = false;
+    });
+    setSelectedTypes(initialSelectedTypes);
+  }, [courses]);
 
   const handleTypeToggle = (type: string) => {
     setSelectedTypes((prev) => ({
       ...prev,
       [type]: !prev[type],
-    }))
-  }
+    }));
+  };
 
   const applyFilters = () => {
-    let filteredCourses = [...courses]
+    let filteredCourses = [...courses];
 
     // Filter by search text
     if (searchText.trim()) {
-      const searchLower = searchText.toLowerCase()
+      const searchLower = searchText.toLowerCase();
       filteredCourses = filteredCourses.filter(
         (course) =>
           course.name.toLowerCase().includes(searchLower) ||
           (course.type && course.type.toLowerCase().includes(searchLower)),
-      )
+      );
     }
 
     // Filter by selected types
     const activeTypes = Object.entries(selectedTypes)
       .filter(([, isSelected]) => isSelected)
-      .map(([type]) => type)
+      .map(([type]) => type);
 
     if (activeTypes.length > 0) {
       filteredCourses = filteredCourses.filter((course) =>
         activeTypes.includes((course.type || "Uncategorized").toLowerCase()),
-      )
+      );
     }
 
-    onFilter(filteredCourses)
-    onClose()
-  }
+    // Передаємо відфільтровані курси та обрані типи
+    onFilter(filteredCourses, activeTypes);
+    onClose();
+  };
 
   const resetFilters = () => {
-    setSearchText("")
-    const resetTypes: Record<string, boolean> = {}
+    setSearchText("");
+    const resetTypes: Record<string, boolean> = {};
     uniqueTypes.forEach((type) => {
-      resetTypes[type.value] = false
-    })
-    setSelectedTypes(resetTypes)
-  }
+      resetTypes[type.value] = false;
+    });
+    setSelectedTypes(resetTypes);
+    onFilter(courses, []); // Скидаємо фільтри, передаємо всі курси і порожній масив типів
+  };
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
@@ -131,14 +131,13 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
         </div>
 
         <AlertDialogFooter className="flex justify-between">
-            <AlertDialogAction onClick={applyFilters}>Apply Filters</AlertDialogAction>
-            <Button className="bg-red-200 text-red-600 hover:bg-red-300 border-red-600" onClick={resetFilters}>
-                Reset
-            </Button>
-            <AlertDialogCancel>Cancel</AlertDialogCancel> 
+          <AlertDialogAction onClick={applyFilters}>Apply Filters</AlertDialogAction>
+          <Button className="bg-red-200 text-red-600 hover:bg-red-300 border-red-600" onClick={resetFilters}>
+            Reset
+          </Button>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }
-
