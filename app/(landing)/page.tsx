@@ -1,3 +1,4 @@
+import Gradient from "@/components/gradient-tittle/gradient";
 import { Jumbotron } from "@/components/landing/jumbotron";
 import { MetricsShowcase } from "@/components/landing/metrics-showcase";
 import ProblemsTable from "@/components/problems-table/page";
@@ -109,7 +110,7 @@ export default function Home() {
         <StudyCarousel title="Directions of Education" topics={studyTopics} />
         </div>
 
-      {/*<Gradient />*/}
+      <Gradient />
     </div>
   );
 }
