@@ -109,7 +109,7 @@ export default function BookmarksPage() {
                 <CourseGrid title="Enrolled Courses" courses={filteredEnrolledCourses} />
               ) : (
                 <div className="text-center text-lg mt-8">
-                  You haven`&apos`t enrolled in any courses yet.
+                  You haven&apos;t enrolled in any courses yet.
                   <div className="mt-4">
                     <Link href="/workspace/courses/browse">
                       <Button variant="default">Browse Courses</Button>

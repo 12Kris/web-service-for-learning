@@ -105,76 +105,129 @@ export async function isCourseAddedToUser(courseId: number) {
 //     }
 // }
 
+// export async function getUserCourses(): Promise<Course[]> {
+//   const supabase = await createClient();
+//   try {
+//     const user = await getUser();
+
+//     if (!user) {
+//       throw new Error("User not authenticated");
+//     }
+
+//     // Отримуємо зв’язки користувача з курсами через таблицю UserCourse
+//     const { data: userCourses, error: userCourseError } = await supabase
+//       .from("UserCourse")
+//       .select(`
+//         course_id,
+//         progress
+//       `)
+//       .eq("user_id", user.id);
+
+//     if (userCourseError) {
+//       console.error("Error fetching user course relations:", userCourseError);
+//       return [];
+//     }
+
+//     if (!userCourses?.length) {
+//       return [];
+//     }
+
+//     const courseIds = userCourses.map((item) => item.course_id);
+
+//     // Отримуємо деталі курсів
+//     const { data: courses, error: courseError } = await supabase
+//       .from("Course")
+//       .select(`
+//         *,
+//         creator:profiles!Course_creator_id_fkey1 (
+//           id,
+//           email,
+//           full_name,
+//           avatar_url,
+//           bio,
+//           username
+//         ),
+//         rating_count
+//       `)
+//       .in("id", courseIds);
+
+//     if (courseError) {
+//       console.error("Error fetching courses:", courseError);
+//       return [];
+//     }
+
+//     // Обчислюємо рейтинг для кожного курсу
+//     const coursesWithRating = await Promise.all(
+//       courses.map(async (course) => {
+//         const ratingData = await getCourseRating(course.id);
+//         const userCourse = userCourses.find((uc) => uc.course_id === course.id);
+//         return {
+//           ...course,
+//           rating: ratingData.rating, // Додаємо середній рейтинг
+//           student_count: course.rating_count || 0, // Використовуємо rating_count як кількість студентів (оцінок)
+//           progress: userCourse?.progress || 0, // Додаємо прогрес із UserCourse
+//         };
+//       })
+//     );
+
+//     return coursesWithRating as Course[];
+//   } catch (error) {
+//     console.error("Error fetching user courses:", error);
+//     return [];
+//   }
+// }
+
 export async function getUserCourses(): Promise<Course[]> {
-  const supabase = await createClient();
-  try {
-    const user = await getUser();
+    const supabase = await createClient();
+    try {
+        const user = await getUser();
 
-    if (!user) {
-      throw new Error("User not authenticated");
+        if (!user) {
+            throw new Error("User not authenticated");
+        }
+
+        const {data: userCourses, error: userCourseError} = await supabase
+            .from("UserCourse")
+            .select("course_id")
+            .eq("user_id", user.id);
+
+        if (userCourseError) {
+            console.error("Error fetching user course relations:", userCourseError);
+            return [];
+        }
+
+        if (!userCourses?.length) {
+            return [];
+        }
+
+        const courseIds = userCourses.map((item) => item.course_id);
+
+        const {data: courses, error: courseError} = await supabase
+            .from("Course")
+            .select(`
+                *,
+                creator:profiles!Course_creator_id_fkey1 (
+                    id,
+                    email,
+                    full_name,
+                    student_count: UserCourse(count)
+                )
+            `)
+            .in("id", courseIds);
+
+        if (courseError) {
+            console.error("Error fetching courses:", courseError);
+            return [];
+        }
+
+        return courses.map((course) => ({
+            ...course,
+            student_count: course.student_count?.[0]?.count || 0,
+        })) as Course[];
+    } catch (error) {
+        console.error("Error fetching user courses:", error);
+        return [];
     }
-
-    // Отримуємо зв’язки користувача з курсами через таблицю UserCourse
-    const { data: userCourses, error: userCourseError } = await supabase
-      .from("UserCourse")
-      .select(`
-        course_id,
-        progress
-      `)
-      .eq("user_id", user.id);
-
-    if (userCourseError) {
-      console.error("Error fetching user course relations:", userCourseError);
-      return [];
-    }
-
-    if (!userCourses?.length) {
-      return [];
-    }
-
-    const courseIds = userCourses.map((item) => item.course_id);
-
-    // Отримуємо деталі курсів
-    const { data: courses, error: courseError } = await supabase
-      .from("Course")
-      .select(`
-        *,
-        creator:profiles!Course_creator_id_fkey1 (
-          id,
-          email,
-          full_name,
-          avatar_url,
-          bio,
-          username
-        ),
-        rating_count
-      `)
-      .in("id", courseIds);
-
-    if (courseError) {
-      console.error("Error fetching courses:", courseError);
-      return [];
-    }
-
-    // Обчислюємо рейтинг для кожного курсу
-    const coursesWithRating = await Promise.all(
-      courses.map(async (course) => {
-        const ratingData = await getCourseRating(course.id);
-        const userCourse = userCourses.find((uc) => uc.course_id === course.id);
-        return {
-          ...course,
-          rating: ratingData.rating, // Додаємо середній рейтинг
-          student_count: course.rating_count || 0, // Використовуємо rating_count як кількість студентів (оцінок)
-          progress: userCourse?.progress || 0, // Додаємо прогрес із UserCourse
-        };
-      })
-    );
-
-    return coursesWithRating as Course[];
-  } catch (error) {
-    console.error("Error fetching user courses:", error);
-    return [];
-  }
 }
 
 export async function addCourseToUser(
