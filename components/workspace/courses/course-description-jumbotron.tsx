@@ -56,7 +56,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   }
 
   return (
-    <section className="w-full bg-[--primary-light] border mb-2 rounded-xl h-[40vh] flex flex-col justify-center items-center gap-7 p-4">
+    <section className="w-full bg-[--primary-light] border mb-2 rounded-xl min-h-[40vh] flex flex-col justify-center items-center gap-7 p-4 py-10">
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-5xl font-bold text-center">
           {title || (
@@ -83,7 +83,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
         )}
       </div>
 
-      <p className="text-xl max-w-[70%] text-center">
+      <p className="text-xl md:max-w-[70%] text-center">
         {description || (
           <Skeleton
             baseColor="#e2e8f0"
@@ -105,7 +105,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
       )}
     {
       isCourseAdded !== null && (
-      <div className="flex gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
         {
           isCourseAdded && <Button variant={"solid"}>
             <Link href={`/workspace/courses/${id}/modules`}>

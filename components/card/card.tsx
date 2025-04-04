@@ -10,7 +10,7 @@ interface FlashcardProps {
 
 export default function Flashcard({ frontContent, backContent, isFlipped, onClick }: FlashcardProps) {
   return (
-    <div className="w-full h-full aspect-[4/3] perspective" onClick={onClick}>
+    <div className="w-full md:h-full aspect-[3/4] md:aspect-[4/3] perspective" onClick={onClick}>
       <motion.div
         className="w-full h-full relative preserve-3d cursor-pointer"
         initial={false}

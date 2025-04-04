@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -28,12 +28,14 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
   const [searchText, setSearchText] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<Record<string, boolean>>({});
 
-  const uniqueTypes = Array.from(
-    new Set(courses.map((course) => course.type || "Uncategorized").map((type) => type.toLowerCase())),
-  ).map((type) => ({
-    value: type,
-    label: type.charAt(0).toUpperCase() + type.slice(1),
-  }));
+  const uniqueTypes = useMemo(() => {
+    return Array.from(
+      new Set(courses.map((course) => course.type || "Uncategorized").map((type) => type.toLowerCase()))
+    ).map((type) => ({
+      value: type,
+      label: type.charAt(0).toUpperCase() + type.slice(1),
+    }));
+  }, [courses]);
 
   useEffect(() => {
     const initialSelectedTypes: Record<string, boolean> = {};
@@ -41,7 +43,7 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
       initialSelectedTypes[type.value] = false;
     });
     setSelectedTypes(initialSelectedTypes);
-  }, [courses]);
+  }, [uniqueTypes]);
 
   const handleTypeToggle = (type: string) => {
     setSelectedTypes((prev) => ({
