@@ -93,6 +93,7 @@ export default function LoginPage() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                style={{ fontSize: "16px" }}
                 className="pl-10 border-[#517970] focus-visible:ring-[#517970]"
               />
             </div>
@@ -107,6 +108,7 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                style={{ fontSize: "16px" }}
                 className="pl-10 pr-10 border-[#517970] focus-visible:ring-[#517970]"
               />
               <button

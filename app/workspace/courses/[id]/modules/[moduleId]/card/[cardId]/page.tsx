@@ -89,8 +89,8 @@ const handleSelection = (flashcardId: number | undefined, value: boolean) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-8">
-      <div className="w-full max-w-4xl rounded-3xl p-8">
+    <div className="flex flex-col items-center justify-center md:p-8 ">
+      <div className="w-full max-w-4xl rounded-3xl md:p-8">
         <div className="items-center gap-4">
           <div className="flex-1">
             <div className="w-full h-[425px] flex items-center gap-3">

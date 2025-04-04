@@ -106,9 +106,9 @@ export default function Home() {
         metrics={metrics}
       />
 
-    <div className="mx-auto my-32">
+      <div className="mx-auto my-32">
         <StudyCarousel title="Directions of Education" topics={studyTopics} />
-        </div>
+      </div>
 
       <Gradient />
     </div>
