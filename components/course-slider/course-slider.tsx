@@ -9,7 +9,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
 import { cn } from "@/lib/utils";
 
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -30,16 +29,10 @@ export function CourseCarousel({
   autoplay = false,
   showPagination = false,
 }: CourseCarouselProps) {
-  // Custom navigation references
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
-  // Responsive breakpoints
-  // const isDesktop = useMediaQuery("(min-width: 1024px)");
-  // const isTablet = useMediaQuery("(min-width: 640px)");
-
-  // Handle empty courses array
   if (!courses || courses.length === 0) {
     return (
       <div className="w-full p-8 text-center bg-muted rounded-lg">

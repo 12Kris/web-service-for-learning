@@ -1,74 +1,81 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import LoadingSpinner from "@/components/ui/loading-spinner"
-import { Button } from "@/components/ui/button"
-// import { Input } from "@/components/ui/input"
-// import { Pencil } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
-import { Book, Users, Award } from "lucide-react"
-// import { Book, Users } from 'lucide-react';
-import { Progress } from "@/components/ui/progress"
-import { useRouter } from "next/navigation"
-import { signOut } from "@/utils/supabase/actions"
-// import { createClient } from "@/utils/supabase/client"
-import type { Profile } from "@/lib/types/user"
-import { getProfileById } from "@/utils/supabase/actions"
-import type { Course } from "@/lib/types/course"
-// import { getCourses, getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions"
-import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions"
-import { getUser } from "@/utils/supabase/server"
-import ProfileEdit from "./edit/page"
-// import ProfileEdit from "./edit/page"
+import { useState, useEffect } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LoadingSpinner from "@/components/ui/loading-spinner";
+import { Button } from "@/components/ui/button";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Book, Users, Award } from "lucide-react";
+
+import { Progress } from "@/components/ui/progress";
+import { useRouter } from "next/navigation";
+import { signOut } from "@/utils/supabase/actions";
+
+import type { Profile } from "@/lib/types/user";
+import { getProfileById } from "@/utils/supabase/actions";
+import type { Course } from "@/lib/types/course";
+
+import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
+import { getUser } from "@/utils/supabase/server";
+import ProfileEdit from "./edit/page";
 
 export default function UserProfile() {
-  const [activeMenuItem, setActiveMenuItem] = useState("profile")
-  // const [user, setUser] = useState<User | null>(null)
-  const [user, setUser] = useState<Profile | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
-  const [createdCourses, setCreatedCourses] = useState<Course[] | null>(null)
-  const [studyingCourses, setStudyingCourses] = useState<Course[] | null>(null)
+  const [activeMenuItem, setActiveMenuItem] = useState("profile");
+
+  const [user, setUser] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const [createdCourses, setCreatedCourses] = useState<Course[] | null>(null);
+  const [studyingCourses, setStudyingCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true)
-      const currentUser = await getUser()
-      console.log("Current display name:", currentUser?.user_metadata?.displayName)
+      setIsLoading(true);
+      const currentUser = await getUser();
+      console.log(
+        "Current display name:",
+        currentUser?.user_metadata?.displayName
+      );
 
       try {
         if (!currentUser) {
-          throw new Error("User not authenticated")
+          throw new Error("User not authenticated");
         }
 
-        setUser(await getProfileById(currentUser.id))
-        setCreatedCourses(await getUserCreatedCourses())
-        setStudyingCourses(await getUserCourses())
-        // setStudyingCourses(await getCourses());
+        setUser(await getProfileById(currentUser.id));
+        setCreatedCourses(await getUserCreatedCourses());
+        setStudyingCourses(await getUserCourses());
       } catch (error) {
-        console.error("Error fetching user data:", error)
+        console.error("Error fetching user data:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const handleLogout = async () => {
     try {
-      await signOut()
-      router.push("/")
+      await signOut();
+      router.push("/");
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error("Logout failed:", error);
     }
-  }
+  };
 
   if (isLoading) {
-    return <LoadingSpinner className="mx-auto" />
+    return <LoadingSpinner className="mx-auto" />;
   }
 
   const menuItems = [
@@ -78,20 +85,19 @@ export default function UserProfile() {
     { id: "courses-created", label: "Courses Created" },
     { id: "certificates", label: "Certificates" },
     { id: "settings", label: "Settings" },
-  ]
-
-  // if (!user || !createdCourses || !studyingCourses) {
-  //   return <LoadingSpinner className="mx-auto" />;
-  // }
+  ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row">
+    <div className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row md:max-h-[90vh] ">
       {/* Sidebar */}
       <div className="w-full md:w-[300px] lg:w-[380px] border-b md:border-b-0 md:border-r">
         <div className="flex flex-col items-center pt-10 pb-6">
           <div className="rounded-full p-6 md:p-10 mb-4">
             <Avatar className="w-16 h-16 md:w-24 md:h-24">
-              <AvatarImage src={user?.avatar_url || "/placeholder.svg"} alt={user?.username || "User"} />
+              <AvatarImage
+                src={user?.avatar_url || "/placeholder.svg"}
+                alt={user?.username || "User"}
+              />
               <AvatarFallback className="bg-[#e0f2e9] text-[#5c7d73] text-4xl">
                 {user?.username
                   ?.split(" ")
@@ -100,8 +106,12 @@ export default function UserProfile() {
               </AvatarFallback>
             </Avatar>
           </div>
-          <h2 className="text-2xl font-medium text-[#5c7d73] mb-1">{user?.username}</h2>
-          <p className="text-sm text-gray-500">{user?.email || "Unknown Email"}</p>
+          <h2 className="text-2xl font-medium text-[#5c7d73] mb-1">
+            {user?.username}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {user?.email || "Unknown Email"}
+          </p>
         </div>
 
         <nav className="mt-4">
@@ -109,7 +119,9 @@ export default function UserProfile() {
             <button
               key={item.id}
               className={`w-full text-left px-4 md:px-8 py-3 md:py-4 text-base md:text-lg ${
-                activeMenuItem === item.id ? "bg-[#5c7d73] text-white" : "text-[#5c7d73] hover:bg-gray-100"
+                activeMenuItem === item.id
+                  ? "bg-[#5c7d73] text-white"
+                  : "text-[#5c7d73] hover:bg-gray-100"
               }`}
               onClick={() => setActiveMenuItem(item.id)}
             >
@@ -130,14 +142,17 @@ export default function UserProfile() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-6">
+      <div className="flex-1 p-4 md:p-6  md:max-h-[90vh]">
         {activeMenuItem === "profile" && <ProfileEdit />}
 
         {activeMenuItem === "courses-created" && (
-          <div className="flex items-center justify-center mt-4">
+          <div className=" mt-4 overflow-y-scroll h-full">
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
               {createdCourses?.map((course) => (
-                <Card key={course.id} className="shadow-md hover:shadow-lg transition-shadow">
+                <Card
+                  key={course.id}
+                  className="shadow-md hover:shadow-lg transition-shadow"
+                >
                   <CardHeader>
                     <CardTitle className="text-xl">{course.name}</CardTitle>
                   </CardHeader>
@@ -154,7 +169,9 @@ export default function UserProfile() {
                     </div>
                     <div className="flex items-center">
                       <Award className="w-5 h-5 text-yellow-500 mr-1" />
-                      <span className="font-bold">{course.rating?.toFixed(1) || "N/A"}</span>
+                      <span className="font-bold">
+                        {course.rating?.toFixed(1) || "N/A"}
+                      </span>
                       <span className="text-muted-foreground ml-1">/ 5.0</span>
                       {/* <span className="font-bold">
                           {course.type}
@@ -163,7 +180,9 @@ export default function UserProfile() {
                   </CardContent>
                   <CardFooter>
                     <Button asChild className="w-full">
-                      <Link href={`/workspace/courses/${course.id}`}>Manage Course</Link>
+                      <Link href={`/workspace/courses/${course.id}`}>
+                        Manage Course
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -173,10 +192,13 @@ export default function UserProfile() {
         )}
 
         {activeMenuItem === "courses-enrolled" && (
-          <div className="flex items-center justify-center mt-4">
-            <div className="space-y-6">
+          <div className="flex items-center justify-center mt-4 overflow-y-scroll h-full">
+            <div className="h-full space-y-6">
               {studyingCourses?.map((course) => (
-                <Card key={course.id} className="shadow-md hover:shadow-lg transition-shadow">
+                <Card
+                  key={course.id}
+                  className="shadow-md hover:shadow-lg transition-shadow"
+                >
                   <CardHeader>
                     <CardTitle className="text-xl">{course.name}</CardTitle>
                     <CardDescription>
@@ -208,7 +230,9 @@ export default function UserProfile() {
                   </CardContent>
                   <CardFooter>
                     <Button asChild className="w-full">
-                      <Link href={`/workspace/courses/${course.id}`}>Continue Learning</Link>
+                      <Link href={`/workspace/courses/${course.id}`}>
+                        Continue Learning
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -222,13 +246,13 @@ export default function UserProfile() {
           activeMenuItem !== "courses-enrolled" && (
             <div className="flex items-center justify-center h-full">
               <p className="text-lg text-gray-500">
-                {activeMenuItem.charAt(0).toUpperCase() + activeMenuItem.slice(1).replace("-", " ")} content will be
-                displayed here
+                {activeMenuItem.charAt(0).toUpperCase() +
+                  activeMenuItem.slice(1).replace("-", " ")}{" "}
+                content will be displayed here
               </p>
             </div>
           )}
       </div>
     </div>
-  )
+  );
 }
-
