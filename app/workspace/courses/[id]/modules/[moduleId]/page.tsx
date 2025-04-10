@@ -13,6 +13,7 @@ import {
 import ModulePage from "@/components/workspace/courses/modules/tasks-and-tests";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 
 export interface PageData {
   title: string;
@@ -81,7 +82,8 @@ export default function EnroledModulePage({
     <div>
       <Button>
         <Link href={`/workspace/courses/${id}`}>
-          Back to modules
+          <ChevronLeft className="w-6 h-6" />
+          {/* Back to modules */}
         </Link>
       </Button>
       <PageHeader className="mb-10" title={"Modules of " + pageData.title} />

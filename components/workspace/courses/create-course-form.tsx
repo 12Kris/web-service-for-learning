@@ -260,6 +260,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import type { CourseDetails, WhatWillLearn } from "@/lib/types/course"
 import type { Module } from "@/lib/types/modules"
+import { ChevronLeft } from "lucide-react"
 
 type FormState = {
   name: string
@@ -352,9 +353,10 @@ export default function CreateCourseForm() {
   return (
     <div className="bg-[--background] min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
-      <Button className="mb-2">
+        <Button className="mb-2">
           <Link href={`/workspace/courses/browse`}>
-            Back to courses
+            <ChevronLeft className="w-6 h-6" />
+            {/* Back to courses */}
           </Link>
         </Button>
 
@@ -424,7 +426,8 @@ export default function CreateCourseForm() {
                     type="button"
                     onClick={() => deleteItem("course_details", detail.id)}
                     variant="destructive"
-                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.course_details.length === 1}
                   >
@@ -459,7 +462,8 @@ export default function CreateCourseForm() {
                     type="button"
                     onClick={() => deleteItem("what_w_learn", item.id)}
                     variant="destructive"
-                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.what_w_learn.length === 1}
                   >
@@ -500,7 +504,8 @@ export default function CreateCourseForm() {
                       type="button"
                       onClick={() => deleteItem("curriculum", module.id)}
                       variant="destructive"
-                      className="bg-red-100 text-red-600 hover:bg-red-200 self-end"
+                      // className="bg-red-100 text-red-600 hover:bg-red-200 self-end"
+                      className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent] self-end"
                       size="sm"
                       disabled={formState.curriculum.length === 1}
                     >

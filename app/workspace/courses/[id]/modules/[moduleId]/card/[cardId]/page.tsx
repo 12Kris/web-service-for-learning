@@ -151,11 +151,13 @@ export default function CardPage() {
               className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
                 ${
                   currentFlashcard?.id !== undefined && selectedAnswers[currentFlashcard?.id] === false
-                    ? "bg-red-500 text-white"
-                    : "hover:bg-[--neutral] hover:text-white"
+                    // ? "text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
+                    ? "text-white bg-[--accent]"
+                    : "hover:bg-[--accent] hover:text-white"
                 }`}
               aria-label="Incorrect"
             >
+              
               <X className="w-6 h-6" />
             </button>
 
@@ -168,7 +170,8 @@ export default function CardPage() {
               className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
                 ${
                   currentFlashcard?.id !== undefined && selectedAnswers[currentFlashcard?.id] === true
-                    ? "bg-green-500 text-white"
+                    // ? "text-[--neutral] bg-transparent border-2 border-[--neutral] hover:text-white hover:bg-[--neutral]"
+                    ? "text-white bg-[--neutral]"
                     : "hover:bg-[--neutral] hover:text-white"
                 }`}
               aria-label="Correct"
