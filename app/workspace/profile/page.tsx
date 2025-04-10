@@ -88,7 +88,7 @@ export default function UserProfile() {
   ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row md:max-h-[90vh] ">
+    <div className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row md:max-h-[61vh]">
       {/* Sidebar */}
       <div className="w-full md:w-[300px] lg:w-[380px] border-b md:border-b-0 md:border-r">
         <div className="flex flex-col items-center pt-10 pb-6">
@@ -142,7 +142,7 @@ export default function UserProfile() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-6  md:max-h-[90vh]">
+      <div className="flex-1 p-4 md:p-6  md:max-h-[90vh] mb-8">
         {activeMenuItem === "profile" && <ProfileEdit />}
 
         {activeMenuItem === "courses-created" && (
@@ -192,7 +192,7 @@ export default function UserProfile() {
         )}
 
         {activeMenuItem === "courses-enrolled" && (
-          <div className="flex items-center justify-center mt-4 overflow-y-scroll h-full">
+          <div className="flex items-center justify-center mt-4 overflow-y-scroll h-full px-3">
             <div className="h-full space-y-6">
               {studyingCourses?.map((course) => (
                 <Card

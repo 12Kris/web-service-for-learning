@@ -2257,6 +2257,7 @@ import LoadingSpinner from "@/components/ui/loading-spinner"
 import Modal from "@/components/workspace/modals/modal"
 import { getTestById } from "@/lib/tests/actions"
 import Link from "next/link"
+import { ChevronLeft } from "lucide-react"
 
 type FormState = {
   name: string | undefined
@@ -2593,7 +2594,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
       <div className="max-w-4xl mx-auto">
         <Button className="mb-2">
           <Link href={`/workspace/courses/${course.id}`}>
-            Back to course page
+            <ChevronLeft className="w-6 h-6" />
+            {/* Back to course page */}
           </Link>
         </Button>
 
@@ -2645,7 +2647,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     type="button"
                     onClick={() => deleteItem("course_details", item.id)}
                     variant="destructive"
-                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.course_details.length === 1}
                   >
@@ -2678,7 +2681,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     type="button"
                     onClick={() => deleteItem("what_w_learn", item.id)}
                     variant="destructive"
-                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.what_w_learn.length === 1}
                   >
@@ -2777,7 +2781,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       e.preventDefault()
                       handleDeleteBlock(module.id)
                     }}
-                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                   >
                     Delete Module
@@ -2809,7 +2814,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                               variant="destructive"
                               size="sm"
                               onClick={() => deleteMaterialItem(material.id)}
-                              className="bg-red-100 text-red-600 hover:bg-red-200"
+                              // className="bg-red-100 text-red-600 hover:bg-red-200"
+                              className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                             >
                               Delete Cards
                             </Button>
@@ -2842,7 +2848,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                       e.preventDefault()
                                       deleteFlashcard(flashcard.id)
                                     }}
-                                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                                   >
                                     Delete Card
                                   </Button>
@@ -2898,7 +2905,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                               variant="destructive"
                               size="sm"
                               onClick={() => deleteTestItem(test.id)}
-                              className="bg-red-100 text-red-600 hover:bg-red-200"
+                              // className="bg-red-100 text-red-600 hover:bg-red-200"
+                              className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                             >
                               Delete Test
                             </Button>
@@ -2931,7 +2939,8 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                       e.preventDefault()
                                       deleteQuestion(question.id)
                                     }}
-                                    className="bg-red-100 text-red-600 hover:bg-red-200"
+                                    // className="bg-red-100 text-red-600 hover:bg-red-200"
+                                    className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                                   >
                                     Delete Question
                                   </Button>

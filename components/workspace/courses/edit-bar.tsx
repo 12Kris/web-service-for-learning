@@ -92,7 +92,8 @@ const EditBar: React.FC<EditBarProps> = ({ id }) => {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                className="bg-red-500 hover:bg-red-600"
+                // className="bg-red-100 text-red-600 hover:bg-red-300 border-red-600"
+                className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                 onClick={handleDeleteCourse}
               >
                 Delete
