@@ -3,6 +3,9 @@ import { Button } from "../../ui/button";
 import Skeleton from "react-loading-skeleton";
 import { UserPlus, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { updateSpacedRepetitionWithAi } from "@/lib/courses/spaced-repetition-ai-actions";
+
 import {
   addCourseToUser,
   isCourseAddedToUser,
@@ -129,6 +132,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
                 <UserPlus /> Subscribe
               </>
             ) || (
+
               <Skeleton
                 baseColor="#e2e8f0"
                 highlightColor="white"
@@ -143,6 +147,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
               Edit Spaced Repetition
             </Button>
         )}
+        
       </div>
       )}
       {isModalOpen && <SpacedRepetitionModal courseId={id} onClose={() => setIsModalOpen(false)} />}

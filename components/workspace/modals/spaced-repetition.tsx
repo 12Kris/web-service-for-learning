@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
-import Skeleton from "react-loading-skeleton";
+import { updateSpacedRepetitionWithAi } from "@/lib/courses/spaced-repetition-ai-actions";
+
+// import Skeleton from "react-loading-skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { getSpacedRepetition, updateSpacedRepetition } from "@/lib/courses/spaced-repetition-actions";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SpacedRepetition } from "@/lib/types/learning";
 
-export interface SpacedRepetition {
-    start_date: string;
-    schedule: number[];
-    next_review_dates: string[];
-}
 
 export const SpacedRepetitionModal = ({ courseId, onClose }: { courseId: number; onClose: () => void }) => {
     const [spacedRepetition, setSpacedRepetition] = useState<SpacedRepetition | null>(null);
@@ -71,7 +70,17 @@ export const SpacedRepetitionModal = ({ courseId, onClose }: { courseId: number;
     };
 
     if (isLoading) {
-        return <Skeleton baseColor="#e2e8f0" highlightColor="white" width={300} height={100} />;
+        return(
+            <AlertDialog open={true}>
+                <AlertDialogContent>
+                <AlertDialogHeader>
+                <AlertDialogTitle>Edit Spaced Repetition</AlertDialogTitle>
+               
+                </AlertDialogHeader>
+                    <LoadingSpinner />
+                </AlertDialogContent>
+            </AlertDialog>
+        );
     }
 
     return (
@@ -119,6 +128,9 @@ export const SpacedRepetitionModal = ({ courseId, onClose }: { courseId: number;
                 </div>
 
                 <AlertDialogFooter>
+                <Button variant="outline" onClick={() => updateSpacedRepetitionWithAi(courseId, 2, 4)}>
+            Update Spaced Repetition with AI
+          </Button>
                     <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
                     <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
                 </AlertDialogFooter>

@@ -18,3 +18,8 @@ export interface LearningMaterial {
 export interface MaterialData {
   title: string;
 }
+export interface SpacedRepetition {
+    start_date: string;
+    schedule: number[];
+    next_review_dates: string[];
+}
