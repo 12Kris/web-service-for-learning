@@ -1,128 +1,212 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
-import Skeleton from "react-loading-skeleton";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { getSpacedRepetition, updateSpacedRepetition } from "@/lib/courses/spaced-repetition-actions";
+import { updateSpacedRepetitionWithAi } from "@/lib/courses/spaced-repetition-ai-actions";
 
-export interface SpacedRepetition {
-    start_date: string;
-    schedule: number[];
-    next_review_dates: string[];
-}
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  getSpacedRepetition,
+  updateSpacedRepetition,
+} from "@/lib/courses/spaced-repetition-actions";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SpacedRepetition } from "@/lib/types/learning";
 
-export const SpacedRepetitionModal = ({ courseId, onClose }: { courseId: number; onClose: () => void }) => {
-    const [spacedRepetition, setSpacedRepetition] = useState<SpacedRepetition | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+export const SpacedRepetitionModal = ({
+  courseId,
+  onClose,
+}: {
+  courseId: number;
+  onClose: () => void;
+}) => {
+  const [spacedRepetition, setSpacedRepetition] =
+    useState<SpacedRepetition | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchSpacedRepetition() {
-            try {
-                const data = await getSpacedRepetition(courseId);
-                if (data.spaced_repetition) {
-                    setSpacedRepetition(data.spaced_repetition);
-                }
-            } catch (error) {
-                console.error("Error fetching spaced repetition:", error);
-            } finally {
-                setIsLoading(false);
-            }
+  useEffect(() => {
+    async function fetchSpacedRepetition() {
+      try {
+        const data = await getSpacedRepetition(courseId);
+        if (data.spaced_repetition) {
+          setSpacedRepetition(data.spaced_repetition);
         }
-
-        fetchSpacedRepetition();
-    }, [courseId]);
-
-    const handleSave = async () => {
-        if (!spacedRepetition) return;
-
-        try {
-            const updatedSpacedRepetition = {
-                start_date: spacedRepetition.start_date,
-                schedule: spacedRepetition.schedule,
-                next_review_dates: spacedRepetition.next_review_dates
-            };
-
-            await updateSpacedRepetition(courseId, updatedSpacedRepetition);
-            onClose();
-        } catch (error) {
-            console.error("Error saving spaced repetition:", error);
-        }
-    };
-
-    const handleDateChange = (index: number, newDate: string) => {
-        if (spacedRepetition && spacedRepetition.next_review_dates) {
-            const updatedDates = [...spacedRepetition.next_review_dates];
-            updatedDates[index] = newDate;
-            setSpacedRepetition({ ...spacedRepetition, next_review_dates: updatedDates });
-        }
-    };
-
-    const handleAddDate = () => {
-        if (spacedRepetition && spacedRepetition.next_review_dates) {
-            const updatedDates = [...spacedRepetition.next_review_dates, ""];
-            setSpacedRepetition({ ...spacedRepetition, next_review_dates: updatedDates });
-        }
-    };
-
-    const handleRemoveDate = (index: number) => {
-        if (spacedRepetition && spacedRepetition.next_review_dates) {
-            const updatedDates = spacedRepetition.next_review_dates.filter((_, i) => i !== index);
-            setSpacedRepetition({ ...spacedRepetition, next_review_dates: updatedDates });
-        }
-    };
-
-    if (isLoading) {
-        return <Skeleton baseColor="#e2e8f0" highlightColor="white" width={300} height={100} />;
+      } catch (error) {
+        console.error("Error fetching spaced repetition:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
+    fetchSpacedRepetition();
+  }, [courseId]);
+
+  const handleUpdateSpacedRepetitionWithAi = async (
+    courseId: number,
+    howDifficult: number,
+    timeSpent: number
+  ) => {
+    console.log("Updating spaced repetition with AI Handler...");
+    console.log(spacedRepetition);
+
+    // if (!spacedRepetition) return;
+
+    try {
+      console.log("Updating spaced repetition with AI...");
+      console.log(spacedRepetition);
+
+      const updatedSpacedRepetition = await updateSpacedRepetitionWithAi(
+        courseId,
+        howDifficult,
+        timeSpent
+      );
+      console.log(updatedSpacedRepetition);
+
+      setSpacedRepetition(updatedSpacedRepetition);
+    } catch (error) {
+      console.error("Error updating spaced repetition with AI:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!spacedRepetition) return;
+
+    try {
+      const updatedSpacedRepetition = {
+        start_date: spacedRepetition.start_date,
+        schedule: spacedRepetition.schedule,
+        next_review_dates: spacedRepetition.next_review_dates,
+      };
+
+      await updateSpacedRepetition(courseId, updatedSpacedRepetition);
+      onClose();
+    } catch (error) {
+      console.error("Error saving spaced repetition:", error);
+    }
+  };
+
+  const handleDateChange = (index: number, newDate: string) => {
+    if (spacedRepetition && spacedRepetition.next_review_dates) {
+      const updatedDates = [...spacedRepetition.next_review_dates];
+      updatedDates[index] = newDate;
+      setSpacedRepetition({
+        ...spacedRepetition,
+        next_review_dates: updatedDates,
+      });
+    }
+  };
+
+  const handleAddDate = () => {
+    if (spacedRepetition && spacedRepetition.next_review_dates) {
+      const updatedDates = [...spacedRepetition.next_review_dates, ""];
+      setSpacedRepetition({
+        ...spacedRepetition,
+        next_review_dates: updatedDates,
+      });
+    }
+  };
+
+  const handleRemoveDate = (index: number) => {
+    if (spacedRepetition && spacedRepetition.next_review_dates) {
+      const updatedDates = spacedRepetition.next_review_dates.filter(
+        (_, i) => i !== index
+      );
+      setSpacedRepetition({
+        ...spacedRepetition,
+        next_review_dates: updatedDates,
+      });
+    }
+  };
+
+  if (isLoading) {
     return (
-        <AlertDialog open={true} onOpenChange={(open) => !open && onClose()}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>Edit Spaced Repetition</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        Edit the next review dates for spaced repetition.
-                    </AlertDialogDescription>
-                </AlertDialogHeader>
-
-                <div className="my-4 max-h-[60vh] overflow-y-auto">
-                    <div className="space-y-4">
-                        <label className="font-medium">Next Review Dates:</label>
-                        {spacedRepetition?.next_review_dates?.length ? (
-                            spacedRepetition.next_review_dates.map((date, index) => (
-                                <div key={index} className="flex items-center gap-2 my-2">
-                                    <input
-                                        type="date"
-                                        value={date}
-                                        onChange={(e) => handleDateChange(index, e.target.value)}
-                                        className="p-2 border rounded-lg bg-[--card] flex-1"
-                                    />
-                                    <Button
-                                        type="button"
-                                        variant="destructive"
-                                        onClick={() => handleRemoveDate(index)}
-                                        className="h-8 w-8 p-0 flex items-center justify-center"
-                                    >
-                                        -
-                                    </Button>
-                                </div>
-                            ))
-                        ) : (
-                            <p>No review dates available.</p>
-                        )}
-                    </div>
-                </div>
-
-                <div className="flex justify-end mt-2">
-                    <Button variant="outline" onClick={handleAddDate} className="mr-2">
-                        Add Date
-                    </Button>
-                </div>
-
-                <AlertDialogFooter>
-                    <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+      <AlertDialog open={true}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Edit Spaced Repetition</AlertDialogTitle>
+          </AlertDialogHeader>
+          <LoadingSpinner />
+        </AlertDialogContent>
+      </AlertDialog>
     );
+  }
+
+  return (
+    <AlertDialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Edit Spaced Repetition</AlertDialogTitle>
+          <AlertDialogDescription>
+            Edit the next review dates for spaced repetition.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <div className="my-4 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-4">
+            <label className="font-medium">Next Review Dates:</label>
+            {spacedRepetition?.next_review_dates?.length ? (
+              spacedRepetition.next_review_dates.map((date, index) => (
+                <div key={index} className="flex items-center gap-2 my-2">
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => handleDateChange(index, e.target.value)}
+                    className="p-2 border rounded-lg bg-[--card] flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => handleRemoveDate(index)}
+                    className="h-8 w-8 p-0 flex items-center justify-center"
+                  >
+                    -
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <p>No review dates available.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-2">
+          <Button variant="outline" onClick={handleAddDate} className="mr-2">
+            Add Date
+          </Button>
+        </div>
+        <div className="flex flex-col  mt-2 gap-2">
+          <p className="text-right">Temporary generation solution...</p>
+          <div className="flex justify-end mt-2 gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleUpdateSpacedRepetitionWithAi(courseId, 2, 4)}
+            >
+              Generate SR Easy
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                handleUpdateSpacedRepetitionWithAi(courseId, 12, 14)
+              }
+            >
+              Generate SR Difficult
+            </Button>
+          </div>
+        </div>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 };

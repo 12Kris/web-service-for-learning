@@ -23,6 +23,24 @@ export async function saveCardSelection(cardId: number, selection: boolean) {
     return data;
 }
 
+export async function getCardResults(cardId: number) {
+    const supabase = await createClient();
+    const user = await getUser();
+    if (!user) {
+        return;
+    }
+    const { data, error } = await supabase
+        .from("card_results")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("card_id", cardId);
+    if (error) {
+        console.error(error);
+        return;
+    }
+    return data;
+}
+
 export async function saveCardResult(
     cardId: number,
     startTime: number | null,

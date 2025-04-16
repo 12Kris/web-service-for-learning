@@ -1,4 +1,3 @@
-
 export interface Lesson {
   id: number;
   title: string;
@@ -12,9 +11,14 @@ export interface LearningMaterial {
   title: string;
   content: string;
   block_id?: number;
-  flashcards?: {id: number, front: string, back: string}[]
+  flashcards?: { id: number; front: string; back: string }[];
 }
 
 export interface MaterialData {
   title: string;
+}
+export interface SpacedRepetition {
+  start_date: string;
+  schedule: number[];
+  next_review_dates: string[];
 }
