@@ -29,6 +29,7 @@ export const SpacedRepetitionModal = ({
   const [spacedRepetition, setSpacedRepetition] =
     useState<SpacedRepetition | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchSpacedRepetition() {
@@ -55,22 +56,28 @@ export const SpacedRepetitionModal = ({
     console.log("Updating spaced repetition with AI Handler...");
     console.log(spacedRepetition);
 
-    // if (!spacedRepetition) return;
-
     try {
       console.log("Updating spaced repetition with AI...");
       console.log(spacedRepetition);
 
-      const updatedSpacedRepetition = await updateSpacedRepetitionWithAi(
+      const { updatedSpacedRepetition, error } = await updateSpacedRepetitionWithAi(
         courseId,
         howDifficult,
         timeSpent
       );
+      setUpdateError(null);
       console.log(updatedSpacedRepetition);
+
+      if (error || updatedSpacedRepetition instanceof Error) {
+        //   console.error("Error updating spaced repetition with AI:", error);
+          setUpdateError("Failed to update spaced repetition with AI. Please try again.");
+          return;
+      }
 
       setSpacedRepetition(updatedSpacedRepetition);
     } catch (error) {
       console.error("Error updating spaced repetition with AI:", error);
+      setUpdateError("Failed to update spaced repetition with AI. Please try again.");
     }
   };
 
@@ -180,7 +187,7 @@ export const SpacedRepetitionModal = ({
             Add Date
           </Button>
         </div>
-        <div className="flex flex-col  mt-2 gap-2">
+        <div className="flex flex-col mt-2 gap-2">
           <p className="text-right">Temporary generation solution...</p>
           <div className="flex justify-end mt-2 gap-2">
             <Button
@@ -200,6 +207,7 @@ export const SpacedRepetitionModal = ({
               Generate SR Difficult
             </Button>
           </div>
+          {updateError && <p className="text-red-500">{updateError}</p>}
         </div>
 
         <AlertDialogFooter>

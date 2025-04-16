@@ -13,52 +13,57 @@ const openai = new OpenAI({
 
 export async function updateSpacedRepetitionWithAi(
   courseId: number,
-
   howDifficult: number,
   timeSpent: number
 ) {
-  console.log("Request to AI", courseId);
+  try {
+    console.log("Request to AI", courseId);
 
-  const supabase = await createClient();
-  const user = await getUser();
+    const supabase = await createClient();
+    const user = await getUser();
 
-  // const cardResults = await getCardResults(courseId);
+    if (!user?.id) {
+      return {
+        updatedSpacedRepetition: null,
+        error: new Error("User is not authenticated."),
+      };
+    }
 
-  if (!user?.id) {
-    throw new Error("User is not authenticated.");
+    const oldSpacedRepetition: SpacedRepetition = await (
+      await getSpacedRepetition(courseId)
+    ).spaced_repetition;
+
+    const newSpacedRepetition = await generateCourseContent(
+      JSON.stringify(oldSpacedRepetition),
+      howDifficult,
+      timeSpent
+    );
+
+    const { error } = await supabase
+      .from("UserCourse")
+      .update({
+        spaced_repetition: newSpacedRepetition,
+      })
+      .eq("user_id", user.id)
+      .eq("course_id", courseId);
+
+    if (error) {
+      console.error("Error updating spaced repetition:", error);
+      return { updatedSpacedRepetition: oldSpacedRepetition, error };
+    }
+
+    return { updatedSpacedRepetition: newSpacedRepetition, error: null };
+  } catch (err) {
+    console.error("Error in updateSpacedRepetitionWithAi:", err);
+    return { updatedSpacedRepetition: null, error: err };
   }
-
-  const oldSpacedRepetition: SpacedRepetition = await (
-    await getSpacedRepetition(courseId)
-  ).spaced_repetition;
-
-  const newSpacedRepetition = await generateCourseContent(
-    JSON.stringify(oldSpacedRepetition),
-    howDifficult,
-    timeSpent
-  );
-
-  const { error } = await supabase
-    .from("UserCourse")
-    .update({
-      spaced_repetition: newSpacedRepetition,
-    })
-    .eq("user_id", user.id)
-    .eq("course_id", courseId);
-
-  if (error) {
-    console.error("Error updating spaced repetition:", error);
-    throw new Error("Failed to update spaced repetition.");
-  }
-
-  return newSpacedRepetition;
 }
 
 async function generateCourseContent(
   oldSpaceRepetion: string,
   howDifficult: number,
   timeSpent: number
-): Promise<SpacedRepetition | null> {
+): Promise<SpacedRepetition | Error> {
   try {
     const prompt = `
     Today is ${new Date().toISOString().split("T")[0]}.
@@ -110,7 +115,7 @@ async function generateCourseContent(
     const generatedContent = JSON.parse(response.output_text);
     return generatedContent as SpacedRepetition;
   } catch (error) {
-    console.error("Error generating course content:", error);
-    return null;
+    // console.error("Error generating course content:", error);
+    return error as Error;
   }
 }
