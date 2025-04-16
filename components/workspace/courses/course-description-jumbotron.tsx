@@ -3,8 +3,6 @@ import { Button } from "../../ui/button";
 import Skeleton from "react-loading-skeleton";
 import { UserPlus, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { updateSpacedRepetitionWithAi } from "@/lib/courses/spaced-repetition-ai-actions";
 
 import {
   addCourseToUser,
@@ -12,7 +10,7 @@ import {
   removeCourseFromUser,
 } from "@/lib/courses/actions";
 import Link from "next/link";
-import {SpacedRepetitionModal} from "@/components/workspace/modals/spaced-repetition";
+import { SpacedRepetitionModal } from "@/components/workspace/modals/spaced-repetition";
 
 interface CourseDescriptionJumbotronProps {
   title?: string;
@@ -30,7 +28,6 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
 }) => {
   const [isCourseAdded, setIsCourseAdded] = useState<boolean | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
 
   useEffect(() => {
     async function fetchData() {
@@ -106,51 +103,53 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
           count={1}
         />
       )}
-    {
-      isCourseAdded !== null && (
-      <div className="flex flex-col md:flex-row gap-2">
-        {
-          isCourseAdded && <Button variant={"solid"}>
-            <Link href={`/workspace/courses/${id}/modules`}>
-              Go to modules
-            </Link>
-          </Button>
-        }
-        <Button
-          variant={isCourseAdded ? "destructive" : "solid"}
-          onClick={() =>
-            isCourseAdded ? handleRemoveCourse(id) : handleAddCourse(id)
-          }
-        >
-          {isCourseAdded ? (
-            <>
-              <UserCheck /> Subscribed
-            </>
-          ) : (
-            (
-              <>
-                <UserPlus /> Subscribe
-              </>
-            ) || (
-
-              <Skeleton
-                baseColor="#e2e8f0"
-                highlightColor="white"
-                width={300}
-                count={1}
-              />
-            )
+      {isCourseAdded !== null && (
+        <div className="flex flex-col md:flex-row gap-2">
+          {isCourseAdded && (
+            <Button variant={"solid"}>
+              <Link href={`/workspace/courses/${id}/modules`}>
+                Go to modules
+              </Link>
+            </Button>
           )}
-        </Button>
-        {isCourseAdded && (
+          <Button
+            variant={isCourseAdded ? "destructive" : "solid"}
+            onClick={() =>
+              isCourseAdded ? handleRemoveCourse(id) : handleAddCourse(id)
+            }
+          >
+            {isCourseAdded ? (
+              <>
+                <UserCheck /> Subscribed
+              </>
+            ) : (
+              (
+                <>
+                  <UserPlus /> Subscribe
+                </>
+              ) || (
+                <Skeleton
+                  baseColor="#e2e8f0"
+                  highlightColor="white"
+                  width={300}
+                  count={1}
+                />
+              )
+            )}
+          </Button>
+          {isCourseAdded && (
             <Button variant="outline" onClick={() => setIsModalOpen(true)}>
               Edit Spaced Repetition
             </Button>
-        )}
-        
-      </div>
+          )}
+        </div>
       )}
-      {isModalOpen && <SpacedRepetitionModal courseId={id} onClose={() => setIsModalOpen(false)} />}
+      {isModalOpen && (
+        <SpacedRepetitionModal
+          courseId={id}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </section>
   );
 };
