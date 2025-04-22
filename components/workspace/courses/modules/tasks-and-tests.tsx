@@ -8,7 +8,7 @@ import {getMaterialsByBlockId, getTestsByBlockId} from "@/lib/courses/actions"
 import type {TestData} from "@/lib/types/test"
 import type {LearningMaterial} from "@/lib/types/learning"
 import {BookOpen, ClipboardCheck} from "lucide-react"
-import LoadingSpinner from "@/components/ui/loading-spinner"
+import {LoadingSpinner} from "@/components/ui/loading-spinner"
 
 export default function ModulePage() {
     const params = useParams()

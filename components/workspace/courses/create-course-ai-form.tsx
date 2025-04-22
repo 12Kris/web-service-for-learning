@@ -12,7 +12,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { createCourseWithAI } from "@/lib/courses/ai-actions";
-import { GenerationProgress } from "@/components/ui/generation-progress";
+// import { GenerationProgress } from "@/components/ui/generation-progress";
 
 export default function CreateCourseAIForm() {
   const [prompt, setPrompt] = useState<string>("");
@@ -152,19 +152,11 @@ export default function CreateCourseAIForm() {
           )}
 
           <CardFooter className="px-0 mb-0 pb-0 flex flex-col gap-4">
-            {isLoading && (
-              <div className="mb-0">
-                <GenerationProgress
-                  isLoading={isLoading}
-                  label={`Generating ${coursesAmount} course${coursesAmount > 1 ? "s" : ""}...`}
-                />
-              </div>
-            )}
-            {!isLoading && (
+    
               <Button type="submit" className="w-full mb-0 " disabled={isLoading}>
                 {isLoading ? "Generation in progress..." : "Generate Course"}
               </Button>
-            )}
+         
           </CardFooter>
         </form>
       </CardContent>
