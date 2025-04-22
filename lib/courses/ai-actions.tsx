@@ -9,9 +9,12 @@ import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/server";
 
-
+const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
+if (!apiKey) {
+  throw new Error("Missing OpenAI API Key. Set NEXT_PUBLIC_OPENAI_API_KEY in your Vercel environment variables.");
+}
 const openai = new OpenAI({
-  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || "",
+  apiKey,
   // dangerouslyAllowBrowser: true,
 });
 
