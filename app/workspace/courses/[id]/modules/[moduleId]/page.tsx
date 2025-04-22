@@ -4,7 +4,7 @@ import { Module } from "@/lib/types/modules";
 import { PageHeader } from "@/components/ui/page-header";
 import { useEffect, useState } from "react";
 import { use } from "react";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import {LoadingSpinner} from "@/components/ui/loading-spinner";
 import {
   getCourseById,
   getModulesByCourseId,

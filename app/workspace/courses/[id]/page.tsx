@@ -7,7 +7,7 @@ import { Module } from "@/lib/types/modules";
 import { getCourseById, getModulesByCourseId } from "@/lib/courses/actions";
 import { getCourseRating } from "@/lib/courses/rating-actions";
 import { Course } from "@/lib/types/course";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+import {LoadingSpinner} from "@/components/ui/loading-spinner";
 import EditBar from "@/components/workspace/courses/edit-bar";
 import CourseDescriptionJumpotron from "@/components/workspace/courses/course-description-jumbotron";
 import CourseInfo from "@/components/workspace/courses/course-info";

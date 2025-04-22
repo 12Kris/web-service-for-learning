@@ -7,8 +7,10 @@ import { getSpacedRepetition } from "@/lib/courses/spaced-repetition-actions";
 import { SpacedRepetition } from "@/lib/types/learning";
 
 const openai = new OpenAI({
+  // baseURL: "https://openrouter.ai/api/v1",
+
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || "",
-  dangerouslyAllowBrowser: true,
+  // dangerouslyAllowBrowser: true,
 });
 
 export async function updateSpacedRepetitionWithAi(
@@ -75,7 +77,7 @@ async function generateCourseContent(
     `;
 
     const response = await openai.responses.create({
-      model: "gpt-4o-2024-08-06",
+      model: "gpt-4.1-nano-2025-04-14",
       input: [{ role: "user", content: prompt }],
       text: {
         format: {

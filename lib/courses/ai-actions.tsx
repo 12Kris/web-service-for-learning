@@ -1,3 +1,4 @@
+"use server";
 import { createCourse } from "@/lib/courses/actions";
 import { createBlock } from "@/lib/tests/actions";
 import { createMaterial } from "@/lib/tests/actions";
@@ -9,7 +10,7 @@ import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || "",
-  dangerouslyAllowBrowser: true,
+  // dangerouslyAllowBrowser: true,
 });
 
 interface GeneratedCourse {
@@ -88,7 +89,7 @@ async function generateCourseContent(
         `;
 
     const response = await openai.responses.create({
-      model: "gpt-4o-2024-08-06",
+      model: "gpt-4.1-nano-2025-04-14",
       input: [{ role: "user", content: prompt }],
       text: {
         format: {
