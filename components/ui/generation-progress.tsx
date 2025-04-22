@@ -16,12 +16,10 @@ export function GenerationProgress({ isLoading, label = "Generating course conte
       setProgress(0)
       const interval = setInterval(() => {
         setProgress((prev) => {
-          // Increase progress gradually but cap at 95% since we don't know when it will finish
           if (prev >= 95) {
             clearInterval(interval)
             return 95
           }
-          // Move faster at the beginning, slower as we approach 95%
           const increment = Math.max(0.5, 5 * (1 - prev / 100))
           return Math.min(95, prev + increment)
         })
@@ -29,11 +27,9 @@ export function GenerationProgress({ isLoading, label = "Generating course conte
 
       return () => {
         clearInterval(interval)
-        // When loading completes, quickly fill to 100%
         setProgress(100)
       }
     } else {
-      // Reset progress when not loading
       setProgress(0)
     }
   }, [isLoading])

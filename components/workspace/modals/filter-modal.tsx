@@ -21,7 +21,7 @@ interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
   courses: Course[];
-  onFilter: (filteredCourses: Course[], activeTypes: string[]) => void; // Оновлюємо сигнатуру
+  onFilter: (filteredCourses: Course[], activeTypes: string[]) => void;
 }
 
 export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalProps) {
@@ -55,7 +55,6 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
   const applyFilters = () => {
     let filteredCourses = [...courses];
 
-    // Filter by search text
     if (searchText.trim()) {
       const searchLower = searchText.toLowerCase();
       filteredCourses = filteredCourses.filter(
@@ -65,7 +64,6 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
       );
     }
 
-    // Filter by selected types
     const activeTypes = Object.entries(selectedTypes)
       .filter(([, isSelected]) => isSelected)
       .map(([type]) => type);
@@ -76,7 +74,6 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
       );
     }
 
-    // Передаємо відфільтровані курси та обрані типи
     onFilter(filteredCourses, activeTypes);
     onClose();
   };
@@ -88,7 +85,7 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
       resetTypes[type.value] = false;
     });
     setSelectedTypes(resetTypes);
-    onFilter(courses, []); // Скидаємо фільтри, передаємо всі курси і порожній масив типів
+    onFilter(courses, []);
   };
 
   return (

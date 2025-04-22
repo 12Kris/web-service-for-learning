@@ -172,7 +172,6 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, type, initialDat
     setBack(initialData?.back || "")
     setQuestion(initialData?.question || "")
 
-    // Make sure we properly handle the answers array
     if (initialData?.answers && Array.isArray(initialData.answers)) {
       setAnswers(initialData.answers)
     } else {
@@ -198,7 +197,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onSave, type, initialDat
 
   const handleRemoveAnswer = (id: number | string) => {
     if (answers.length <= 2) {
-      return // Keep at least 2 answers
+      return
     }
     setAnswers(answers.filter((answer) => answer.id !== id))
   }

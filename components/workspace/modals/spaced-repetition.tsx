@@ -69,7 +69,6 @@ export const SpacedRepetitionModal = ({
       console.log(updatedSpacedRepetition);
 
       if (error || updatedSpacedRepetition instanceof Error) {
-        //   console.error("Error updating spaced repetition with AI:", error);
           setUpdateError("Failed to update spaced repetition with AI. Please try again.");
           return;
       }

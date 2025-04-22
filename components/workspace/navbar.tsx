@@ -44,11 +44,9 @@ export function Navbar({ menuItems, data }: NavbarProps) {
     <nav className="sticky bg-[--background] top-0 px-4 z-50 w-full border-b  lg:hidden">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between">
-          {/* <div className="flex items-center justify-center space-x-4"> */}
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="ghost" className="lg:hidden">
-                {/* <Menu size={70} strokeWidth={4} /> */}
 
                 <Menu style={{ height: "25px", width: "25px" }} />
 

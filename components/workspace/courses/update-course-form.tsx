@@ -2647,7 +2647,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     type="button"
                     onClick={() => deleteItem("course_details", item.id)}
                     variant="destructive"
-                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.course_details.length === 1}
@@ -2681,7 +2680,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     type="button"
                     onClick={() => deleteItem("what_w_learn", item.id)}
                     variant="destructive"
-                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.what_w_learn.length === 1}
@@ -2781,7 +2779,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       e.preventDefault()
                       handleDeleteBlock(module.id)
                     }}
-                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                   >
@@ -2814,7 +2811,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                               variant="destructive"
                               size="sm"
                               onClick={() => deleteMaterialItem(material.id)}
-                              // className="bg-red-100 text-red-600 hover:bg-red-200"
                               className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                             >
                               Delete Cards
@@ -2848,7 +2844,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                       e.preventDefault()
                                       deleteFlashcard(flashcard.id)
                                     }}
-                                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                                   >
                                     Delete Card
@@ -2905,7 +2900,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                               variant="destructive"
                               size="sm"
                               onClick={() => deleteTestItem(test.id)}
-                              // className="bg-red-100 text-red-600 hover:bg-red-200"
                               className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                             >
                               Delete Test
@@ -2939,7 +2933,6 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                       e.preventDefault()
                                       deleteQuestion(question.id)
                                     }}
-                                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                                   >
                                     Delete Question

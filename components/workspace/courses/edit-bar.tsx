@@ -62,7 +62,6 @@ const EditBar: React.FC<EditBarProps> = ({ id }) => {
 
   return (
     <div className="flex flex-col md:flex-row w-full gap-4">
-      {/* <Button className="w-full" disabled={true}></Button> */}
 
       {isCreator && (
         <Link className="w-full" href={`/workspace/courses/edit/${course?.id}/`}>
@@ -92,7 +91,6 @@ const EditBar: React.FC<EditBarProps> = ({ id }) => {
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
-                // className="bg-red-100 text-red-600 hover:bg-red-300 border-red-600"
                 className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                 onClick={handleDeleteCourse}
               >

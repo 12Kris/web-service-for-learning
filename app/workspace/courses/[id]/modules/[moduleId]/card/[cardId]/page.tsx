@@ -151,7 +151,6 @@ export default function CardPage() {
               className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
                 ${
                   currentFlashcard?.id !== undefined && selectedAnswers[currentFlashcard?.id] === false
-                    // ? "text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     ? "text-white bg-[--accent]"
                     : "hover:bg-[--accent] hover:text-white"
                 }`}
@@ -170,7 +169,6 @@ export default function CardPage() {
               className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
                 ${
                   currentFlashcard?.id !== undefined && selectedAnswers[currentFlashcard?.id] === true
-                    // ? "text-[--neutral] bg-transparent border-2 border-[--neutral] hover:text-white hover:bg-[--neutral]"
                     ? "text-white bg-[--neutral]"
                     : "hover:bg-[--neutral] hover:text-white"
                 }`}
@@ -197,7 +195,7 @@ export default function CardPage() {
             <div className="mt-6 flex flex-col items-center gap-4">
               <div className="mt-4">
                 <label className="block text-center mb-2">
-                  How easy were the materials?
+                  How easy were the cards?
                 </label>
                 <div className="mt-4 flex gap-3">
                   <input

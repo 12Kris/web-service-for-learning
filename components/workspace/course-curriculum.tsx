@@ -18,7 +18,6 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
       <h1 className="text-3xl font-bold mb-8">Course Curriculum</h1>
       <div className="grid gap-4 md:grid-cols-2">
         {modules === undefined ? (
-          // Loading state
           Array.from({ length: 4 }).map((_, index) => (
             <Card key={index}>
               <CardHeader>
@@ -30,7 +29,6 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
             </Card>
           ))
         ) : modules.length > 0 ? (
-          // Modules available
           modules.map((module) => (
             <Card
               key={module.id}
@@ -51,7 +49,6 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
             </Card>
           ))
         ) : (
-            // No modules available
             <div className="col-span-2 text-center text-gray-500">
                 No modules available.
             </div>

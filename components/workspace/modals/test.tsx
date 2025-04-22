@@ -860,7 +860,7 @@ export function TestModal({
             if (currentTest) {
                 setTestTitle(currentTest.question || "");
                 setInitialQuestions(currentTest.questions || []);
-                setNewQuestions([]); // Очищаємо нові питання при завантаженні
+                setNewQuestions([]);
             } else {
                 setTestTitle("");
                 setInitialQuestions([]);
@@ -965,25 +965,24 @@ export function TestModal({
     const handleSubmit = () => {
         if (!testTitle.trim()) {
             alert("Please provide a test title.");
-            return; // Не закриваємо модалку
+            return;
         }
 
         const allQuestions = [...initialQuestions, ...newQuestions];
         const isValid = allQuestions.every(
             (q) =>
-                q.question.trim() && // Перевіряємо, що питання не порожнє
-                q.answers.every((a) => a.text.trim()) && // Перевіряємо, що всі відповіді заповнені
-                q.answers.some((a) => a.correct) // Перевіряємо, що є хоча б одна правильна відповідь
+                q.question.trim() &&
+                q.answers.every((a) => a.text.trim()) &&
+                q.answers.some((a) => a.correct)
         );
 
         if (isValid) {
             onSave(testId, { block_id: blockId, question: testTitle, questions: allQuestions });
-            onClose(); // Закриваємо модалку лише при успішному збереженні
+            onClose();
         } else {
             alert(
                 "Please fill in all questions and answers correctly, including selecting at least one correct answer."
             );
-            // Модалка залишається відкритою
         }
     };
 

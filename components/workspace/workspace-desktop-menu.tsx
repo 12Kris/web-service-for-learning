@@ -69,8 +69,6 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
         })}
       </nav>
       <Link
-        // key={item.name}
-        // href={item.href}
         href="/workspace/profile"
         className={cn(
           "flex items-center space-x-3 px-2 py-2 m-1 rounded-lg text-sm font-bold focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-ring text-black hover:bg-black/10",
@@ -78,7 +76,6 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
             "bg-[--neutral] text-white hover:bg-[--neutral]/90"
         )}
       >
-        {/* <DynamicIcon name={item.icon as IconNames} /> */}
 
         <AccountDropdown />
 

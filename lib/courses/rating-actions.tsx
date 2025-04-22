@@ -1,13 +1,13 @@
 "use server";
-import { createClient } from "@/utils/supabase/server"
-import { getUser } from "@/utils/supabase/server"
-import type { SupabaseClient } from "@supabase/supabase-js"
+import { createClient } from "@/utils/supabase/server";
+import { getUser } from "@/utils/supabase/server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getCourseRating(courseId: number): Promise<{ rating: number; count: number }> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from("UserCourse")
+    .from("CourseRating")
     .select("rating")
     .eq("course_id", courseId);
 
@@ -35,7 +35,7 @@ export async function getUserRating(courseId: number): Promise<number> {
   }
 
   const { data, error } = await supabase
-    .from("UserCourse")
+    .from("CourseRating")
     .select("rating")
     .eq("course_id", courseId)
     .eq("user_id", user.id)
@@ -62,7 +62,7 @@ export async function hasUserRatedCourse(courseId: number): Promise<boolean> {
   }
 
   const { data, error } = await supabase
-    .from("UserCourse")
+    .from("CourseRating")
     .select("rating")
     .eq("course_id", courseId)
     .eq("user_id", user.id)
@@ -96,29 +96,8 @@ export async function rateCourse(courseId: number, rating: number): Promise<{ su
       .eq("user_id", user.id)
       .single();
 
-    if (enrollmentError) {
+    if (enrollmentError || !enrollment) {
       console.error("Error checking enrollment:", enrollmentError);
-      if (enrollmentError.code === "PGRST116") {
-        const { error: insertError } = await supabase.from("UserCourse").insert({
-          course_id: courseId,
-          user_id: user.id,
-          rating: rating,
-        });
-
-        if (insertError) {
-          console.error("Error creating enrollment with rating:", insertError);
-          return { success: false, message: `Failed to enroll in course: ${insertError.message}` };
-        }
-
-        await updateCourseRating(supabase, courseId, rating, 0, false);
-        return { success: true, message: "Rating submitted successfully" };
-      }
-
-      return { success: false, message: `Error checking enrollment: ${enrollmentError.message}` };
-    }
-
-    if (!enrollment) {
-      console.error("No enrollment found");
       return { success: false, message: "You must be enrolled in the course to rate it" };
     }
 
@@ -138,20 +117,27 @@ export async function rateCourse(courseId: number, rating: number): Promise<{ su
       return { success: false, message: "You cannot rate your own course" };
     }
 
-    const oldRating = enrollment.rating || 0;
-    const isUpdate = oldRating > 0;
-
-    console.log(`Old rating: ${oldRating}, Is update: ${isUpdate}`);
-
-    const { error: updateUserCourseError } = await supabase
-      .from("UserCourse")
-      .update({ rating })
+    const { data: existingRating } = await supabase
+      .from("CourseRating")
+      .select("rating")
       .eq("course_id", courseId)
-      .eq("user_id", user.id);
+      .eq("user_id", user.id)
+      .single();
 
-    if (updateUserCourseError) {
-      console.error("Error updating user course rating:", updateUserCourseError);
-      return { success: false, message: `Failed to update rating: ${updateUserCourseError.message}` };
+    const isUpdate = !!existingRating && existingRating.rating !== null;
+    const oldRating = existingRating?.rating || 0;
+
+    const { error: ratingError } = await supabase
+      .from("CourseRating")
+      .upsert({
+        user_id: user.id,
+        course_id: courseId,
+        rating,
+      });
+
+    if (ratingError) {
+      console.error("Error saving rating:", ratingError);
+      return { success: false, message: `Failed to save rating: ${ratingError.message}` };
     }
 
     await updateCourseRating(supabase, courseId, rating, oldRating, isUpdate);

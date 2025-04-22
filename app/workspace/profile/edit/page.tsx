@@ -19,19 +19,12 @@ export default function ProfileEdit() {
     getUser().then((userData) => setUser(userData));
   }, []);
 
-  // function handeleEdit() {
-  //   console.log('Edit');
-  //   editUser({ data: { displayName: 'Mykhailo Nyskohuz changed' } });
-  // }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!user) return; // ensure user is loaded
+    if (!user) return;
     const formData = new FormData(e.currentTarget);
     const updatedUser = {
-      // id: user.id,
       email: formData.get("email") as string,
-      // created_at: user.created_at,
       data: {
         displayName: formData.get("name") as string,
         full_name: formData.get("full_name") as string,
@@ -47,7 +40,6 @@ export default function ProfileEdit() {
       console.log("User updated successfully:", updated);
     }
     router.push("/workspace/profile");
-    // redirect("/workspace/profile", "push");
   };
 
   return (
@@ -62,7 +54,6 @@ export default function ProfileEdit() {
           id="full_name"
           name="full_name"
           defaultValue={user?.user_metadata.full_name || ""}
-          // onChange={handleInputChange}
           required
         />
 
@@ -72,7 +63,6 @@ export default function ProfileEdit() {
           label="Display Name"
           name="name"
           defaultValue={user?.user_metadata.displayName || ""}
-          // onChange={handleInputChange}
         />
 
         <Input
@@ -81,7 +71,6 @@ export default function ProfileEdit() {
           label="Email"
           name="email"
           defaultValue={user?.email || ""}
-          // onChange={handleInputChange}
           required
         />
 
@@ -91,7 +80,6 @@ export default function ProfileEdit() {
           label="Biography"
           rows={3}
           defaultValue={user?.user_metadata.bio || ""}
-          // onChange={handleInputChange}
         />
 
         <Input
@@ -100,8 +88,6 @@ export default function ProfileEdit() {
           label="Location"
           name="location"
           defaultValue={user?.user_metadata.location || ""}
-          // onChange={handleInputChange}
-          // required
         />
 
         <Button size={"wide"} type="submit">
