@@ -5,7 +5,7 @@ import { getUser } from "@/utils/supabase/server";
 import OpenAI from "openai";
 import { getSpacedRepetition } from "@/lib/courses/spaced-repetition-actions";
 import { SpacedRepetition } from "@/lib/types/learning";
-
+import {recordAiUsage} from "@/lib/courses/ai-actions";
 const openai = new OpenAI({
   // baseURL: "https://openrouter.ai/api/v1",
 
@@ -75,6 +75,8 @@ async function generateCourseContent(
 
     Based on this data, generate an updated spaced repetition schedule. Consider the difficulty level of ${howDifficult} and the time spent of ${timeSpent} minutes in your update.
     `;
+
+    await recordAiUsage();
 
     const response = await openai.responses.create({
       model: "gpt-4.1-nano-2025-04-14",
