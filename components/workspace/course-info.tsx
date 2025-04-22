@@ -18,7 +18,6 @@ const CourseInfo: React.FC<CourseInfo> = ({
   return (
     <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Course Details Card */}
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
@@ -37,7 +36,6 @@ const CourseInfo: React.FC<CourseInfo> = ({
           </CardContent>
         </Card>
 
-        {/* What You'll Learn Card */}
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">
@@ -59,7 +57,6 @@ const CourseInfo: React.FC<CourseInfo> = ({
           </CardContent>
         </Card>
 
-        {/* Course Rating Card */}
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>

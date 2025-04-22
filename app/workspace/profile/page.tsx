@@ -40,8 +40,7 @@ export default function UserProfile() {
   const [studyingCourses, setStudyingCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
-    // Фіксуємо висоту контейнера при першому завантаженні
-    const initialHeight = window.innerHeight * 0.61; // 61vh у пікселях
+    const initialHeight = window.innerHeight * 0.61;
     setContainerHeight(`${initialHeight}px`);
 
     async function fetchData() {

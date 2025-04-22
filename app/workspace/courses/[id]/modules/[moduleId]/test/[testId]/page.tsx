@@ -1,14 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-// import { getTestQuestions, saveTestResults } from '@/lib/courses/actions';
 import { getTestQuestions } from '@/lib/courses/actions';
 import {saveTestResults} from "@/lib/results/actions"
-// import { TestQuestion, UserTestAnswer, SaveTestResult } from '@/lib/types/test';
 import { TestQuestion, UserTestAnswer } from '@/lib/types/test';
 import { useParams } from 'next/navigation';
 import { Button } from "@/components/ui/button"
-// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { RadioGroup } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -25,7 +22,6 @@ export default function TestPage() {
     const [answers, setAnswers] = useState<UserTestAnswer[]>([]);
     const [isTestComplete, setIsTestComplete] = useState<boolean>(false);
     const [score, setScore] = useState<number>(0);
-    // const [attempts, setAttempts] = useState<number>(1);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
     const [startTime, setStartTime] = useState<number | null>(null);
 
@@ -38,50 +34,6 @@ export default function TestPage() {
 
         fetchQuestions();
     }, [testId]);
-
-    // const handleNext = () => {
-    //     if (selectedAnswer === null) return;
-
-    //     const currentQuestion = questions[currentQuestionIndex];
-    //     const isCorrect =
-    //         selectedAnswer === (typeof currentQuestion.correct_answer === 'object'
-    //             ? currentQuestion.correct_answer?.id
-    //             : currentQuestion.correct_answer);
-
-    //     if (isCorrect) {
-    //         setScore((prev) => prev + 1);
-    //     }
-
-    //     setAnswers((prev) => [
-    //         ...prev,
-    //         {
-    //             questionId: Number(currentQuestion.id),
-    //             answerId: selectedAnswer,
-    //             isCorrect,
-    //         },
-    //     ]);
-
-    //     if (currentQuestionIndex + 1 === questions.length) {
-    //         setIsTestComplete(true);
-    //     } else {
-    //         setCurrentQuestionIndex((prev) => prev + 1);
-    //         setSelectedAnswer(null);
-    //     }
-    // };
-
-    // const handleSaveResults = async () => {
-    //     try {
-    //         const result: SaveTestResult = await saveTestResults(testId, answers);
-    //         if (result?.error) {
-    //             console.error('Error saving results:', result.error);
-    //         } else {
-    //             alert('Results saved successfully!');
-    //             window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
-    //         }
-    //     } catch (error) {
-    //         console.error('Error saving results:', error);
-    //     }
-    // };
 
     const handleNext = () => {
         if (selectedAnswer === null) return;
@@ -118,11 +70,10 @@ export default function TestPage() {
         try {
             if(!startTime) return;
             const endTime = Date.now();
-            const duration = Math.floor((endTime - startTime) / 1000) // in seconds
+            const duration = Math.floor((endTime - startTime) / 1000)
             const result = await saveTestResults(testId, answers, duration);
             if (result) {
                 alert("Results saved successfully!");
-                // window.location.href = `/workspace/courses/${courseId}/module/${moduleId}`;
                 window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
             }
         } catch (error) {
@@ -140,19 +91,11 @@ export default function TestPage() {
                     <div className="space-y-4">
                         <div className="space-y-2">
                             <p className="text-xl">Your Score: {score}/{questions.length}</p>
-                            {/*<p className="text-gray-600">Attempts: {attempts}</p>*/}
                         </div>
                         <Progress value={(score / questions.length) * 100} className="w-full" />
-                        {/* <p className="text-muted-foreground">Attempt {attempts}</p> */}
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-center gap-4">
-                    {/* <Button onClick={handleSaveResults} variant="default">
-                        Save Results
-                    </Button>
-                    <Button onClick={goBackToModule} variant="outline">
-                        Back to Module
-                    </Button> */}
                     <Button
                         className="w-full max-w-md"
                         onClick={handleSaveResults}
@@ -165,64 +108,58 @@ export default function TestPage() {
     }
 
     return (
-
-
         <Card className="max-w-2xl mx-auto mt-8 shadow-custom relative">
-    {/* Лінія прогресу поверх картки */}
-    
-
-    <CardHeader className="text-center">
-        <CardTitle>Knowledge Test</CardTitle>
-        <Progress
-            value={((currentQuestionIndex + 1) / questions.length) * 100}
-            className="mt-4"
-        />
-    </CardHeader>
-    {questions.length > 0 ? (
-        <CardContent>
-            <div className="space-y-6">
-                <div className="text-sm text-muted-foreground text-center">
-                    Question {currentQuestionIndex + 1} of {questions.length}
-                </div>
-                <h3 className="text-xl font-semibold text-center">
-                    {questions[currentQuestionIndex].question}
-                </h3>
-                <RadioGroup
-                    value={selectedAnswer?.toString()}
-                    onValueChange={(value) => setSelectedAnswer(parseInt(value))}
-                    className="grid grid-cols-2 gap-4"
-                >
-                    {questions[currentQuestionIndex].answers.map((answer) => (
-                        <Button
-                            key={answer.id}
-                            onClick={() => setSelectedAnswer(answer.id)}
-                            className={`flex items-center justify-center rounded-lg border p-4 cursor-pointer ${
-                                selectedAnswer === answer.id ? 'bg-[--neutral] text-white' : ''
-                            }`}
+            <CardHeader className="text-center">
+                <CardTitle>Knowledge Test</CardTitle>
+                <Progress
+                    value={((currentQuestionIndex + 1) / questions.length) * 100}
+                    className="mt-4"
+                />
+            </CardHeader>
+            {questions.length > 0 ? (
+                <CardContent>
+                    <div className="space-y-6">
+                        <div className="text-sm text-muted-foreground text-center">
+                            Question {currentQuestionIndex + 1} of {questions.length}
+                        </div>
+                        <h3 className="text-xl font-semibold text-center">
+                            {questions[currentQuestionIndex].question}
+                        </h3>
+                        <RadioGroup
+                            value={selectedAnswer?.toString()}
+                            onValueChange={(value) => setSelectedAnswer(parseInt(value))}
+                            className="grid grid-cols-2 gap-4"
                         >
-                            <Label className="cursor-pointer">
-                                {answer.answer}
-                            </Label>
-                        </Button>
-                    ))}
-                </RadioGroup>
-            </div>
-        </CardContent>
-    ) : (
-        <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">Loading questions...</p>
-        </CardContent>
-    )}
-    <CardFooter className="flex justify-center">
-        <Button
-            onClick={handleNext}
-            disabled={selectedAnswer === null}
-            className="w-full max-w-xs"
-        >
-            Next question
-        </Button>
-    </CardFooter>
-</Card>
-
+                            {questions[currentQuestionIndex].answers.map((answer) => (
+                                <Button
+                                    key={answer.id}
+                                    onClick={() => setSelectedAnswer(answer.id)}
+                                    className={`flex items-center justify-center rounded-lg border p-4 cursor-pointer ${
+                                        selectedAnswer === answer.id ? 'bg-[--neutral] text-white' : ''
+                                    }`}
+                                >
+                                    <Label className="cursor-pointer">
+                                        {answer.answer}
+                                    </Label>
+                                </Button>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                </CardContent>
+            ) : (
+                <CardContent className="text-center py-8">
+                    <p className="text-muted-foreground">Loading questions...</p>
+                </CardContent>
+            )}
+            <CardFooter className="flex justify-center">
+                <Button
+                    onClick={handleNext}
+                    disabled={selectedAnswer === null}
+                    className="w-full max-w-xs"
+                >
+                    Next question
+                </Button>
+            </CardFooter>
+        </Card>
     );
 }

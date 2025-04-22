@@ -43,33 +43,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-
-
-
-
-
-// const Input = React.forwardRef<HTMLInputElement, InputProps>(
-//   ({ className, type, label, icon, color = "primary", ...props }, ref) => {
-//     return (
-//       <div className={`${label ? "space-y-2" : ""} relative`}>
-//         {label && <Label htmlFor="name">{label}</Label>}
-//         {icon && <div className="">{icon}</div>}
-
-//         <input
-//           type={type}
-//           className={cn(
-//             "flex h-9 w-full outline-none rounded-lg border-2 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50",
-//             colorClasses[color],
-//             className,
-//             { "pl-9": icon }
-//           )}
-//           ref={ref}
-//           {...props}
-//         />
-//       </div>
-//     );
-//   }
-// );
 Input.displayName = "Input";
 
 export { Input };

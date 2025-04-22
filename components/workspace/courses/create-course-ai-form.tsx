@@ -12,7 +12,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { createCourseWithAI } from "@/lib/courses/ai-actions";
-// import { GenerationProgress } from "@/components/ui/generation-progress";
 
 export default function CreateCourseAIForm() {
   const [prompt, setPrompt] = useState<string>("");

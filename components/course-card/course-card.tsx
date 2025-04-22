@@ -32,15 +32,11 @@ export function CourseCard({
   description = "No Description",
   instructor = "No Instructor",
   duration = "8 weeks",
-  // price = "Free",
 }: CourseCardProps) {
-  // const [isHovered, setIsHovered] = useState(false)
 
   return (
     <Card
       className="flex flex-col overflow-hidden transition-all duration-300 h-full"
-      // onMouseEnter={() => setIsHovered(true)}
-      // onMouseLeave={() => setIsHovered(false)}
     >
       <Link href={`/workspace/courses/${id}`}>
         <div className="relative overflow-hidden bg-slate-300">
@@ -76,13 +72,6 @@ export function CourseCard({
                 <span>{studentsCount}</span>
               </div>
             </div>
-
-            {/* <div className="flex items-center justify-between w-full mt-4">
-              <span className="font-semibold">{price}</span>
-              <Button variant="default" size="wide" className="flex">
-                View Course
-              </Button>
-            </div> */}
           </CardFooter>
         </div>
       </Link>

@@ -47,18 +47,10 @@ export function AccountDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 mr-2">
-        {/* <DropdownMenuLabel>{name}</DropdownMenuLabel>
-        <DropdownMenuSeparator /> */}
-        {/* <DropdownMenuGroup> */}
         <DropdownMenuItem className="" onClick={handleProfileClick}>
           <User />
           <span>Profile</span>
         </DropdownMenuItem>
-
-        {/* </DropdownMenuGroup> */}
-        {/* <DropdownMenuSeparator /> */}
-
-        {/* <DropdownMenuSeparator /> */}
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut />
           <span>Log out</span>

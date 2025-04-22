@@ -27,11 +27,10 @@ export default function BookmarksPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]); // Новий стан для обраних типів
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [enrolledCoursesByType, setEnrolledCoursesByType] = useState<
     Record<string, { displayName: string; courses: Course[] }>
-  >({}); // Групування enrolled курсів за типами
-  // const [enrolledCourseTypes, setEnrolledCourseTypes] = useState<string[]>([]); // Типи enrolled курсів
+  >({});
 
   useEffect(() => {
     async function fetchData() {
@@ -72,7 +71,6 @@ export default function BookmarksPage() {
         });
         setRepeatCourses(coursesToRepeat);
 
-        // Групуємо enrolled курси за типами
         groupEnrolledCoursesByType(fetchedEnrolledCourses);
       } catch (error) {
         console.error("Error fetching courses:", error);
@@ -84,7 +82,6 @@ export default function BookmarksPage() {
     fetchData();
   }, []);
 
-  // Оновлюємо групування і перевіряємо, чи активний фільтр
   useEffect(() => {
     const isFiltered =
       filteredEnrolledCourses.length !== enrolledCourses.length ||
@@ -93,7 +90,6 @@ export default function BookmarksPage() {
       );
     setIsFilterActive(isFiltered);
 
-    // Групуємо відфільтровані enrolled курси за типами
     groupEnrolledCoursesByType(filteredEnrolledCourses);
   }, [filteredEnrolledCourses, enrolledCourses]);
 
@@ -128,7 +124,7 @@ export default function BookmarksPage() {
       enrolledIds.has(course.id)
     );
     setFilteredEnrolledCourses(newFilteredEnrolled);
-    setSelectedTypes(activeTypes); // Зберігаємо обрані типи
+    setSelectedTypes(activeTypes);
   };
 
   return (
@@ -162,7 +158,6 @@ export default function BookmarksPage() {
 
               {filteredEnrolledCourses.length > 0 ? (
                 isFilterActive ? (
-                  // Відображаємо секції лише для обраних типів
                   selectedTypes.length > 0 ? (
                     selectedTypes.map((type) => (
                       <div key={type} className="mb-12">
@@ -176,14 +171,12 @@ export default function BookmarksPage() {
                       </div>
                     ))
                   ) : (
-                    // Якщо типи не обрані, показуємо всі відфільтровані enrolled курси
                     <CourseGrid
                       title="Search Results"
                       courses={filteredEnrolledCourses}
                     />
                   )
                 ) : (
-                  // Якщо фільтр не активний, показуємо всі enrolled курси
                   <CourseGrid
                     title="Enrolled Courses"
                     courses={filteredEnrolledCourses}

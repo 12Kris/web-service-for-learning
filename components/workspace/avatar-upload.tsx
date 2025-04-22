@@ -19,8 +19,6 @@ export default function AvatarUpload({ user }: { user: User }) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setAvatarUrl(e.target?.result as string);
-        // Here you would typically upload the file to your server or cloud storage
-        // and update the user's avatar URL in your database
       };
       reader.readAsDataURL(file);
     }

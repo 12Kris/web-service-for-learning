@@ -6,10 +6,8 @@ interface PageProps {
 }
 
 export default async function ModulesPage({ params }: PageProps) {
-  // Await the params Promise to get the id
   const { id } = await params;
   
-  // Fetch modules for the course using the course id
   const modules = await getModulesByCourseId(Number(id));
   
   if (modules.length > 0) {

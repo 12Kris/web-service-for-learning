@@ -359,7 +359,7 @@ import { Check, Star } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CourseDetails, WhatWillLearn } from "@/lib/types/course";
 import { getCourseRating, getUserRating, hasUserRatedCourse, rateCourse } from "@/lib/courses/rating-actions";
-import { isCourseAddedToUser } from "@/lib/courses/actions"; // Додаємо імпорт
+import { isCourseAddedToUser } from "@/lib/courses/actions";
 import { toast } from "sonner";
 
 interface CourseInfoProps {
@@ -382,27 +382,23 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   const [userRating, setUserRating] = useState<number>(0);
   const [hasRated, setHasRated] = useState<boolean>(false);
   const [hoverRating, setHoverRating] = useState<number>(0);
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false); // Змінено початкове значення на false
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchRatingData = async () => {
       try {
-        // Отримуємо середній рейтинг курсу
         const courseRatingData = await getCourseRating(courseId);
         setRating(courseRatingData.rating);
         setReviews(courseRatingData.count);
 
-        // Перевіряємо, чи користувач оцінив курс
         const hasRatedResult = await hasUserRatedCourse(courseId);
         setHasRated(hasRatedResult);
 
-        // Якщо користувач оцінив, отримуємо його оцінку
         if (hasRatedResult) {
           const userRatingData = await getUserRating(courseId);
           setUserRating(userRatingData);
         }
 
-        // Перевіряємо, чи користувач підписаний на курс
         const subscribed = await isCourseAddedToUser(courseId);
         setIsSubscribed(subscribed);
       } catch (error) {
@@ -448,7 +444,6 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   return (
     <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
-        {/* Course Details Card */}
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
@@ -469,7 +464,6 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        {/* What You'll Learn Card */}
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">
@@ -493,7 +487,6 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        {/* Course Rating Card */}
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
