@@ -7,6 +7,8 @@ import { TestDataWithQuestion } from "@/lib/types/test";
 
 import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
+import { createClient } from "@/utils/supabase/server";
+
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || "",
@@ -53,6 +55,49 @@ interface GeneratedTestQuestion {
   answers: GeneratedTestAnswer[];
 }
 
+export interface AiUsed {
+  id: number;
+  used_at: string; // ISO timestamp string
+  user_id: string | null;
+}
+
+export async function recordAiUsage(): Promise<void> {
+  const supabase = await createClient();
+  // Get authenticated user
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError) {
+    console.error("Error fetching user:", userError);
+  }
+  if (!user) {
+    throw new Error("You must be logged in to use AI.");
+  }
+  // Calculate timestamp 8 hours ago
+  const eightHoursAgo = new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString();
+  // Count AI uses in last 8 hours
+  const { count, error: countError } = await supabase
+    .from("ai_used")
+    .select("id", { count: "exact" })
+    .eq("user_id", user.id)
+    .gte("used_at", eightHoursAgo);
+
+
+    console.log("Count of AI uses in last 8 hours:", count);
+    console.log("User ID:", user.id);
+  if (countError) {
+    console.error("Error counting AI usage:", countError);
+  }
+  if ((count ?? 0) >= 3) {
+    throw new Error("You have exceeded 3 AI uses in the last 8 hours. Please try again later.");
+  }
+  // Record this usage
+  const { error } = await supabase
+    .from("ai_used")
+    .insert<Partial<AiUsed>>({ user_id: user.id });
+  if (error) {
+    console.error("Error recording AI usage:", error);
+  }
+}
+
 async function generateCourseContent(
   inputText: string,
   coursesAmount: number,
@@ -64,6 +109,8 @@ async function generateCourseContent(
     if (coursesAmount > 6) {
       return null;
     }
+
+    
 
     const prompt = `Create a course with difficulty level of ${difficultyLevel} outline based on the following topic: "${inputText}". 
         The course should include:
@@ -318,6 +365,9 @@ export async function createCourseWithAI(
     if (!difficultyLevel) {
       return { success: false, message: "Difficulty level is required." };
     }
+    
+    await recordAiUsage(); // New: record AI usage
+    
     const generatedCourse = await generateCourseContent(
       inputText,
       modulesAmount,
