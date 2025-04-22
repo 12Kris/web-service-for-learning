@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { use } from "react";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Module } from "@/lib/types/modules";
 import { getCourseById, getModulesByCourseId } from "@/lib/courses/actions";
 import { getCourseRating } from "@/lib/courses/rating-actions";
 import { Course } from "@/lib/types/course";
-import {LoadingSpinner} from "@/components/ui/loading-spinner";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import EditBar from "@/components/workspace/courses/edit-bar";
 import CourseDescriptionJumpotron from "@/components/workspace/courses/course-description-jumbotron";
 import CourseInfo from "@/components/workspace/courses/course-info";
@@ -23,31 +22,45 @@ export default function FlashcardPage({
   const [modules, setModules] = useState<Module[]>([]);
   const [courseRating, setCourseRating] = useState<number>(0);
   const [reviews, setReviews] = useState<number>(0);
-  const { id } = use(params);
+  const [id, setId] = useState<number | null>(null);
+
+  const fetchData = async (courseId: number) => {
+    try {
+      const modulesData = await getModulesByCourseId(courseId);
+      setModules(modulesData);
+
+      const courseData = await getCourseById(courseId);
+      setCourse(courseData);
+
+      const ratingData = await getCourseRating(courseId);
+      setCourseRating(ratingData.rating);
+      setReviews(ratingData.count);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      if (!id) return;
+    const resolveParams = async () => {
+      const resolvedParams = await params;
+      setId(resolvedParams.id);
+    };
+    resolveParams();
+  }, [params]);
 
-      try {
-        const modulesData = await getModulesByCourseId(id);
-        setModules(modulesData);
-
-        const courseData = await getCourseById(id);
-        setCourse(courseData);
-
-        const ratingData = await getCourseRating(id);
-        setCourseRating(ratingData.rating);
-        setReviews(ratingData.count);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
+  useEffect(() => {
+    if (id !== null) {
+      fetchData(id);
     }
-
-    fetchData();
   }, [id]);
 
-  if (!course) {
+  const handleSubscriptionChange = () => {
+    if (id !== null) {
+      fetchData(id);
+    }
+  };
+
+  if (!course || id === null) {
     return <LoadingSpinner className="mx-auto" />;
   }
 
@@ -58,6 +71,7 @@ export default function FlashcardPage({
         description={course?.description}
         type={course?.type}
         id={id}
+        onSubscriptionChange={handleSubscriptionChange}
       />
 
       <CourseInfo

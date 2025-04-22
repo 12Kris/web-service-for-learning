@@ -197,7 +197,7 @@ export default function CardPage() {
             <div className="mt-6 flex flex-col items-center gap-4">
               <div className="mt-4">
                 <label className="block text-center mb-2">
-                  How easy were the materials?
+                  How easy were the cards?
                 </label>
                 <div className="mt-4 flex gap-3">
                   <input

@@ -3,7 +3,6 @@ import { Button } from "../../ui/button";
 import Skeleton from "react-loading-skeleton";
 import { UserPlus, UserCheck } from "lucide-react";
 import { useEffect, useState } from "react";
-
 import {
   addCourseToUser,
   isCourseAddedToUser,
@@ -18,6 +17,7 @@ interface CourseDescriptionJumbotronProps {
   type?: string;
   id: number;
   onLearnMore?: () => void;
+  onSubscriptionChange?: () => void;
 }
 
 const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
@@ -25,6 +25,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   description,
   type,
   id,
+  onSubscriptionChange,
 }) => {
   const [isCourseAdded, setIsCourseAdded] = useState<boolean | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,11 +49,18 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     if (!id) return;
     await addCourseToUser(id);
     setIsCourseAdded(true);
+    if (onSubscriptionChange) {
+      onSubscriptionChange();
+    }
   }
+
   async function handleRemoveCourse(id: number) {
     if (!id) return;
     await removeCourseFromUser(id);
     setIsCourseAdded(false);
+    if (onSubscriptionChange) {
+      onSubscriptionChange();
+    }
   }
 
   return (

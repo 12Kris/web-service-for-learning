@@ -31,6 +31,7 @@ import ProfileEdit from "./edit/page";
 
 export default function UserProfile() {
   const [activeMenuItem, setActiveMenuItem] = useState("profile");
+  const [containerHeight, setContainerHeight] = useState("61vh"); // Початкова висота
 
   const [user, setUser] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,6 +40,10 @@ export default function UserProfile() {
   const [studyingCourses, setStudyingCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
+    // Фіксуємо висоту контейнера при першому завантаженні
+    const initialHeight = window.innerHeight * 0.61; // 61vh у пікселях
+    setContainerHeight(`${initialHeight}px`);
+
     async function fetchData() {
       setIsLoading(true);
       const currentUser = await getUser();
@@ -88,7 +93,10 @@ export default function UserProfile() {
   ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row md:max-h-[61vh]">
+    <div
+      className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row"
+      style={{ maxHeight: containerHeight }}
+    >
       {/* Sidebar */}
       <div className="w-full md:w-[300px] lg:w-[380px] border-b md:border-b-0 md:border-r">
         <div className="flex flex-col items-center pt-10 pb-6">
@@ -142,12 +150,12 @@ export default function UserProfile() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 md:p-6  md:max-h-[90vh] mb-8">
+      <div className="flex-1 p-4 md:p-6 mb-8" style={{ maxHeight: containerHeight }}>
         {activeMenuItem === "profile" && <ProfileEdit />}
 
         {activeMenuItem === "courses-created" && (
-          <div className=" mt-4 overflow-y-scroll h-full">
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+          <div className="mt-4 overflow-y-scroll h-full">
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 mr-3">
               {createdCourses?.map((course) => (
                 <Card
                   key={course.id}
@@ -173,7 +181,7 @@ export default function UserProfile() {
                         {course.rating?.toFixed(1) || "N/A"}
                       </span>
                       <span className="text-muted-foreground ml-1">/ 5.0</span>
-                      {/* <span className="font-bold">
+                        {/* <span className="font-bold">
                           {course.type}
                         </span> */}
                     </div>
@@ -192,7 +200,7 @@ export default function UserProfile() {
         )}
 
         {activeMenuItem === "courses-enrolled" && (
-          <div className="flex items-center justify-center mt-4 overflow-y-scroll h-full px-3">
+          <div className="flex items-center justify-center mt-4 overflow-y-scroll h-full px-3 mb-4">
             <div className="h-full space-y-6">
               {studyingCourses?.map((course) => (
                 <Card
@@ -202,14 +210,14 @@ export default function UserProfile() {
                   <CardHeader>
                     <CardTitle className="text-xl">{course.name}</CardTitle>
                     <CardDescription>
-                      {/* Instructor: {course.creator?.full_name} */}
+                       {/* Instructor: {course.creator?.full_name} */}
                       {course.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="mb-2">
                       <div className="flex justify-between mb-1">
-                        {/* <span className="text-sm font-medium text-primary">
+                          {/* <span className="text-sm font-medium text-primary">
                             Progress
                           </span>
                           <span className="text-sm font-medium text-primary">
