@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import { Navbar } from '@/components/landing/navbar'
 import Footer from "@/components/landing/footer";
-
 import { Jura } from 'next/font/google';
 
-// Configure the font with specific weights
 const jura = Jura({
   subsets: ['latin'],
 

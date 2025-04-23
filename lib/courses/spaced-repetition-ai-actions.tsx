@@ -119,7 +119,6 @@ async function generateCourseContent(
     const generatedContent = JSON.parse(response.output_text);
     return generatedContent as SpacedRepetition;
   } catch (error) {
-    // console.error("Error generating course content:", error);
     return error as Error;
   }
 }

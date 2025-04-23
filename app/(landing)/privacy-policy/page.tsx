@@ -45,13 +45,6 @@ export default function PrivacyPolicy() {
                 <h2 className="text-2xl font-semibold">{section.title}</h2>
                 <p className="text-gray-600 mt-2">{section.content}</p>
               </div>
-              {/* <div className="md:w-1/2">
-                <img
-                  src={section.image}
-                  alt={section.title}
-                  className="w-full h-auto rounded-lg shadow-md"
-                />
-              </div> */}
             </div>
           ))}
         </div>

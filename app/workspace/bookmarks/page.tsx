@@ -111,7 +111,6 @@ export default function BookmarksPage() {
     }, {} as Record<string, { displayName: string; courses: Course[] }>);
 
     setEnrolledCoursesByType(groupedCourses);
-    // setEnrolledCourseTypes(Object.keys(groupedCourses));
   };
 
   const handleFilterApply = (
@@ -138,7 +137,6 @@ export default function BookmarksPage() {
             <div className="grid grid-cols-3 md:gap-0 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:items-center sm:space-x-4 sm:mt-0">
               <Button
                 variant="default"
-                // size="sm"
                 className="col-span-1 w-full sm:w-auto sm:size-wide flex items-center justify-center"
                 onClick={() => setIsFilterModalOpen(true)}
               >

@@ -1,6 +1,5 @@
 "use server";
 
-// import { supabase } from "@/utils/supabase/client";
 import {
   Answer,
   Question,
@@ -12,37 +11,12 @@ import {
   TestQuestionDataFromDB,
   TestWithQuestions,
 } from "@/lib/types/test";
-// import {Block} from "@/lib/types/modules";
 import { LearningMaterial } from "@/lib/types/learning";
-// import {Card} from "@/components/ui/card";
 import { Block } from "@/lib/types/block";
-// import { Module } from "@/lib/types/modules";
 import { Card } from "@/lib/types/card";
 import { createClient } from "@/utils/supabase/server";
 
 type SupabaseResponse<T> = { data: T | null; error: Error | null };
-
-// export async function createBlock(course_id: number | null, name: string): Promise<Block | null> {
-//     const {data, error} = await supabase
-//         .from("Module")
-//         .insert([{course_id, name}]).select();
-
-//     if (error) {
-//         throw new Error(`Error creating block: ${error.message}`);
-//     }
-
-//     return data[0];
-// }
-
-// export async function updateBlock(id: number, course_id: number, name: string): Promise<Block> {
-//     const {data, error} = await supabase
-//         .from("Module")
-//         .update({course_id, name})
-//         .eq("id", id)
-//         .select();
-//     if (error) throw new Error(`Error updating block: ${error.message}`);
-//     return data[0] ?? null;
-// }
 
 export async function createBlock(
   course_id: number | null,
@@ -85,56 +59,6 @@ export async function deleteBlock(blockId: number): Promise<void> {
   const { error } = await supabase.from("Module").delete().eq("id", blockId);
   if (error) throw new Error(`Error deleting block: ${error.message}`);
 }
-
-// export async function getTestById(
-//   testId: number
-// ): Promise<TestWithQuestions | null> {
-//   const supabase = await createClient();
-
-//   const { data, error } = await supabase
-//     .from("Test")
-//     .select(
-//       `
-//             id,
-//             block_id,
-//             question,
-//             TestQuestions (
-//                 id,
-//                 question,
-//                 correct_id,
-//                 TestAnswers!TestAnswers_question_id_fkey (
-//                     id,
-//                     answer
-//                 )
-//             )
-//         `
-//     )
-//     .eq("id", testId);
-
-//   if (error) {
-//     console.error("Error fetching test:", error);
-//     return null;
-//   }
-
-//   if (!data || data.length === 0) return null;
-
-//   const testData = data[0];
-
-//   return {
-//     id: testData.id,
-//     blockId: testData.block_id,
-//     question: testData.question,
-//     questions: testData.TestQuestions.map((q: TestQuestionDataFromDB) => ({
-//       id: Number(q.id),
-//       question: q.question,
-//       answers: q.TestAnswers.map((a: TestAnswerDataFromDB) => ({
-//         id: Number(a.id),
-//         text: a.answer,
-//         correct: a.id === q.correct_id,
-//       })),
-//     })),
-//   };
-// }
 
 export async function getTestById(testId: number): Promise<TestWithQuestions | null> {
   const supabase = await createClient()
@@ -183,40 +107,6 @@ export async function getTestById(testId: number): Promise<TestWithQuestions | n
     })),
   }
 }
-
-// export async function getTestAnswers(testId: number) {
-//     try {
-//         const {data: questions, error: questionsError} = await supabase
-//             .from("TestQuestions")
-//             .select(`
-//                 id,
-//                 question,
-//                 correct_id,
-//                 TestAnswers:TestAnswers!TestAnswers_question_id_fkey (id, answer)
-//             `)
-//             .eq("test_id", testId);
-//
-//         if (questionsError) {
-//             throw new Error(questionsError.message);
-//         }
-//
-//         return questions.map((question) => {
-//             const correctAnswer = question.TestAnswers.find(
-//                 (answer) => answer.id === question.correct_id
-//             );
-//
-//             return {
-//                 id: question.id,
-//                 question: question.question,
-//                 answers: question.TestAnswers,
-//                 correctAnswer: correctAnswer || null,
-//             };
-//         });
-//     } catch (error) {
-//         console.error("Error fetching test answers:", error);
-//         return null;
-//     }
-// }
 
 export async function createTest(
   testData: TestDataWithQuestion
