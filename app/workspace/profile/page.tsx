@@ -31,7 +31,7 @@ import ProfileEdit from "./edit/page";
 
 export default function UserProfile() {
   const [activeMenuItem, setActiveMenuItem] = useState("profile");
-  const [containerHeight, setContainerHeight] = useState("61vh"); // Початкова висота
+  const [containerHeight, setContainerHeight] = useState("61vh");
 
   const [user, setUser] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,7 +96,6 @@ export default function UserProfile() {
       className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row"
       style={{ maxHeight: containerHeight }}
     >
-      {/* Sidebar */}
       <div className="w-full md:w-[300px] lg:w-[380px] border-b md:border-b-0 md:border-r">
         <div className="flex flex-col items-center pt-10 pb-6">
           <div className="rounded-full p-6 md:p-10 mb-4">
@@ -148,7 +147,6 @@ export default function UserProfile() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 p-4 md:p-6 mb-8" style={{ maxHeight: containerHeight }}>
         {activeMenuItem === "profile" && <ProfileEdit />}
 
@@ -180,9 +178,6 @@ export default function UserProfile() {
                         {course.rating?.toFixed(1) || "N/A"}
                       </span>
                       <span className="text-muted-foreground ml-1">/ 5.0</span>
-                        {/* <span className="font-bold">
-                          {course.type}
-                        </span> */}
                     </div>
                   </CardContent>
                   <CardFooter>

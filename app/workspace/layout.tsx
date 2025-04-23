@@ -44,7 +44,6 @@ export default function WorkspaceLayout({
       href: "/workspace/courses/browse",
     },
     { name: "Bookmarks", icon: "Bookmark", href: "/workspace/bookmarks" },
-    // { name: "Profile", icon: "User", href: "/workspace/profile" },
     { name: "Help", icon: "HelpCircle", href: "/workspace/help" },
   ];
 

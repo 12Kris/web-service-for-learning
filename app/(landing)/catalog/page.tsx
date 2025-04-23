@@ -14,7 +14,6 @@ export default function Catalog() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {courses.map((course) => (
           <div key={course.id} className="bg-white rounded-2xl shadow-md overflow-hidden">
-            {/* <img src={course.image} alt={course.title} className="w-full h-40 object-cover" /> */}
             <Image src={course.image} width={500} height={300} alt={course.title}></Image>
             <div className="p-4">
               <h2 className="text-xl font-semibold">{course.title}</h2>

@@ -41,7 +41,6 @@ export default function ModulePage() {
     return (
         <div className="container   mx-auto">
             <div className="space-y-8">
-                {/* Learning Materials Section */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
                         <BookOpen className="h-5 w-5 text-primary"/>
@@ -65,10 +64,6 @@ export default function ModulePage() {
                         )}
                     </div>
                 </section>
-
-                {/* <Separator /> */}
-
-                {/* Tests Section */}
                 <section>
                     <div className="flex items-center gap-2 mb-4">
                         <ClipboardCheck className="h-5 w-5 text-primary"/>

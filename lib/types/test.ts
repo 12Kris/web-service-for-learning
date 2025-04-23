@@ -68,12 +68,6 @@ export interface SaveTestResult {
   error?: string;
 }
 
-// export interface UserTestAnswer {
-//   questionId: number;
-//   answerId: number;
-//   isCorrect: boolean;
-// }
-
 export interface UserTestAnswer {
   question: {
     id: number;
@@ -122,13 +116,6 @@ export interface TestDataWithQuestion {
   question?: string;
   answers?: Answer[];
 }
-
-// export interface TestData {
-//   id: number;
-//   question: string;
-//   block_id: number;
-//   Block?: BlockData;
-// }
 
 export interface BlockData {
   id: number;

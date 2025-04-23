@@ -1,12 +1,9 @@
 "use server";
 
-// import { supabase } from "@/utils/supabase/server";
-// import { getUser } from "@/lib/auth/utils";
 import { Module } from "@/lib/types/modules";
 import { getUser } from "@/utils/supabase/server";
 import { createClient } from "@/utils/supabase/server";
 
-// Helper function to check if user is authenticated
 async function checkAuth() {
   const user = await getUser();
   if (!user) {
@@ -14,7 +11,6 @@ async function checkAuth() {
   }
 }
 
-// Module CRUD operations
 export async function getModules(): Promise<Module[]> {
     const supabase = await createClient();
   

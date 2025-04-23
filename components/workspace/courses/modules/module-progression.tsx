@@ -1,5 +1,5 @@
 import { Module } from "@/lib/types/modules";
-import Link from "next/link"; // added import
+import Link from "next/link";
 import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
@@ -24,7 +24,7 @@ import "swiper/css/pagination";
 interface ModuleProgressionProps {
   modules: Module[];
   currentModuleId: number;
-  courseId: number; // added prop
+  courseId: number;
 
   className?: string;
   autoplay?: boolean;
@@ -39,7 +39,6 @@ export function ModuleProgression({
   autoplay = false,
   showPagination = false,
 }: ModuleProgressionProps) {
-  // Ensure the currentModuleId is an integer.
   const currentModuleIdInt = Math.floor(currentModuleId);
 
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
@@ -48,12 +47,9 @@ export function ModuleProgression({
 
   return (
     <div className="relative flex justify-between items-center mb-16">
-      {/* Connecting Lines */}
-      {/* <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-[--accent-light] -translate-y-1/2" /> */}
 
       <section className={cn("w-full", className)}>
         <div className="flex items-center justify-between mb-6">
-          {/* <h2 className="text-2xl font-bold">{title}</h2> */}
           <div className="flex gap-2">
             <Button
               variant="outline"

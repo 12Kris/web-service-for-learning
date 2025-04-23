@@ -18,7 +18,6 @@ export default function ForgotPasswordPage() {
         setIsLoading(true)
         setMessage("")
 
-        // Simulate API call
         await new Promise((resolve) => setTimeout(resolve, 2000))
 
         setMessage("If an account exists with this email, you will receive a password reset link.")

@@ -101,7 +101,6 @@ export default function Page() {
             <Link href="/workspace/courses/create" className="col-span-1">
               <Button
                 variant="default"
-                // size="sm"
                 className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
               >
                 <Plus strokeWidth={3} className="h-4 w-4" />
@@ -112,7 +111,6 @@ export default function Page() {
             <Link href="/workspace/courses/create-ai" className="col-span-1">
               <Button
                 variant="outline"
-                // size="sm"
                 className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
               >
                 <Sparkles strokeWidth={3} className="h-4 w-4" />
@@ -122,7 +120,6 @@ export default function Page() {
 
             <Button
               variant="default"
-              // size="sm"
               className="col-span-1 w-full sm:w-auto sm:size-wide flex items-center justify-center"
               onClick={() => setIsFilterModalOpen(true)}
             >

@@ -49,15 +49,12 @@ export default function LoginPage() {
 
     startTransition(async () => {
       try {
-        // Create a FormData instance to send to the login action.
         const formdata = new FormData();
         formdata.append("email", formData.email);
         formdata.append("password", formData.password);
 
-        // Pass the FormData object (not the state object) to login.
         const result = await login(formdata);
 
-        // Check if result is an AuthError
         if (result instanceof Error) {
           setError(result.message);
           return;
@@ -196,18 +193,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-// import { login, signup } from './actions'
-
-// export default function LoginPage() {
-//   return (
-//     <form>
-//       <label htmlFor="email">Email:</label>
-//       <input id="email" name="email" type="email" required />
-//       <label htmlFor="password">Password:</label>
-//       <input id="password" name="password" type="password" required />
-//       <button formAction={login}>Log in</button>
-//       <button formAction={signup}>Sign up</button>
-//     </form>
-//   )
-// }

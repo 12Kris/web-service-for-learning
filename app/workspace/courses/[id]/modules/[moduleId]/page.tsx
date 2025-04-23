@@ -83,7 +83,6 @@ export default function EnroledModulePage({
       <Button>
         <Link href={`/workspace/courses/${id}`}>
           <ChevronLeft className="w-6 h-6" />
-          {/* Back to modules */}
         </Link>
       </Button>
       <PageHeader className="mb-10" title={"Modules of " + pageData.title} />

@@ -1,8 +1,6 @@
 "use server"
-// import { supabase } from "@/lib/supabaseClient";
 import { createClient } from "@/utils/supabase/server";
 import { getUser } from "@/utils/supabase/server";
-// import {SaveTestResult, UserTestAnswer} from "@/lib/definitions";
 import {SaveTestResult, UserTestAnswer} from "@/lib/types/test";
 
 export async function saveCardSelection(cardId: number, selection: boolean) {
@@ -76,20 +74,7 @@ export async function saveCardResult(
   
       if (updateError) return updateError;
       return { updated: true };
-    } else {
-      /*
-      const { data, error } = await supabase.from("card_results").insert([{
-        user_id: user.id,
-        card_id: cardId,
-        start_time: startTime,
-        end_time: endTime,
-        selection_json: JSON.stringify(selection),
-        rating: rating
-      }]);
-      if (error) return error;
-      return data;
-      */
-  
+    } else {  
       const { error } = await supabase.from("card_results").insert([{
         user_id: user.id,
         card_id: cardId,
