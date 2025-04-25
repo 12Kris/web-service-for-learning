@@ -11,9 +11,10 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   className,
 }) => {
   return (
-    <div className="flex items-center justify-center flex-col text-[--neutral]">
-      <Loader2 className={cn(className, "animate-spin duration-50 size-8")} />
-      Loading please wait...
+    <div className="fixed inset-0 flex items-center justify-center flex-col text-[--neutral] z-50">
+      <div className="bg-white p-5 rounded-lg border shadow-md">
+      <Loader2 className={cn(className, "animate-spin duration-30 size-8")} />
+      </div>
     </div>
   );
 };
