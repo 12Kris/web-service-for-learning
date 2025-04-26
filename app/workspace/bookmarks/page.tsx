@@ -60,12 +60,7 @@ export default function BookmarksPage() {
               spacedRepetition &&
               spacedRepetition.next_review_dates.includes(today)
             );
-          } catch (error) {
-            console.error(
-              "Error accessing spaced_repetition for course",
-              course.id,
-              error
-            );
+          } catch {
             return false;
           }
         });

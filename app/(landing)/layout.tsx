@@ -9,8 +9,12 @@ const jura = Jura({
 });
 
 export const metadata: Metadata = {
-  title: 'Web Service For Learning',
-  description: 'Web Service For Learning is a web service for learning',
+  title: 'Memoria',
+  description: 'Study smarter, not harder.',
+  icons: {
+    icon: '../favicon.ico',
+    shortcut: '../favicon.ico',
+  },
 }
 
 export default function LandingLayout({
