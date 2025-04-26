@@ -10,6 +10,10 @@ const jura = Jura({
 export const metadata: Metadata = {
   title: "Memoria",
   description: "Study smarter, not harder.",
+  icons: {
+    icon: './favicon.ico',
+    shortcut: './favicon.ico',
+  },
 };
 
 export default function RootLayout({

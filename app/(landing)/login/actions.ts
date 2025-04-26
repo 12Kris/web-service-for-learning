@@ -15,11 +15,15 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    return error;
+    return {
+      success: false,
+      error: error.message,
+    };
   }
 
-  revalidatePath("/workspace", "layout");
+  // revalidatePath("/workspace", "layout");
   redirect("/workspace");
+  
 }
 
 export async function signup(formData: FormData) {
