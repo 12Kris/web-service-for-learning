@@ -132,7 +132,7 @@ export default async function HomePage() {
                 <h2 className="text-lg font-medium">Weekly streak</h2>
                 <span className="text-[#ff9b87] font-medium">+{weeklyStreak.points} points</span>
               </div>
-              <p className="text-sm">You've made productivity experts proud!</p>
+                <p className="text-sm">{`You've made productivity experts proud!`}</p>
             </div>
 
             <div className="flex items-center gap-4">

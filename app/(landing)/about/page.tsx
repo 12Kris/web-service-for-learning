@@ -128,7 +128,7 @@ export default function AboutUs() {
                 </svg>
               </div>
               <CardTitle className="text-2xl">Our Vision</CardTitle>
-              <CardDescription>Where we're headed</CardDescription>
+              <CardDescription>{`Where we're headed`}</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-lg">
