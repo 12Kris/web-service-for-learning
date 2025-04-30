@@ -103,19 +103,6 @@ export default function HomePage() {
       [createdCourses, coursesInProgress]
     );
 
-  // const leaderboard = [
-  //   { rank: 1, initials: "ST", name: "Sam Taylor", totalPoints: 214, color: "bg-blue-100" },
-  //   { rank: 2, initials: "PS", name: "Pat Smith", totalPoints: 125, color: "bg-blue-100" },
-  //   { rank: 3, initials: "JL", name: "Jamie Lee", totalPoints: 113, color: "bg-blue-100" },
-  //   { rank: 4, initials: "MJ", name: "Maria Garcia", totalPoints: 87, color: "bg-blue-100" },
-  //   { rank: 5, initials: "AJ", name: "Alex Johnson", totalPoints: 76, color: "bg-blue-100" },
-  //   { rank: 6, initials: "ST", name: "Sam Taylor", totalPoints: 214, color: "bg-blue-100" },
-  //   { rank: 7, initials: "PS", name: "Pat Smith", totalPoints: 125, color: "bg-blue-100" },
-  //   { rank: 8, initials: "JL", name: "Jamie Lee", totalPoints: 113, color: "bg-blue-100" },
-  //   { rank: 9, initials: "MJ", name: "Maria Garcia", totalPoints: 87, color: "bg-blue-100" },
-  //   { rank: 10, initials: "AJ", name: "Alex Johnson", totalPoints: 76, color: "bg-blue-100" },
-  // ]
-
    if (isLoading) {
       return <LoadingSpinner className="mx-auto" />;
     }
@@ -225,7 +212,8 @@ export default function HomePage() {
           <CardContent className="p-6 h-full">
             <h2 className="text-lg font-medium mb-4">Courses in progress</h2>
             <div className="space-y-5 overflow-y-scroll mb-6 px-5" style={{height: '90%'}}>
-              {coursesInProgress?.map((course) => (
+              {coursesInProgress != null && coursesInProgress.length > 0 ? (
+                coursesInProgress?.map((course) => (
                 <Link key={course.id} href={`/workspace/courses/${course.id}`} className="flex items-center gap-4">
                     <div style={{ backgroundColor: course.color }} className={`w-10 h-10 rounded-lg flex-shrink-0`}></div>
                     <div className="flex-grow">
@@ -238,37 +226,14 @@ export default function HomePage() {
                       </div>
                     </div>
                 </Link>
-              ))}
+              ))) : (
+                <div className="text-sm text-gray-500">No courses in progress.</div>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* <Card className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]">
-          <CardContent className="p-6">
-            <h2 className="text-lg font-medium mb-4">Leader board</h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-12 text-sm mb-2">
-                <div className="col-span-1">Rank</div>
-                <div className="col-span-7">Name</div>
-                <div className="col-span-4 text-right">Total points</div>
-              </div>
-              {leaderboard.map((user) => (
-                <div key={user.rank} className="grid grid-cols-12 items-center">
-                  <div className="col-span-1 font-medium">{user.rank}</div>
-                  <div className="col-span-7 flex items-center gap-2">
-                    <div className={`${user.color} w-8 h-8 rounded-full flex items-center justify-center text-xs`}>
-                      {user.initials}
-                    </div>
-                    <span>{user.name}</span>
-                  </div>
-                  <div className="col-span-4 text-right font-medium">{user.totalPoints}</div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card> */}
-
-        <Card className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]">
+        <Card className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]" style={{ minHeight: containerHeight }}>
           <CardContent className="p-6">
             <h2 className="text-lg font-medium mb-4">Leader board</h2>
             <div className="space-y-4">
@@ -302,23 +267,26 @@ export default function HomePage() {
         <CardContent className="p-6">
           <h2 className="text-lg font-medium mb-4">Upcoming Events</h2>
           <div className="space-y-4">
-            {upcomingEvents.map((course) => (
-              <Link key={course.id} href={`/workspace/courses/${course.id}`} className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex-shrink-0`} style={{backgroundColor: course.color}}></div>
-                  <div>
-                    <h3 className="font-medium">{course.name}</h3>
-                    <p className="text-xs">{course.description}</p>
+            {coursesInProgress != null && coursesInProgress.length > 0 ? (
+              upcomingEvents.map((course) => (
+                <Link key={course.id} href={`/workspace/courses/${course.id}`} className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-10 h-10 rounded-lg flex-shrink-0`} style={{backgroundColor: course.color}}></div>
+                    <div>
+                      <h3 className="font-medium">{course.name}</h3>
+                      <p className="text-xs">{course.description}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* <span>
-                    {event.cards} {event.cards === 1 ? "card" : "cards"}
-                  </span> */}
-                  <ChevronRight className="h-5 w-5" />
-                </div>
-              </Link>
-            ))}
+                  <div className="flex items-center gap-2">
+                    {/* <span>
+                      {event.cards} {event.cards === 1 ? "card" : "cards"}
+                    </span> */}
+                    <ChevronRight className="h-5 w-5" />
+                  </div>
+                </Link>
+              ))) : (
+                <div className="text-sm text-gray-500">No events here.</div>
+              )}
           </div>
         </CardContent>
       </Card>
