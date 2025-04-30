@@ -730,3 +730,144 @@ export async function deleteFlashcard(cardId: number) {
 
     if (error) throw error;
 }
+
+// export async function getTopUsersByPoints(): Promise<
+//   { rank: number; initials: string; name: string; totalPoints: number; color: string }[]
+// > {
+//   const supabase = await createClient();
+//   try {
+//     const { data, error } = await supabase
+//       .from("profiles")
+//       .select("full_name, username, total_points")
+//       .order("total_points", { ascending: false })
+//       .limit(10);
+
+//     if (error) {
+//       console.error("Error fetching top users by points:", error);
+//       return [];
+//     }
+
+//     if (!data || data.length === 0) {
+//       return [];
+//     }
+
+//     return data.map((user, index) => {
+//       const name = user.full_name || user.username || "Unknown User";
+//       const initials = name
+//         .split(" ")
+//         .map((word: string) => word.charAt(0))
+//         .slice(0, 2)
+//         .join("")
+//         .toUpperCase();
+
+//       return {
+//         rank: index + 1,
+//         initials: initials,
+//         name: name,
+//         totalPoints: user.total_points || 0,
+//         color: "bg-blue-100",
+//       };
+//     });
+//   } catch (error) {
+//     console.error("Error in getTopUsersByPoints:", error);
+//     return [];
+//   }
+// }
+
+export async function getTopUsersByPoints(): Promise<
+  { rank: number; initials: string; name: string; totalPoints?: number; color: string }[]
+> {
+  const supabase = await createClient();
+  try {
+    let hasTotalPointsColumn = true;
+    let data: ({ full_name: string | null; username: string | null; total_points?: number | null }[]) | null = null;
+
+    try {
+      const result = await supabase
+        .from("profiles")
+        .select("full_name, username, total_points")
+        .order("total_points", { ascending: false, nullsFirst: false })
+        .limit(10);
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      data = result.data;
+    } catch (error: any) {
+      if (error.message.includes("column") && error.message.includes("total_points")) {
+        hasTotalPointsColumn = false;
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from("profiles")
+          .select("full_name, username")
+          .order("updated_at", { ascending: false })
+          .limit(10);
+
+        if (fallbackError) {
+          console.error("Error fetching users without total_points:", fallbackError);
+          return [];
+        }
+
+        data = fallbackData;
+      } else {
+        console.error("Error fetching top users by points:", error);
+        return [];
+      }
+    }
+
+    let finalData: ({ full_name: string | null; username: string | null; total_points?: number | null }[]) | null = data;
+    if (hasTotalPointsColumn) {
+      const allPointsNull = data?.length > 0 && data.every((user) => user.total_points === null);
+      if (allPointsNull) {
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from("profiles")
+          .select("full_name, username")
+          .order("updated_at", { ascending: false })
+          .limit(10);
+
+        if (fallbackError) {
+          console.error("Error fetching fallback users:", fallbackError);
+          return [];
+        }
+
+        finalData = fallbackData;
+      }
+    }
+
+    if (!finalData || finalData.length === 0) {
+      return [];
+    }
+
+    return finalData.map((user, index) => {
+      const name = user.full_name || user.username || "Unknown User";
+      const initials = name
+        .split(" ")
+        .map((word: string) => word.charAt(0))
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+
+      const leaderboardEntry: {
+        rank: number;
+        initials: string;
+        name: string;
+        totalPoints?: number;
+        color: string;
+      } = {
+        rank: index + 1,
+        initials: initials,
+        name: name,
+        color: "bg-blue-100",
+      };
+
+      if (hasTotalPointsColumn) {
+        leaderboardEntry.totalPoints = user.total_points ?? 0;
+      }
+
+      return leaderboardEntry;
+    });
+  } catch (error) {
+    console.error("Error in getTopUsersByPoints:", error);
+    return [];
+  }
+}
