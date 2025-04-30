@@ -6,6 +6,7 @@ import {TestData, TestQuestionForCourse} from "@/lib/types/test";
 import {Module} from "@/lib/types/modules";
 import {createClient} from "@/utils/supabase/server";
 import { getCourseRating } from "./rating-actions";
+import { PostgrestError } from "@supabase/supabase-js";
 
 
 export async function getCourseById(courseId: number) {
@@ -794,23 +795,29 @@ export async function getTopUsersByPoints(): Promise<
       }
 
       data = result.data;
-    } catch (error: any) {
-      if (error.message.includes("column") && error.message.includes("total_points")) {
-        hasTotalPointsColumn = false;
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from("profiles")
-          .select("full_name, username")
-          .order("updated_at", { ascending: false })
-          .limit(10);
+    } catch (error: unknown) {
+      if (error instanceof Error || (error as PostgrestError).message) {
+        const errorMessage = (error as Error).message;
+        if (errorMessage.includes("column") && errorMessage.includes("total_points")) {
+          hasTotalPointsColumn = false;
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from("profiles")
+            .select("full_name, username")
+            .order("updated_at", { ascending: false })
+            .limit(10);
 
-        if (fallbackError) {
-          console.error("Error fetching users without total_points:", fallbackError);
+          if (fallbackError) {
+            console.error("Error fetching users without total_points:", fallbackError);
+            return [];
+          }
+
+          data = fallbackData;
+        } else {
+          console.error("Error fetching top users by points:", error);
           return [];
         }
-
-        data = fallbackData;
       } else {
-        console.error("Error fetching top users by points:", error);
+        console.error("Unknown error fetching top users by points:", error);
         return [];
       }
     }
