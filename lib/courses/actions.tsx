@@ -7,6 +7,7 @@ import {Module} from "@/lib/types/modules";
 import {createClient} from "@/utils/supabase/server";
 import { getCourseRating } from "./rating-actions";
 import { PostgrestError } from "@supabase/supabase-js";
+import { cache } from "react";
 
 
 export async function getCourseById(courseId: number) {
@@ -305,11 +306,7 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
       *,
       creator:profiles!Course_creator_id_fkey1 (
         id,
-        email,
-        full_name,
-        avatar_url,
-        bio,
-        username
+        full_name
       ),
       student_count:UserCourse(count),
       rating_count
@@ -333,6 +330,56 @@ export async function getUserCreatedCourses(): Promise<Course[]> {
   
     return coursesWithRating as Course[];
   }
+
+// export const getCourses = cache(async (offset = 0, limit = 30): Promise<Course[]> => {
+//     const supabase = await createClient();
+  
+//     const { data: coursesData, error: coursesError } = await supabase
+//       .from("Course")
+//       .select(`
+//         *, student_count:UserCourse(count), creator:profiles!Course_creator_id_fkey1 (
+//             id,
+//             full_name,
+//             username
+//         )
+//       `)
+//       .range(offset, offset + limit - 1);
+  
+//     if (coursesError) {
+//       console.error("Error fetching courses:", JSON.stringify(coursesError, null, 2));
+//       return [];
+//     }
+  
+//     const courseIds = coursesData.map((course) => course.id);
+//     const { data: ratingsData, error: ratingsError } = await supabase
+//       .from("CourseRating")
+//       .select("course_id, rating")
+//       .in("course_id", courseIds);
+  
+//     if (ratingsError) {
+//       console.error("Error fetching ratings:", JSON.stringify(ratingsError, null, 2));
+//     }
+  
+//     const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
+//       if (!acc[course_id]) acc[course_id] = [];
+//       acc[course_id].push(rating);
+//       return acc;
+//     }, {} as Record<number, number[]>);
+  
+//     const coursesWithRating: Course[] = coursesData.map((course) => {
+//       const ratings = ratingsMap?.[course.id] || [];
+//       const averageRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0;
+  
+//       return {
+//         ...course,
+//         rating: Number.parseFloat(averageRating.toFixed(1)),
+//         student_count: course.student_count?.[0]?.count || 0,
+//         creator: course.creator?.[0] || { id: "", full_name: "Unknown" },
+//       };
+//     });
+  
+//     return coursesWithRating;
+//   });
 
 export async function getCoursesWithUserProgress(): Promise<Course[]> {
   const supabase = await createClient();
@@ -732,120 +779,27 @@ export async function deleteFlashcard(cardId: number) {
     if (error) throw error;
 }
 
-// export async function getTopUsersByPoints(): Promise<
-//   { rank: number; initials: string; name: string; totalPoints: number; color: string }[]
-// > {
-//   const supabase = await createClient();
-//   try {
-//     const { data, error } = await supabase
-//       .from("profiles")
-//       .select("full_name, username, total_points")
-//       .order("total_points", { ascending: false })
-//       .limit(10);
-
-//     if (error) {
-//       console.error("Error fetching top users by points:", error);
-//       return [];
-//     }
-
-//     if (!data || data.length === 0) {
-//       return [];
-//     }
-
-//     return data.map((user, index) => {
-//       const name = user.full_name || user.username || "Unknown User";
-//       const initials = name
-//         .split(" ")
-//         .map((word: string) => word.charAt(0))
-//         .slice(0, 2)
-//         .join("")
-//         .toUpperCase();
-
-//       return {
-//         rank: index + 1,
-//         initials: initials,
-//         name: name,
-//         totalPoints: user.total_points || 0,
-//         color: "bg-blue-100",
-//       };
-//     });
-//   } catch (error) {
-//     console.error("Error in getTopUsersByPoints:", error);
-//     return [];
-//   }
-// }
-
 export async function getTopUsersByPoints(): Promise<
-  { rank: number; initials: string; name: string; totalPoints?: number; color: string }[]
+  { rank: number; initials: string; name: string; totalPoints: number; color: string }[]
 > {
   const supabase = await createClient();
   try {
-    let hasTotalPointsColumn = true;
-    let data: ({ full_name: string | null; username: string | null; total_points?: number | null }[]) | null = null;
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("full_name, username, total_points")
+      .order("total_points", { ascending: false })
+      .limit(10);
 
-    try {
-      const result = await supabase
-        .from("profiles")
-        .select("full_name, username, total_points")
-        .order("total_points", { ascending: false, nullsFirst: false })
-        .limit(10);
-
-      if (result.error) {
-        throw result.error;
-      }
-
-      data = result.data;
-    } catch (error: unknown) {
-      if (error instanceof Error || (error as PostgrestError).message) {
-        const errorMessage = (error as Error).message;
-        if (errorMessage.includes("column") && errorMessage.includes("total_points")) {
-          hasTotalPointsColumn = false;
-          const { data: fallbackData, error: fallbackError } = await supabase
-            .from("profiles")
-            .select("full_name, username")
-            .order("updated_at", { ascending: false })
-            .limit(10);
-
-          if (fallbackError) {
-            console.error("Error fetching users without total_points:", fallbackError);
-            return [];
-          }
-
-          data = fallbackData;
-        } else {
-          console.error("Error fetching top users by points:", error);
-          return [];
-        }
-      } else {
-        console.error("Unknown error fetching top users by points:", error);
-        return [];
-      }
-    }
-
-    let finalData: ({ full_name: string | null; username: string | null; total_points?: number | null }[]) | null = data;
-    if (hasTotalPointsColumn) {
-      const allPointsNull = data?.length > 0 && data.every((user) => user.total_points === null);
-      if (allPointsNull) {
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from("profiles")
-          .select("full_name, username")
-          .order("updated_at", { ascending: false })
-          .limit(10);
-
-        if (fallbackError) {
-          console.error("Error fetching fallback users:", fallbackError);
-          return [];
-        }
-
-        finalData = fallbackData;
-      }
-    }
-
-    if (!finalData || finalData.length === 0) {
+    if (error) {
+      console.error("Error fetching top users by points:", error);
       return [];
     }
 
-    return finalData.map((user, index) => {
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    return data.map((user, index) => {
       const name = user.full_name || user.username || "Unknown User";
       const initials = name
         .split(" ")
@@ -854,27 +808,120 @@ export async function getTopUsersByPoints(): Promise<
         .join("")
         .toUpperCase();
 
-      const leaderboardEntry: {
-        rank: number;
-        initials: string;
-        name: string;
-        totalPoints?: number;
-        color: string;
-      } = {
+      return {
         rank: index + 1,
         initials: initials,
         name: name,
+        totalPoints: user.total_points || 0,
         color: "bg-blue-100",
       };
-
-      if (hasTotalPointsColumn) {
-        leaderboardEntry.totalPoints = user.total_points ?? 0;
-      }
-
-      return leaderboardEntry;
     });
   } catch (error) {
     console.error("Error in getTopUsersByPoints:", error);
     return [];
   }
 }
+
+// export async function getTopUsersByPoints(): Promise<
+//   { rank: number; initials: string; name: string; totalPoints?: number; color: string }[]
+// > {
+//   const supabase = await createClient();
+//   try {
+//     let hasTotalPointsColumn = true;
+//     let data: ({ full_name: string | null; username: string | null; total_points?: number | null }[]) | null = null;
+
+//     try {
+//       const result = await supabase
+//         .from("profiles")
+//         .select("full_name, username, total_points")
+//         .order("total_points", { ascending: false, nullsFirst: false })
+//         .limit(10);
+
+//       if (result.error) {
+//         throw result.error;
+//       }
+
+//       data = result.data;
+//     } catch (error: unknown) {
+//       if (error instanceof Error || (error as PostgrestError).message) {
+//         const errorMessage = (error as Error).message;
+//         if (errorMessage.includes("column") && errorMessage.includes("total_points")) {
+//           hasTotalPointsColumn = false;
+//           const { data: fallbackData, error: fallbackError } = await supabase
+//             .from("profiles")
+//             .select("full_name, username")
+//             .order("updated_at", { ascending: false })
+//             .limit(10);
+
+//           if (fallbackError) {
+//             console.error("Error fetching users without total_points:", fallbackError);
+//             return [];
+//           }
+
+//           data = fallbackData;
+//         } else {
+//           console.error("Error fetching top users by points:", error);
+//           return [];
+//         }
+//       } else {
+//         console.error("Unknown error fetching top users by points:", error);
+//         return [];
+//       }
+//     }
+
+//     let finalData: ({ full_name: string | null; username: string | null; total_points?: number | null }[]) | null = data;
+//     if (hasTotalPointsColumn) {
+//       const allPointsNull = data?.length > 0 && data.every((user) => user.total_points === null);
+//       if (allPointsNull) {
+//         const { data: fallbackData, error: fallbackError } = await supabase
+//           .from("profiles")
+//           .select("full_name, username")
+//           .order("updated_at", { ascending: false })
+//           .limit(10);
+
+//         if (fallbackError) {
+//           console.error("Error fetching fallback users:", fallbackError);
+//           return [];
+//         }
+
+//         finalData = fallbackData;
+//       }
+//     }
+
+//     if (!finalData || finalData.length === 0) {
+//       return [];
+//     }
+
+//     return finalData.map((user, index) => {
+//       const name = user.full_name || user.username || "Unknown User";
+//       const initials = name
+//         .split(" ")
+//         .map((word: string) => word.charAt(0))
+//         .slice(0, 2)
+//         .join("")
+//         .toUpperCase();
+
+//       const leaderboardEntry: {
+//         rank: number;
+//         initials: string;
+//         name: string;
+//         totalPoints?: number;
+//         color: string;
+//       } = {
+//         rank: index + 1,
+//         initials: initials,
+//         name: name,
+//         color: "bg-blue-100",
+//       };
+
+//       if (hasTotalPointsColumn) {
+//         leaderboardEntry.totalPoints = user.total_points ?? 0;
+//       }
+
+//       return leaderboardEntry;
+//     });
+//   } catch (error) {
+//     console.error("Error in getTopUsersByPoints:", error);
+//     return [];
+//   }
+// }

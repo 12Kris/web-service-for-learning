@@ -23,4 +23,5 @@ export interface Profile {
   bio?: string;
   location?: string;
   email?: string;
+  total_points?: string;
 }
