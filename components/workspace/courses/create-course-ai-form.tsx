@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { createCourseWithAI } from "@/lib/courses/ai-actions";
 
+
 export default function CreateCourseAIForm() {
   const [prompt, setPrompt] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +22,7 @@ export default function CreateCourseAIForm() {
   const [difficultyLevel, setDifficultyLevel] = useState<string>("");
   const [testsAmount, setTestsAmount] = useState<number>(3);
   const [learningMaterialsAmount, setLearningMaterialsAmount] = useState<number>(3);
+  const [pdfFile, setPdfFile] = useState<File | undefined>(undefined);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,7 +41,8 @@ export default function CreateCourseAIForm() {
         coursesAmount,
         difficultyLevel,
         testsAmount,
-        learningMaterialsAmount
+        learningMaterialsAmount,
+        pdfFile
       );
 
       if (result.success && result.courseId) {
@@ -142,6 +145,35 @@ export default function CreateCourseAIForm() {
             <p className="text-sm text-muted-foreground">
               The AI will generate a complete course structure including modules, learning outcomes, and course details.
             </p>
+          </div>
+
+          {/* NEW: PDF upload */}
+          <div>
+            <label htmlFor="pdfFile" className="block text-sm font-medium">
+              Upload PDF to augment prompt
+            </label>
+            <input
+              id="pdfFile"
+              type="file"
+              accept="application/pdf"
+              disabled={isLoading}
+
+
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 1048576) {
+                  setError("PDF file size should not exceed 1 MB");
+                  setPdfFile(undefined);
+                } else {
+                  setError(null);
+                  setPdfFile(file);
+                }
+              }}
+              className="mt-1"
+              // onChange={(e) =>
+              //   setPdfFile(e.target.files?.[0] ?? undefined)
+              // }
+            />
           </div>
 
           {error && (

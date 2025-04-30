@@ -9,9 +9,23 @@ import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/server";
 
+import fs from "fs";
+// import pdf from "pdf-parse";
+
+import * as pdfParse from "pdf-parse"
+
+// import * as pdfjsLib from 'pdfjs-dist';
+
+import { pdfjs } from "react-pdf"
+
+
+import { PDFDocument } from "pdf-lib";
+
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
 if (!apiKey) {
-  throw new Error("Missing OpenAI API Key. Set NEXT_PUBLIC_OPENAI_API_KEY in your Vercel environment variables.");
+  throw new Error(
+    "Missing OpenAI API Key. Set NEXT_PUBLIC_OPENAI_API_KEY in your Vercel environment variables."
+  );
 }
 const openai = new OpenAI({
   apiKey,
@@ -66,7 +80,10 @@ export interface AiUsed {
 
 export async function recordAiUsage(): Promise<void> {
   const supabase = await createClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
   if (userError) {
     console.error("Error fetching user:", userError);
   }
@@ -80,14 +97,15 @@ export async function recordAiUsage(): Promise<void> {
     .eq("user_id", user.id)
     .gte("used_at", eightHoursAgo);
 
-
-    console.log("Count of AI uses in last 8 hours:", count);
-    console.log("User ID:", user.id);
+  console.log("Count of AI uses in last 8 hours:", count);
+  console.log("User ID:", user.id);
   if (countError) {
     console.error("Error counting AI usage:", countError);
   }
   if ((count ?? 0) >= 3) {
-    throw new Error("You have exceeded 3 AI uses in the last 8 hours. Please try again later.");
+    throw new Error(
+      "You have exceeded 3 AI uses in the last 8 hours. Please try again later."
+    );
   }
   const { error } = await supabase
     .from("ai_used")
@@ -102,37 +120,67 @@ async function generateCourseContent(
   coursesAmount: number,
   difficultyLevel: string,
   testsAmount: number,
-  learningMaterialsAmount: number
+  learningMaterialsAmount: number,
+  pdfText: string,
 ): Promise<GeneratedCourse | null> {
   try {
     if (coursesAmount > 6) {
       return null;
     }
 
+    const prompt = String.raw`
+    You are an expert instructional-designer LLM.
     
-
-    const prompt = `Create a course with difficulty level of ${difficultyLevel} outline based on the following topic: "${inputText}". 
-        The course should include:
-        - Course Name
-        - Course Description
-        - Course Color creative pastel color (not blue) witch you associate with the course (Hexadecimal Style)
-        - Course Type (e.g., programming, science, history)
-        - Course Details (e.g., prerequisites, target audience)
-        - A list of Learning Outcomes (at least 3). Each outcome should be a clear statement of what the learner will be able to do after completing the course.
-        - A list of Modules exactly ${coursesAmount}. Each module should have:
-          - Module Title
-          - Module Description
-          - List of Learning Materials. Create exactly ${learningMaterialsAmount} learning materials for each module. Each learning material should have:
-            - Learning Material Title
-            - A list of flashcards (at least 3). Each flashcard should have:
-              - Front text
-              - Back text
-          - List of Tests. Create exactly ${testsAmount} tests for each module. Each test should have:
-            - A general question/prompt for the test.
-            - A list of specific questions (at least 3). Each question should have:
-              - Question text
-              - A list of answers (at least 3). Exactly ONE answer should be marked as correct.
-        `;
+    ======================  HARD STRUCTURE RULES  ======================
+    Return **valid JSON only** (no markdown, no commentary).
+    If any rule is broken, return the single string "INVALID".
+    
+    Schema (exactly as written):
+    {
+      "courseName": string,
+      "courseDescription": string,
+      "courseColor": string,        // pastel HEX, **NOT blue**
+      "courseType": string,
+      "courseDetails": string,
+      "learningOutcomes": string[], // ≥ 3 items
+      "modules": [                  // **exactly ${coursesAmount} items**
+        {
+          "title": string,
+          "description": string,
+          "learningMaterials": [    // exactly ${learningMaterialsAmount}
+            {
+              "title": string,
+              "flashcards": [       // ≥ 3
+                { "front": string, "back": string }
+              ]
+            }
+          ],
+          "tests": [                // exactly ${testsAmount}
+            {
+              "prompt": string,
+              "questions": [        // ≥ 3
+                {
+                  "question": string,
+                  "answers": [      // ≥ 3; ONE and only one has "isCorrect": true
+                    { "text": string, "isCorrect": boolean }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    
+    ======================  CONTENT GUIDELINES  ======================
+    • Topic: "${inputText}"
+    • Difficulty: ${difficultyLevel}
+    • Use clear, measurable Bloom-style verbs in "learningOutcomes".
+    • Audience: self-directed online learners; prerequisites should be realistic.
+    
+    ======================  REFERENCE MATERIAL  ======================
+    ${pdfText ? pdfText : "(none)"}
+    `;
 
     const response = await openai.responses.create({
       model: "gpt-4.1-nano-2025-04-14",
@@ -335,7 +383,6 @@ async function generateCourseContent(
       },
     });
 
-
     const generatedContent = JSON.parse(response.output_text);
     return generatedContent as GeneratedCourse;
   } catch (error) {
@@ -344,12 +391,50 @@ async function generateCourseContent(
   }
 }
 
+async function extractTextFromPdfFile(pdfFile: File): Promise<string> {
+  // 2️⃣  Read it in
+  const arrayBuffer = await pdfFile.arrayBuffer();
+
+  // Convert ArrayBuffer to Buffer for pdf-parse
+  const buffer = Buffer.from(arrayBuffer);
+
+  // Directly use pdf-parse without a wrapper class
+  const data = await pdfParse.default(buffer)
+
+  const rawPdfText = data.text;
+  const pdfText = rawPdfText
+    // Remove newlines and carriage returns
+    .replace(/(\r\n|\n|\r)/gm, " ")
+    // Remove pagination text like "Page 1 of 10"
+    .replace(/Page\s+\d+\s+of\s+\d+/gi, "")
+    // Collapse multiple spaces into one
+    .replace(/\s\s+/g, " ")
+    .trim();
+
+
+          const limitBytes = 1 * 1024 * 1024; // 1 MB in bytes
+        let trimmedText = pdfText;
+        if (Buffer.byteLength(trimmedText, "utf-8") > limitBytes) {
+          trimmedText = trimmedText.slice(0, limitBytes);
+        }
+
+  // // 3️⃣  Load with PDF.js
+  // const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+  // const pdf = await loadingTask.promise;
+
+  // 4️⃣  Walk every page
+
+
+  return trimmedText;
+}
+
 export async function createCourseWithAI(
   inputText: string,
   modulesAmount: number,
   difficultyLevel: string,
   testsAmount: number,
-  learningMaterialsAmount: number
+  learningMaterialsAmount: number,
+  pdfFile?: File
 ): Promise<{ success: boolean; message: string; courseId?: number }> {
   try {
     if (!inputText) {
@@ -364,15 +449,70 @@ export async function createCourseWithAI(
     if (!difficultyLevel) {
       return { success: false, message: "Difficulty level is required." };
     }
-    
+    // let pdfTextPrompt = "";
+
+    console.log("PDF file:", pdfFile);
+    let pdfText = "";
+    if (pdfFile) {
+
+      pdfText = await extractTextFromPdfFile(pdfFile)
+
+      console.log("PDF text extracted successfully.", pdfText);
+
+
+      // const uint8Array = fs.readFileSync(pdfFile.name);
+
+      // const arrayBuffer = await pdfFile.arrayBuffer();
+
+      // const pdfDoc3 = await PDFDocument.load(arrayBuffer);
+
+
+      // console.log("PDF file content:", pdfDoc3.);
+
+
+        // const pdfDoc = await PDFDocument.open(file);
+
+        // Limit PDF text size to prevent issues with API limits
+        // const limitBytes = 1 * 1024 * 1024; // 1 MB in bytes
+        // let trimmedText = pdfText;
+        // if (Buffer.byteLength(trimmedText, "utf-8") > limitBytes) {
+        //   trimmedText = trimmedText.slice(0, limitBytes);
+        // }
+
+
+
+    }
+
+    // if (pdfFile) {
+    //   parsePdf(pdfFile);
+    // }
+
+    // const arrayBuffer = await pdfFile.arrayBuffer();
+    // const buffer = Buffer.from(arrayBuffer);
+    // const { text: pdfText } = await pdfParse(buffer);
+
+    // const limitBytes = 1 * 1024 * 1024;                   // 1 MB in bytes
+    // let trimmed = pdfText;
+    // if (Buffer.byteLength(trimmed, "utf-8") > limitBytes) {
+    //   trimmed = trimmed.slice(0, limitBytes);            // truncate to 1 MB
+    // }
+
+    //     pdfTextPrompt = "\n\nUse the following PDF content as material:\n" + pdfText;
+
+    //     console.log("PDF text extracted successfully.", pdfTextPrompt);
+
+    // }
+
+    // ddddddddddddddddddddddddddddddddddddddddddddddddddd
+
     await recordAiUsage();
-    
     const generatedCourse = await generateCourseContent(
       inputText,
       modulesAmount,
       difficultyLevel,
       testsAmount,
-      learningMaterialsAmount
+      learningMaterialsAmount,
+      pdfText                                  // pass the (possibly empty) prompt
     );
 
     if (!generatedCourse) {
@@ -380,7 +520,6 @@ export async function createCourseWithAI(
     }
 
     const modules = generatedCourse.modules;
-
 
     const createdCourse = await createCourse({
       name: generatedCourse.name,
@@ -403,7 +542,15 @@ export async function createCourseWithAI(
     }
     const courseId = createdCourse.id;
 
-    for (const generatedModule of modules) {
+    // helper to normalize "correct" values from the AI (boolean|string|number)
+  const parseCorrect = (val: boolean | string | number): boolean => {
+    if (typeof val === "boolean") return val;
+    if (typeof val === "string") return val.toLowerCase() === "true";
+    if (typeof val === "number") return val === 1;
+    return false;
+  };
+
+  for (const generatedModule of modules) {
       const createdBlock = await createBlock(
         courseId,
         generatedModule.title,
@@ -439,28 +586,21 @@ export async function createCourseWithAI(
           const testData: TestDataWithQuestion = {
             block_id: blockId,
             question: generatedTest.question || "",
-            questions: (generatedTest.questions || []).map(
-              (q: GeneratedTestQuestion, idx: number) => ({
-                id: idx + 1,
-                question: q.question || "",
-                answers: (q.answers || []).map(
-                  (opt: GeneratedTestAnswer, i: number) => ({
-                    id: `${i + 1}`,
-                    text: opt.text || "",
-                    correct: Boolean(opt.correct),
-                  })
-                ),
-              })
-            ),
-            answers: (generatedTest.questions || []).flatMap(
-              (q: GeneratedTestQuestion, qi: number) =>
-                (q.answers || []).map(
-                  (opt: GeneratedTestAnswer, i: number) => ({
-                    id: `${qi + 1}-${i + 1}`,
-                    text: opt.text || "",
-                    correct: Boolean(opt.correct),
-                  })
-                )
+            questions: (generatedTest.questions || []).map((q, idx) => ({
+              id: idx + 1,
+              question: q.question || "",
+              answers: (q.answers || []).map((opt, i) => ({
+                id: `${i + 1}`,
+                text: opt.text || "",
+                correct: parseCorrect(opt.correct),
+              })),
+            })),
+            answers: (generatedTest.questions || []).flatMap((q, qi) =>
+              (q.answers || []).map((opt, i) => ({
+                id: `${qi + 1}-${i + 1}`,
+                text: opt.text || "",
+                correct: parseCorrect(opt.correct),
+              }))
             ),
           };
 
@@ -468,6 +608,7 @@ export async function createCourseWithAI(
         }
       }
     }
+    // ddddddddddddddddddddddddddddddddddddddddddddddddddd
 
     return {
       success: true,
