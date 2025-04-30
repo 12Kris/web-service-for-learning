@@ -6,8 +6,7 @@ import {TestData, TestQuestionForCourse} from "@/lib/types/test";
 import {Module} from "@/lib/types/modules";
 import {createClient} from "@/utils/supabase/server";
 import { getCourseRating } from "./rating-actions";
-import { PostgrestError } from "@supabase/supabase-js";
-import { cache } from "react";
+// import { cache } from "react";
 
 
 export async function getCourseById(courseId: number) {

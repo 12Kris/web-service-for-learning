@@ -28,7 +28,7 @@ export default function BrowsePage({
 }: ClientComponentProps) {
   const [courses] = useState<Course[]>(initialCourses);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>(initialCourses);
-  const [popularCourses] = useState<Course[]>(initialPopularCourses);
+  // const [popularCourses] = useState<Course[]>(initialPopularCourses);
   const [isLoading] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isFilterActive, setIsFilterActive] = useState(false);
