@@ -1,164 +1,202 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { createCourseWithAI } from "@/lib/courses/ai-actions";
+import type React from "react"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AlertCircle, Upload } from "lucide-react"
+import { createCourseWithAI } from "@/lib/courses/ai-actions"
 
 export default function CreateCourseAIForm() {
-  const [prompt, setPrompt] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [coursesAmount, setCoursesAmount] = useState<number>(1);
-  const [difficultyLevel, setDifficultyLevel] = useState<string>("");
-  const [testsAmount, setTestsAmount] = useState<number>(3);
-  const [learningMaterialsAmount, setLearningMaterialsAmount] = useState<number>(3);
-  const router = useRouter();
+  const [prompt, setPrompt] = useState<string>("")
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [coursesAmount, setCoursesAmount] = useState<number>(1)
+  const [difficultyLevel, setDifficultyLevel] = useState<string>("")
+  const [testsAmount, setTestsAmount] = useState<number>(3)
+  const [learningMaterialsAmount, setLearningMaterialsAmount] = useState<number>(3)
+  const [pdfFile, setPdfFile] = useState<File | undefined>(undefined)
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
+    e.preventDefault()
+    setError(null)
 
     if (!prompt.trim()) {
-      setError("Please enter a course topic");
-      return;
+      setError("Please enter a course topic")
+      return
     }
 
     try {
-      setIsLoading(true);
+      setIsLoading(true)
       const result = await createCourseWithAI(
         prompt,
         coursesAmount,
         difficultyLevel,
         testsAmount,
-        learningMaterialsAmount
-      );
+        learningMaterialsAmount,
+        pdfFile,
+      )
 
       if (result.success && result.courseId) {
-        router.push(`/workspace/courses/${result.courseId}`);
+        router.push(`/workspace/courses/${result.courseId}`)
       } else {
-        setError(result.message || "Failed to create course");
+        setError(result.message || "Failed to create course")
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : "An error occurred")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Generate Course with AI</CardTitle>
+    <Card className="w-full max-w-3xl mx-auto shadow-md">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold">Generate Course with AI</CardTitle>
+        <CardDescription>Describe your course and customize generation settings</CardDescription>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2 mb-0">
-            <label className="block text-sm font-medium">
-              Describe the course you want to create
-            </label>
+
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-6">
+          {/* Course Description */}
+          <div className="space-y-2">
+            <Label htmlFor="prompt" className="text-base font-medium">
+              Course Description
+            </Label>
             <Textarea
-              placeholder="Enter a topic or description for your course (e.g., 'Introduction to JavaScript', 'Basic Photography Techniques', 'Web Development for Beginners')"
+              id="prompt"
+              placeholder="Enter a topic or description for your course (e.g., 'Introduction to JavaScript', 'Basic Photography Techniques')"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              rows={6}
-              className="w-full"
+              rows={5}
+              className="resize-none"
               disabled={isLoading}
             />
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <label htmlFor="coursesAmount" className="block text-sm font-medium">
-                  Courses Amount
-                </label>
-                <input
-                  id="coursesAmount"
-                  type="number"
-                  min="1"
-                  placeholder="Enter amount"
-                  value={coursesAmount}
-                  onChange={(e) => setCoursesAmount(Number(e.target.value))}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="flex-1">
-                <label htmlFor="difficultyLevel" className="block text-sm font-medium">
-                  Difficulty Level
-                </label>
-                <select
-                  id="difficultyLevel"
-                  value={difficultyLevel}
-                  onChange={(e) => setDifficultyLevel(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  disabled={isLoading}
-                >
-                  <option value="">Select difficulty</option>
-                  <option value="Beginner">Beginner</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Advanced">Advanced</option>
-                </select>
-              </div>
-            </div>
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <label htmlFor="testsAmount" className="block text-sm font-medium">
-                  Tests Amount Per Module
-                </label>
-                <input
-                  id="testsAmount"
-                  type="number"
-                  min="1"
-                  placeholder="Enter amount"
-                  value={testsAmount}
-                  onChange={(e) => setTestsAmount(Number(e.target.value))}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="flex-1">
-                <label htmlFor="learningMaterialsAmount" className="block text-sm font-medium">
-                  Learning Materials Amount Per Module
-                </label>
-                <input
-                  id="learningMaterialsAmount"
-                  type="number"
-                  min="1"
-                  placeholder="Enter amount"
-                  value={learningMaterialsAmount}
-                  onChange={(e) => setLearningMaterialsAmount(Number(e.target.value))}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
             <p className="text-sm text-muted-foreground">
-              The AI will generate a complete course structure including modules, learning outcomes, and course details.
+              Be specific about the learning objectives and target audience
             </p>
           </div>
 
-          {error && (
-            <div className="text-red-500 text-sm" role="alert">
-              {error}
-            </div>
-          )}
+          {/* Course Settings */}
+          <div className="space-y-4">
+            <h3 className="text-base font-medium">Course Settings</h3>
 
-          <CardFooter className="px-0 mb-0 pb-0 flex flex-col gap-4">
-    
-              <Button type="submit" className="w-full mb-0 " disabled={isLoading}>
-                {isLoading ? "Generation in progress..." : "Generate Course"}
-              </Button>
-         
-          </CardFooter>
-        </form>
-      </CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Courses Amount */}
+              <div className="space-y-2">
+                <Label htmlFor="coursesAmount">Courses Amount</Label>
+                <Input
+                  id="coursesAmount"
+                  type="number"
+                  min="1"
+                  value={coursesAmount}
+                  onChange={(e) => setCoursesAmount(Number(e.target.value))}
+                  disabled={isLoading}
+                />
+              </div>
+
+              {/* Difficulty Level */}
+              <div className="space-y-2">
+                <Label htmlFor="difficultyLevel">Difficulty Level</Label>
+                <Select value={difficultyLevel} onValueChange={setDifficultyLevel} disabled={isLoading}>
+                  <SelectTrigger id="difficultyLevel">
+                    <SelectValue placeholder="Select difficulty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Beginner">Beginner</SelectItem>
+                    <SelectItem value="Intermediate">Intermediate</SelectItem>
+                    <SelectItem value="Advanced">Advanced</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Tests Amount */}
+              <div className="space-y-2">
+                <Label htmlFor="testsAmount">Tests Per Module</Label>
+                <Input
+                  id="testsAmount"
+                  type="number"
+                  min="1"
+                  value={testsAmount}
+                  onChange={(e) => setTestsAmount(Number(e.target.value))}
+                  disabled={isLoading}
+                />
+              </div>
+
+              {/* Learning Materials Amount */}
+              <div className="space-y-2">
+                <Label htmlFor="learningMaterialsAmount">Learning Materials Per Module</Label>
+                <Input
+                  id="learningMaterialsAmount"
+                  type="number"
+                  min="1"
+                  value={learningMaterialsAmount}
+                  onChange={(e) => setLearningMaterialsAmount(Number(e.target.value))}
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* PDF Upload */}
+          <div className="space-y-2">
+            <Label htmlFor="pdfFile" className="text-base font-medium">
+              Supplementary Materials
+            </Label>
+            <div className="border border-input rounded-md p-4 bg-muted/20">
+              <div className="flex items-center gap-3">
+                <Upload className="h-5 w-5 text-muted-foreground" />
+                <div className="flex-1">
+                  <Input
+                    id="pdfFile"
+                    type="file"
+                    accept="application/pdf"
+                    disabled={isLoading}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file && file.size > 1048576) {
+                        setError("PDF file size should not exceed 1 MB")
+                        setPdfFile(undefined)
+                      } else {
+                        setError(null)
+                        setPdfFile(file)
+                      }
+                    }}
+                    className="cursor-pointer"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Upload a PDF (max 1MB) to enhance your course generation with additional context
+              </p>
+            </div>
+          </div>
+
+          {/* Error Display */}
+          {error && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+
+        <CardFooter className="flex justify-end border-t p-6">
+          <Button type="submit" className="w-full md:w-auto" size="lg" disabled={isLoading}>
+            {isLoading ? "Generating Course..." : "Generate Course"}
+          </Button>
+        </CardFooter>
+      </form>
     </Card>
-  );
+  )
 }

@@ -9,13 +9,16 @@ import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/server";
 
+import * as pdfParse from "pdf-parse";
+
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
 if (!apiKey) {
-  throw new Error("Missing OpenAI API Key. Set NEXT_PUBLIC_OPENAI_API_KEY in your Vercel environment variables.");
+  throw new Error(
+    "Missing OpenAI API Key. Set NEXT_PUBLIC_OPENAI_API_KEY in your Vercel environment variables."
+  );
 }
 const openai = new OpenAI({
   apiKey,
-  // dangerouslyAllowBrowser: true,
 });
 
 interface GeneratedCourse {
@@ -48,16 +51,6 @@ interface GeneratedCourse {
   }[];
 }
 
-interface GeneratedTestAnswer {
-  text: string;
-  correct: boolean;
-}
-
-interface GeneratedTestQuestion {
-  question: string;
-  answers: GeneratedTestAnswer[];
-}
-
 export interface AiUsed {
   id: number;
   used_at: string;
@@ -66,7 +59,10 @@ export interface AiUsed {
 
 export async function recordAiUsage(): Promise<void> {
   const supabase = await createClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
   if (userError) {
     console.error("Error fetching user:", userError);
   }
@@ -80,14 +76,15 @@ export async function recordAiUsage(): Promise<void> {
     .eq("user_id", user.id)
     .gte("used_at", eightHoursAgo);
 
-
-    console.log("Count of AI uses in last 8 hours:", count);
-    console.log("User ID:", user.id);
+  console.log("Count of AI uses in last 8 hours:", count);
+  console.log("User ID:", user.id);
   if (countError) {
     console.error("Error counting AI usage:", countError);
   }
   if ((count ?? 0) >= 3) {
-    throw new Error("You have exceeded 3 AI uses in the last 8 hours. Please try again later.");
+    throw new Error(
+      "You have exceeded 3 AI uses in the last 8 hours. Please try again later."
+    );
   }
   const { error } = await supabase
     .from("ai_used")
@@ -102,37 +99,37 @@ async function generateCourseContent(
   coursesAmount: number,
   difficultyLevel: string,
   testsAmount: number,
-  learningMaterialsAmount: number
+  learningMaterialsAmount: number,
+  pdfText: string
 ): Promise<GeneratedCourse | null> {
   try {
     if (coursesAmount > 6) {
       return null;
     }
 
+    const prompt = String.raw`
+    You are an expert instructional-designer LLM.
     
+    ======================  HARD STRUCTURE RULES  ======================
+    Return **valid JSON only** (no markdown, no commentary).
+    If any rule is broken, return the single string "INVALID".
+    
+    Generete exactly ${testsAmount} for each module.
+    Generate exactly ${learningMaterialsAmount} for each module.
+    Generate exactly ${coursesAmount} modules.
+    Each module must have a title, description, learningMaterials, and tests.
 
-    const prompt = `Create a course with difficulty level of ${difficultyLevel} outline based on the following topic: "${inputText}". 
-        The course should include:
-        - Course Name
-        - Course Description
-        - Course Color creative pastel color (not blue) witch you associate with the course (Hexadecimal Style)
-        - Course Type (e.g., programming, science, history)
-        - Course Details (e.g., prerequisites, target audience)
-        - A list of Learning Outcomes (at least 3). Each outcome should be a clear statement of what the learner will be able to do after completing the course.
-        - A list of Modules exactly ${coursesAmount}. Each module should have:
-          - Module Title
-          - Module Description
-          - List of Learning Materials. Create exactly ${learningMaterialsAmount} learning materials for each module. Each learning material should have:
-            - Learning Material Title
-            - A list of flashcards (at least 3). Each flashcard should have:
-              - Front text
-              - Back text
-          - List of Tests. Create exactly ${testsAmount} tests for each module. Each test should have:
-            - A general question/prompt for the test.
-            - A list of specific questions (at least 3). Each question should have:
-              - Question text
-              - A list of answers (at least 3). Exactly ONE answer should be marked as correct.
-        `;
+    Strictly follow the JSON schema.
+    
+    ======================  CONTENT GUIDELINES  ======================
+    • Topic: "${inputText}"
+    • Difficulty: ${difficultyLevel}
+    • Use clear, measurable Bloom-style verbs in "learningOutcomes".
+    • Audience: self-directed online learners; prerequisites should be realistic.
+    
+    ======================  REFERENCE MATERIAL  ======================
+    ${pdfText ? pdfText : "(none)"}
+    `;
 
     const response = await openai.responses.create({
       model: "gpt-4.1-nano-2025-04-14",
@@ -154,7 +151,7 @@ async function generateCourseContent(
               },
               color: {
                 type: "string",
-                description: "The color associated with the course.",
+                description: "The pastel color associated with the course.",
               },
               type: {
                 type: "string",
@@ -202,7 +199,7 @@ async function generateCourseContent(
               },
               modules: {
                 type: "array",
-                description: "The modules included in the course.",
+                description: `The modules included in the course. **exactly ${coursesAmount} items**`,
                 items: {
                   type: "object",
                   properties: {
@@ -216,8 +213,7 @@ async function generateCourseContent(
                     },
                     learningMaterials: {
                       type: "array",
-                      description:
-                        "Learning materials associated with the module.",
+                      description: `Learning materials associated with the module. **exactly ${learningMaterialsAmount} items for each module and each learing materials should have 5 flashcards**`,
                       items: {
                         type: "object",
                         properties: {
@@ -240,8 +236,7 @@ async function generateCourseContent(
                     },
                     tests: {
                       type: "array",
-                      description:
-                        "Tests related to the module, if applicable.",
+                      description: `Tests related to the module, if applicable. **exactly ${testsAmount} items for each module**`,
                       items: {
                         type: "object",
                         properties: {
@@ -335,7 +330,6 @@ async function generateCourseContent(
       },
     });
 
-
     const generatedContent = JSON.parse(response.output_text);
     return generatedContent as GeneratedCourse;
   } catch (error) {
@@ -344,12 +338,39 @@ async function generateCourseContent(
   }
 }
 
+async function extractTextFromPdfFile(pdfFile: File): Promise<string> {
+  const arrayBuffer = await pdfFile.arrayBuffer();
+
+  const buffer = Buffer.from(arrayBuffer);
+
+  const data = await pdfParse.default(buffer);
+
+  const rawPdfText = data.text;
+  const pdfText = rawPdfText
+
+    .replace(/(\r\n|\n|\r)/gm, " ")
+
+    .replace(/Page\s+\d+\s+of\s+\d+/gi, "")
+
+    .replace(/\s\s+/g, " ")
+    .trim();
+
+  const limitBytes = 1 * 1024 * 1024;
+  let trimmedText = pdfText;
+  if (Buffer.byteLength(trimmedText, "utf-8") > limitBytes) {
+    trimmedText = trimmedText.slice(0, limitBytes);
+  }
+
+  return trimmedText;
+}
+
 export async function createCourseWithAI(
   inputText: string,
   modulesAmount: number,
   difficultyLevel: string,
   testsAmount: number,
-  learningMaterialsAmount: number
+  learningMaterialsAmount: number,
+  pdfFile?: File
 ): Promise<{ success: boolean; message: string; courseId?: number }> {
   try {
     if (!inputText) {
@@ -364,15 +385,23 @@ export async function createCourseWithAI(
     if (!difficultyLevel) {
       return { success: false, message: "Difficulty level is required." };
     }
-    
+
+    console.log("PDF file:", pdfFile);
+    let pdfText = "";
+    if (pdfFile) {
+      pdfText = await extractTextFromPdfFile(pdfFile);
+
+      console.log("PDF text extracted successfully.", pdfText);
+    }
+
     await recordAiUsage();
-    
     const generatedCourse = await generateCourseContent(
       inputText,
       modulesAmount,
       difficultyLevel,
       testsAmount,
-      learningMaterialsAmount
+      learningMaterialsAmount,
+      pdfText
     );
 
     if (!generatedCourse) {
@@ -380,7 +409,6 @@ export async function createCourseWithAI(
     }
 
     const modules = generatedCourse.modules;
-
 
     const createdCourse = await createCourse({
       name: generatedCourse.name,
@@ -402,6 +430,13 @@ export async function createCourseWithAI(
       return { success: false, message: "Failed to create the course." };
     }
     const courseId = createdCourse.id;
+
+    const parseCorrect = (val: boolean | string | number): boolean => {
+      if (typeof val === "boolean") return val;
+      if (typeof val === "string") return val.toLowerCase() === "true";
+      if (typeof val === "number") return val === 1;
+      return false;
+    };
 
     for (const generatedModule of modules) {
       const createdBlock = await createBlock(
@@ -439,28 +474,21 @@ export async function createCourseWithAI(
           const testData: TestDataWithQuestion = {
             block_id: blockId,
             question: generatedTest.question || "",
-            questions: (generatedTest.questions || []).map(
-              (q: GeneratedTestQuestion, idx: number) => ({
-                id: idx + 1,
-                question: q.question || "",
-                answers: (q.answers || []).map(
-                  (opt: GeneratedTestAnswer, i: number) => ({
-                    id: `${i + 1}`,
-                    text: opt.text || "",
-                    correct: Boolean(opt.correct),
-                  })
-                ),
-              })
-            ),
-            answers: (generatedTest.questions || []).flatMap(
-              (q: GeneratedTestQuestion, qi: number) =>
-                (q.answers || []).map(
-                  (opt: GeneratedTestAnswer, i: number) => ({
-                    id: `${qi + 1}-${i + 1}`,
-                    text: opt.text || "",
-                    correct: Boolean(opt.correct),
-                  })
-                )
+            questions: (generatedTest.questions || []).map((q, idx) => ({
+              id: idx + 1,
+              question: q.question || "",
+              answers: (q.answers || []).map((opt, i) => ({
+                id: `${i + 1}`,
+                text: opt.text || "",
+                correct: parseCorrect(opt.correct),
+              })),
+            })),
+            answers: (generatedTest.questions || []).flatMap((q, qi) =>
+              (q.answers || []).map((opt, i) => ({
+                id: `${qi + 1}-${i + 1}`,
+                text: opt.text || "",
+                correct: parseCorrect(opt.correct),
+              }))
             ),
           };
 
