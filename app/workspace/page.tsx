@@ -1,3 +1,4 @@
+
 "use client";
 
 import { PageHeader } from "@/components/ui/page-header";
@@ -16,6 +17,7 @@ import { getUser } from "@/utils/supabase/server";
 import Link from "next/link";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
+
 export default function HomePage() {
   const weeklyStreak = {
     points: 20,
@@ -30,6 +32,7 @@ export default function HomePage() {
     },
     dateRange: "Apr 20 - 26",
   };
+
 
   const [isLoading, setIsLoading] = useState(true);
   const [createdCourses, setCreatedCourses] = useState<Course[] | null>(null);
@@ -49,9 +52,11 @@ export default function HomePage() {
 
   const [containerHeight, setContainerHeight] = useState("61vh");
 
+
   useEffect(() => {
     const initialHeight = window.innerHeight * 0.61 - 181;
     setContainerHeight(`${initialHeight}px`);
+
 
     async function fetchData() {
       setIsLoading(true);
@@ -118,14 +123,17 @@ export default function HomePage() {
     return <LoadingSpinner className="mx-auto" />;
   }
 
+
   return (
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
         <PageHeader className="mt-0 mb-3 md:mb-0" title="Home" />
         <div className="flex items-center gap-2">
+
           <Link href="/workspace/courses/create" className="col-span-1">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
+
               Create New
             </Button>
           </Link>
@@ -248,6 +256,7 @@ export default function HomePage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
         <Card
           className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]"
           style={{ maxHeight: containerHeight }}
@@ -286,15 +295,18 @@ export default function HomePage() {
                 <div className="text-sm text-gray-500">
                   No courses in progress.
                 </div>
+
               )}
             </div>
           </CardContent>
         </Card>
 
+
         <Card
           className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]"
           style={{ minHeight: containerHeight }}
         >
+
           <CardContent className="p-6">
             <h2 className="text-lg font-medium mb-4">Leader board</h2>
             <div className="space-y-4">
@@ -305,6 +317,7 @@ export default function HomePage() {
               </div>
               {leaderboard.length > 0 ? (
                 leaderboard.map((user) => (
+
                   <div
                     key={user.rank}
                     className="grid grid-cols-12 items-center"
@@ -327,6 +340,7 @@ export default function HomePage() {
                 <div className="text-sm text-gray-500">
                   No users found in the leaderboard.
                 </div>
+
               )}
             </div>
           </CardContent>
@@ -339,6 +353,7 @@ export default function HomePage() {
           <div className="space-y-4">
             {coursesInProgress != null && coursesInProgress.length > 0 ? (
               upcomingEvents.map((course) => (
+
                 <Link
                   key={course.id}
                   href={`/workspace/courses/${course.id}`}
@@ -349,12 +364,14 @@ export default function HomePage() {
                       className={`w-10 h-10 rounded-lg flex-shrink-0`}
                       style={{ backgroundColor: course.color }}
                     ></div>
+
                     <div>
                       <h3 className="font-medium">{course.name}</h3>
                       <p className="text-xs">{course.description}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
+
                     <ChevronRight className="h-5 w-5" />
                   </div>
                 </Link>
@@ -362,6 +379,7 @@ export default function HomePage() {
             ) : (
               <div className="text-sm text-gray-500">No events here.</div>
             )}
+
           </div>
         </CardContent>
       </Card>
