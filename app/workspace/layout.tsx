@@ -30,8 +30,6 @@ export default function WorkspaceLayout({
   const [data, setData] = useState<React.ReactNode | null>(null);
   const pathname = usePathname();
 
-
-
   useEffect(() => {
     setData(null);
   }, [pathname]);
@@ -53,10 +51,10 @@ export default function WorkspaceLayout({
         className={`${jura.className} bg-[--background] flex w-full flex-col min-h-screen md:flex-row`}
       >
         <DesktopMenu menuItems={menuItems} />
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full min-h-screen">
           <Navbar data={data} menuItems={menuItems} />
 
-          <main className="flex-1 bg-[--background] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <main className="bg-[--background] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex-1">
             {children}
           </main>
           <Footer />

@@ -9,17 +9,7 @@ import { Card } from "@/lib/types/card";
 import OpenAI from "openai";
 import { createClient } from "@/utils/supabase/server";
 
-import fs from "fs";
-// import pdf from "pdf-parse";
-
-import * as pdfParse from "pdf-parse"
-
-// import * as pdfjsLib from 'pdfjs-dist';
-
-import { pdfjs } from "react-pdf"
-
-
-import { PDFDocument } from "pdf-lib";
+import * as pdfParse from "pdf-parse";
 
 const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
 if (!apiKey) {
@@ -29,7 +19,6 @@ if (!apiKey) {
 }
 const openai = new OpenAI({
   apiKey,
-  // dangerouslyAllowBrowser: true,
 });
 
 interface GeneratedCourse {
@@ -60,16 +49,6 @@ interface GeneratedCourse {
       }[];
     }[];
   }[];
-}
-
-interface GeneratedTestAnswer {
-  text: string;
-  correct: boolean;
-}
-
-interface GeneratedTestQuestion {
-  question: string;
-  answers: GeneratedTestAnswer[];
 }
 
 export interface AiUsed {
@@ -121,7 +100,7 @@ async function generateCourseContent(
   difficultyLevel: string,
   testsAmount: number,
   learningMaterialsAmount: number,
-  pdfText: string,
+  pdfText: string
 ): Promise<GeneratedCourse | null> {
   try {
     if (coursesAmount > 6) {
@@ -135,42 +114,12 @@ async function generateCourseContent(
     Return **valid JSON only** (no markdown, no commentary).
     If any rule is broken, return the single string "INVALID".
     
-    Schema (exactly as written):
-    {
-      "courseName": string,
-      "courseDescription": string,
-      "courseColor": string,        // pastel HEX, **NOT blue**
-      "courseType": string,
-      "courseDetails": string,
-      "learningOutcomes": string[], // ≥ 3 items
-      "modules": [                  // **exactly ${coursesAmount} items**
-        {
-          "title": string,
-          "description": string,
-          "learningMaterials": [    // exactly ${learningMaterialsAmount}
-            {
-              "title": string,
-              "flashcards": [       // ≥ 3
-                { "front": string, "back": string }
-              ]
-            }
-          ],
-          "tests": [                // exactly ${testsAmount}
-            {
-              "prompt": string,
-              "questions": [        // ≥ 3
-                {
-                  "question": string,
-                  "answers": [      // ≥ 3; ONE and only one has "isCorrect": true
-                    { "text": string, "isCorrect": boolean }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
+    Generete exactly ${testsAmount} for each module.
+    Generate exactly ${learningMaterialsAmount} for each module.
+    Generate exactly ${coursesAmount} modules.
+    Each module must have a title, description, learningMaterials, and tests.
+
+    Strictly follow the JSON schema.
     
     ======================  CONTENT GUIDELINES  ======================
     • Topic: "${inputText}"
@@ -202,7 +151,7 @@ async function generateCourseContent(
               },
               color: {
                 type: "string",
-                description: "The color associated with the course.",
+                description: "The pastel color associated with the course.",
               },
               type: {
                 type: "string",
@@ -250,7 +199,7 @@ async function generateCourseContent(
               },
               modules: {
                 type: "array",
-                description: "The modules included in the course.",
+                description: `The modules included in the course. **exactly ${coursesAmount} items**`,
                 items: {
                   type: "object",
                   properties: {
@@ -264,8 +213,7 @@ async function generateCourseContent(
                     },
                     learningMaterials: {
                       type: "array",
-                      description:
-                        "Learning materials associated with the module.",
+                      description: `Learning materials associated with the module. **exactly ${learningMaterialsAmount} items for each module and each learing materials should have 5 flashcards**`,
                       items: {
                         type: "object",
                         properties: {
@@ -288,8 +236,7 @@ async function generateCourseContent(
                     },
                     tests: {
                       type: "array",
-                      description:
-                        "Tests related to the module, if applicable.",
+                      description: `Tests related to the module, if applicable. **exactly ${testsAmount} items for each module**`,
                       items: {
                         type: "object",
                         properties: {
@@ -392,38 +339,27 @@ async function generateCourseContent(
 }
 
 async function extractTextFromPdfFile(pdfFile: File): Promise<string> {
-  // 2️⃣  Read it in
   const arrayBuffer = await pdfFile.arrayBuffer();
 
-  // Convert ArrayBuffer to Buffer for pdf-parse
   const buffer = Buffer.from(arrayBuffer);
 
-  // Directly use pdf-parse without a wrapper class
-  const data = await pdfParse.default(buffer)
+  const data = await pdfParse.default(buffer);
 
   const rawPdfText = data.text;
   const pdfText = rawPdfText
-    // Remove newlines and carriage returns
+
     .replace(/(\r\n|\n|\r)/gm, " ")
-    // Remove pagination text like "Page 1 of 10"
+
     .replace(/Page\s+\d+\s+of\s+\d+/gi, "")
-    // Collapse multiple spaces into one
+
     .replace(/\s\s+/g, " ")
     .trim();
 
-
-          const limitBytes = 1 * 1024 * 1024; // 1 MB in bytes
-        let trimmedText = pdfText;
-        if (Buffer.byteLength(trimmedText, "utf-8") > limitBytes) {
-          trimmedText = trimmedText.slice(0, limitBytes);
-        }
-
-  // // 3️⃣  Load with PDF.js
-  // const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
-  // const pdf = await loadingTask.promise;
-
-  // 4️⃣  Walk every page
-
+  const limitBytes = 1 * 1024 * 1024;
+  let trimmedText = pdfText;
+  if (Buffer.byteLength(trimmedText, "utf-8") > limitBytes) {
+    trimmedText = trimmedText.slice(0, limitBytes);
+  }
 
   return trimmedText;
 }
@@ -449,61 +385,14 @@ export async function createCourseWithAI(
     if (!difficultyLevel) {
       return { success: false, message: "Difficulty level is required." };
     }
-    // let pdfTextPrompt = "";
 
     console.log("PDF file:", pdfFile);
     let pdfText = "";
     if (pdfFile) {
-
-      pdfText = await extractTextFromPdfFile(pdfFile)
+      pdfText = await extractTextFromPdfFile(pdfFile);
 
       console.log("PDF text extracted successfully.", pdfText);
-
-
-      // const uint8Array = fs.readFileSync(pdfFile.name);
-
-      // const arrayBuffer = await pdfFile.arrayBuffer();
-
-      // const pdfDoc3 = await PDFDocument.load(arrayBuffer);
-
-
-      // console.log("PDF file content:", pdfDoc3.);
-
-
-        // const pdfDoc = await PDFDocument.open(file);
-
-        // Limit PDF text size to prevent issues with API limits
-        // const limitBytes = 1 * 1024 * 1024; // 1 MB in bytes
-        // let trimmedText = pdfText;
-        // if (Buffer.byteLength(trimmedText, "utf-8") > limitBytes) {
-        //   trimmedText = trimmedText.slice(0, limitBytes);
-        // }
-
-
-
     }
-
-    // if (pdfFile) {
-    //   parsePdf(pdfFile);
-    // }
-
-    // const arrayBuffer = await pdfFile.arrayBuffer();
-    // const buffer = Buffer.from(arrayBuffer);
-    // const { text: pdfText } = await pdfParse(buffer);
-
-    // const limitBytes = 1 * 1024 * 1024;                   // 1 MB in bytes
-    // let trimmed = pdfText;
-    // if (Buffer.byteLength(trimmed, "utf-8") > limitBytes) {
-    //   trimmed = trimmed.slice(0, limitBytes);            // truncate to 1 MB
-    // }
-
-    //     pdfTextPrompt = "\n\nUse the following PDF content as material:\n" + pdfText;
-
-    //     console.log("PDF text extracted successfully.", pdfTextPrompt);
-
-    // }
-
-    // ddddddddddddddddddddddddddddddddddddddddddddddddddd
 
     await recordAiUsage();
     const generatedCourse = await generateCourseContent(
@@ -512,7 +401,7 @@ export async function createCourseWithAI(
       difficultyLevel,
       testsAmount,
       learningMaterialsAmount,
-      pdfText                                  // pass the (possibly empty) prompt
+      pdfText
     );
 
     if (!generatedCourse) {
@@ -542,15 +431,14 @@ export async function createCourseWithAI(
     }
     const courseId = createdCourse.id;
 
-    // helper to normalize "correct" values from the AI (boolean|string|number)
-  const parseCorrect = (val: boolean | string | number): boolean => {
-    if (typeof val === "boolean") return val;
-    if (typeof val === "string") return val.toLowerCase() === "true";
-    if (typeof val === "number") return val === 1;
-    return false;
-  };
+    const parseCorrect = (val: boolean | string | number): boolean => {
+      if (typeof val === "boolean") return val;
+      if (typeof val === "string") return val.toLowerCase() === "true";
+      if (typeof val === "number") return val === 1;
+      return false;
+    };
 
-  for (const generatedModule of modules) {
+    for (const generatedModule of modules) {
       const createdBlock = await createBlock(
         courseId,
         generatedModule.title,
@@ -608,7 +496,6 @@ export async function createCourseWithAI(
         }
       }
     }
-    // ddddddddddddddddddddddddddddddddddddddddddddddddddd
 
     return {
       success: true,

@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -31,7 +31,6 @@ import ProfileEdit from "./edit/page";
 
 export default function UserProfile() {
   const [activeMenuItem, setActiveMenuItem] = useState("profile");
-  const [containerHeight, setContainerHeight] = useState("61vh");
 
   const [user, setUser] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,8 +39,7 @@ export default function UserProfile() {
   const [studyingCourses, setStudyingCourses] = useState<Course[] | null>(null);
 
   useEffect(() => {
-    const initialHeight = window.innerHeight * 0.61;
-    setContainerHeight(`${initialHeight}px`);
+
 
     async function fetchData() {
       setIsLoading(true);
@@ -92,13 +90,10 @@ export default function UserProfile() {
   ];
 
   return (
-    <div
-      className="w-full max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row"
-      style={{ maxHeight: containerHeight }}
-    >
+    <div className="w-full h-[90vh] max-w-6xl mx-auto border rounded-3xl overflow-hidden flex flex-col md:flex-row">
       <div className="w-full md:w-[300px] lg:w-[380px] border-b md:border-b-0 md:border-r">
         <div className="flex flex-col items-center pt-10 pb-6">
-          <div className="rounded-full p-6 md:p-10 mb-4">
+          <div className="rounded-full p-6 ">
             <Avatar className="w-16 h-16 md:w-24 md:h-24">
               <AvatarImage
                 src={user?.avatar_url || "/placeholder.svg"}
@@ -147,99 +142,84 @@ export default function UserProfile() {
         </div>
       </div>
 
-      <div className="flex-1 p-4 md:p-6 mb-8" style={{ maxHeight: containerHeight }}>
+      <div className="flex-1 px-4 ">
         {activeMenuItem === "profile" && <ProfileEdit />}
 
         {activeMenuItem === "courses-created" && (
-          <div className="mt-4 overflow-y-scroll h-full">
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 mr-3">
+          <ScrollArea className="h-[90vh]">
+            <div className="grid grid-cols-1 md:grid-cols-1 px-3">
               {createdCourses?.map((course) => (
-                <Card
-                  key={course.id}
-                  className="shadow-md hover:shadow-lg transition-shadow"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl">{course.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex justify-between mb-2">
-                      <Badge variant="secondary">
-                        <Book className="w-4 h-4 mr-1" />
-                        {course.type}
-                      </Badge>
-                      <Badge variant="secondary">
-                        <Users className="w-4 h-4 mr-1" />
-                        {course.student_count || 0} Students
-                      </Badge>
-                    </div>
-                    <div className="flex items-center">
-                      <Award className="w-5 h-5 text-yellow-500 mr-1" />
-                      <span className="font-bold">
-                        {course.rating?.toFixed(1) || "N/A"}
-                      </span>
-                      <span className="text-muted-foreground ml-1">/ 5.0</span>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button asChild className="w-full">
-                      <Link href={`/workspace/courses/${course.id}`}>
-                        Manage Course
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeMenuItem === "courses-enrolled" && (
-          <div className="flex items-center justify-center mt-4 overflow-y-scroll h-full px-3 mb-4">
-            <div className="h-full space-y-6">
-              {studyingCourses?.map((course) => (
-                <Card
-                  key={course.id}
-                  className="shadow-md hover:shadow-lg transition-shadow"
-                >
-                  <CardHeader>
-                    <CardTitle className="text-xl">{course.name}</CardTitle>
-                    <CardDescription>
-                       {/* Instructor: {course.creator?.full_name} */}
-                      {course.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="mb-2">
-                      <div className="flex justify-between mb-1">
-                          {/* <span className="text-sm font-medium text-primary">
-                            Progress
-                          </span>
-                          <span className="text-sm font-medium text-primary">
-                            {course.progress}%
-                          </span> */}
-
+                <Link key={course.id} href={`/workspace/courses/${course.id}`}>
+                  <Card className="shadow-md hover:shadow-lg transition-shadow mt-6">
+                    <CardHeader>
+                      <CardTitle className="text-xl truncate">
+                        {course.name}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex justify-between mb-2">
                         <Badge variant="secondary">
-                          <Book className="h-4 mr-1" />
+                          <Book className="w-4 h-4 mr-1" />
                           {course.type}
                         </Badge>
                         <Badge variant="secondary">
-                          <Users className="h-4 mr-1" />
-                          {course.creator?.full_name}
+                          <Users className="w-4 h-4 mr-1" />
+                          {course.student_count || 0} Students
                         </Badge>
                       </div>
-                      <Progress value={course.progress} className="w-full" />
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button asChild className="w-full">
-                      <Link href={`/workspace/courses/${course.id}`}>
-                        Continue Learning
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
+                      <div className="flex items-center">
+                        <Award className="w-5 h-5 text-yellow-500 mr-1" />
+                        <span className="font-bold">
+                          {course.rating?.toFixed(1) || "N/A"}
+                        </span>
+                        <span className="text-muted-foreground ml-1">
+                          / 5.0
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
+          </ScrollArea>
+        )}
+
+        {activeMenuItem === "courses-enrolled" && (
+          <div className="flex items-center justify-center overflow-y-scroll h-full px-3 mb-4">
+            <ScrollArea className="h-[90vh]">
+              {studyingCourses?.map((course) => (
+                <Link
+                  className=""
+                  key={course.id}
+                  href={`/workspace/courses/${course.id}`}
+                >
+                  <Card className="shadow-md hover:shadow-lg transition-shadow mt-6">
+                    <CardHeader>
+                      <CardTitle className="text-xl">{course.name}</CardTitle>
+                      <CardDescription>
+                        {/* Instructor: {course.creator?.full_name} */}
+                        {course.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-2">
+                        <div className="flex justify-between mb-1">
+                          <Badge variant="secondary">
+                            <Book className="h-4 mr-1" />
+                            {course.type}
+                          </Badge>
+                          <Badge variant="secondary">
+                            <Users className="h-4 mr-1" />
+                            {course.creator?.full_name}
+                          </Badge>
+                        </div>
+                        <Progress value={course.progress} className="w-full" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </ScrollArea>
           </div>
         )}
 
