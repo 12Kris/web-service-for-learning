@@ -11,6 +11,8 @@ import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 
+import { signInWithProvider } from "@/lib/auth/oauth";
+
 import LoadingSpinner from "@/components/ui/loading-spinner";
 
 export default function LoginPage() {
@@ -160,6 +162,7 @@ export default function LoginPage() {
 
             <div className="mt-6 flex justify-center gap-4">
               <button
+                onClick={() => signInWithProvider("google")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
@@ -169,6 +172,7 @@ export default function LoginPage() {
                 />
               </button>
               <button
+                onClick={() => signInWithProvider("facebook")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
@@ -178,6 +182,7 @@ export default function LoginPage() {
                 />
               </button>
               <button
+                onClick={() => signInWithProvider("twitter")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
