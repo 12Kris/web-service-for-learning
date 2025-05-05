@@ -4,7 +4,7 @@ import { useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { CourseCarousel } from "@/components/course-slider/course-slider";
 import { CourseGrid } from "@/components/course-grid";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+// import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus, Filter, Sparkles } from "lucide-react";
@@ -29,7 +29,7 @@ export default function BrowsePage({
   const [courses] = useState<Course[]>(initialCourses);
   const [filteredCourses, setFilteredCourses] = useState<Course[]>(initialCourses);
   // const [popularCourses] = useState<Course[]>(initialPopularCourses);
-  const [isLoading] = useState(false);
+  // const [isLoading] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -69,9 +69,9 @@ export default function BrowsePage({
     groupCoursesByType(newFilteredCourses);
   };
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  // if (isLoading) {
+  //   return <LoadingSpinner />;
+  // }
 
   return (
     <div>
