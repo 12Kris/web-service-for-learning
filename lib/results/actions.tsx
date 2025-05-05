@@ -31,7 +31,9 @@ export async function getCardResults(cardId: number) {
         .from("card_results")
         .select("*")
         .eq("user_id", user.id)
-        .eq("card_id", cardId);
+        .eq("card_id", cardId)
+        .single();
+
     if (error) {
         console.error(error);
         return;

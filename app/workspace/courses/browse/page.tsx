@@ -1,6 +1,8 @@
 import { getCourses } from "@/lib/courses/actions";
 import BrowsePage from "@/components/workspace/browse";
 import type { Course } from "@/lib/types/course";
+import { Suspense } from "react";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 function groupCoursesByType(coursesToGroup: Course[]) {
   const groupedCourses = coursesToGroup.reduce((acc, course) => {
@@ -40,13 +42,15 @@ export default async function Page() {
   const { coursesByType, courseTypes } = groupCoursesByType(fetchedCourses);
 
   return (
-    <BrowsePage
-      initialCourses={fetchedCourses}
-      initialLatestCourses={latestCourses}
-      initialPopularCourses={popularCourses}
-      initialCoursesByType={coursesByType}
-      initialCourseTypes={courseTypes}
-    />
+    <Suspense fallback={<LoadingSpinner />}>
+      <BrowsePage
+        initialCourses={fetchedCourses}
+        initialLatestCourses={latestCourses}
+        initialPopularCourses={popularCourses}
+        initialCoursesByType={coursesByType}
+        initialCourseTypes={courseTypes}
+      />
+    </Suspense>
   );
 }
 
