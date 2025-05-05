@@ -6,6 +6,9 @@ import OpenAI from "openai";
 import { getSpacedRepetition } from "@/lib/courses/spaced-repetition-actions";
 import { SpacedRepetition } from "@/lib/types/learning";
 import {recordAiUsage} from "@/lib/courses/ai-actions";
+
+import {getCardResults} from "@/lib/results/actions";
+
 const openai = new OpenAI({
   // baseURL: "https://openrouter.ai/api/v1",
 
@@ -15,8 +18,7 @@ const openai = new OpenAI({
 
 export async function updateSpacedRepetitionWithAi(
   courseId: number,
-  howDifficult: number,
-  timeSpent: number
+  cardId: number,
 ) {
   try {
     console.log("Request to AI", courseId);
@@ -35,10 +37,26 @@ export async function updateSpacedRepetitionWithAi(
       await getSpacedRepetition(courseId)
     ).spaced_repetition;
 
+    const cardResults  = await getCardResults(cardId);
+
+
+
+    console.log("Card results:", cardResults);
+
+    if (!cardResults) {
+      return {
+        updatedSpacedRepetition: null,
+        error: new Error("Card results not found."),
+      };
+    }
+
+
     const newSpacedRepetition = await generateCourseContent(
       JSON.stringify(oldSpacedRepetition),
-      howDifficult,
-      timeSpent
+      cardResults.start_time,
+      cardResults.end_time,
+      cardResults.selection_json,
+      cardResults.rating
     );
 
     const { error } = await supabase
@@ -63,18 +81,29 @@ export async function updateSpacedRepetitionWithAi(
 
 async function generateCourseContent(
   oldSpaceRepetion: string,
-  howDifficult: number,
-  timeSpent: number
+  startTime: number,
+  endTime: number,
+  selection: object,
+  rating: number
 ): Promise<SpacedRepetition | Error> {
   try {
+    const timeSpentInSeconds = Math.round((endTime - startTime) / 1000);
+    console.log("Time spent in seconds:", timeSpentInSeconds);
+  
     const prompt = `
-    Today is ${new Date().toISOString().split("T")[0]}.
-
-    You are an AI that specializes in spaced repetition scheduling. Here is the current spaced repetition data in JSON format: 
-    ${oldSpaceRepetion}
-
-    Based on this data, generate an updated spaced repetition schedule. Consider the difficulty level of ${howDifficult} and the time spent of ${timeSpent} minutes in your update.
+  Today is ${new Date().toISOString().split("T")[0]}.
+  
+  You are a professional AI specializing in spaced repetition scheduling to maximize learning retention. Below is the current spaced repetition data in JSON format:
+  ${oldSpaceRepetion}
+  
+  Additionally, consider the following details:
+  - User difficulty rating: ${rating} where 1 is very easy and 5 is very difficult.
+  - Total review time: ${timeSpentInSeconds} seconds
+  - User selection data: ${JSON.stringify(selection)}
+  
+  Using the above information, generate an updated spaced repetition schedule that optimally adjusts review intervals for effective learning.
     `;
+  
 
     await recordAiUsage();
 

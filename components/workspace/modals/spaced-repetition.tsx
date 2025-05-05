@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "../../ui/button";
-import { updateSpacedRepetitionWithAi } from "@/lib/courses/spaced-repetition-ai-actions";
 
 import {
   AlertDialog,
@@ -29,7 +28,7 @@ export const SpacedRepetitionModal = ({
   const [spacedRepetition, setSpacedRepetition] =
     useState<SpacedRepetition | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [updateError, setUpdateError] = useState<string | null>(null);
+  // const [updateError, setUpdateError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchSpacedRepetition() {
@@ -48,37 +47,7 @@ export const SpacedRepetitionModal = ({
     fetchSpacedRepetition();
   }, [courseId]);
 
-  const handleUpdateSpacedRepetitionWithAi = async (
-    courseId: number,
-    howDifficult: number,
-    timeSpent: number
-  ) => {
-    console.log("Updating spaced repetition with AI Handler...");
-    console.log(spacedRepetition);
 
-    try {
-      console.log("Updating spaced repetition with AI...");
-      console.log(spacedRepetition);
-
-      const { updatedSpacedRepetition, error } = await updateSpacedRepetitionWithAi(
-        courseId,
-        howDifficult,
-        timeSpent
-      );
-      setUpdateError(null);
-      console.log(updatedSpacedRepetition);
-
-      if (error || updatedSpacedRepetition instanceof Error) {
-          setUpdateError("Failed to update spaced repetition with AI. Please try again.");
-          return;
-      }
-
-      setSpacedRepetition(updatedSpacedRepetition);
-    } catch (error) {
-      console.error("Error updating spaced repetition with AI:", error);
-      setUpdateError("Failed to update spaced repetition with AI. Please try again.");
-    }
-  };
 
   const handleSave = async () => {
     if (!spacedRepetition) return;
@@ -187,26 +156,8 @@ export const SpacedRepetitionModal = ({
           </Button>
         </div>
         <div className="flex flex-col mt-2 gap-2">
-          <p className="text-right">Temporary generation solution...</p>
-          <div className="flex justify-end mt-2 gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleUpdateSpacedRepetitionWithAi(courseId, 2, 4)}
-            >
-              Generate SR Easy
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() =>
-                handleUpdateSpacedRepetitionWithAi(courseId, 12, 14)
-              }
-            >
-              Generate SR Difficult
-            </Button>
-          </div>
-          {updateError && <p className="text-red-500">{updateError}</p>}
+
+          {/* {updateError && <p className="text-red-500">{updateError}</p>} */}
         </div>
 
         <AlertDialogFooter>

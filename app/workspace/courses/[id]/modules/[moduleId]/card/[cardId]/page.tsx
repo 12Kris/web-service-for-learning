@@ -7,6 +7,13 @@ import { useParams } from "next/navigation";
 import { getCardsByLearningMaterial } from "@/lib/courses/actions";
 import { FlashCards } from "@/lib/types/card";
 import { saveCardResult } from "@/lib/results/actions";
+import { PageHeader } from "@/components/ui/page-header";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+
+import Link from "next/link";
+
+import {updateSpacedRepetitionWithAi} from "@/lib/courses/spaced-repetition-ai-actions";
+import { Button } from "@/components/ui/button";
 
 export default function CardPage() {
   const params = useParams() as {
@@ -16,8 +23,8 @@ export default function CardPage() {
   };
 
   const cardId = Number(params.cardId);
-  const courseId = params.id;
-  const moduleId = params.moduleId;
+  const courseId = Number(params.id);
+  const moduleId =  Number(params.moduleId);
 
   const [currentCard, setCurrentCard] = useState<number>(0);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
@@ -28,6 +35,7 @@ export default function CardPage() {
   const [selectedAnswers, setSelectedAnswers] = useState<
     Record<number, boolean | undefined>
   >({});
+  const [isResultsUpdated, setIsResultsUpdated] = useState(false);
 
   const allAnswered =
     flashcards.length > 0 &&
@@ -45,6 +53,14 @@ export default function CardPage() {
     setStartTime(Date.now());
     fetchData();
   }, [cardId]);
+
+  const handleupdateSpacedRepetitionWithAi = async () => {
+    if (cardId) {
+      await updateSpacedRepetitionWithAi(courseId, cardId);
+      window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
+
+    }
+  };
 
   const handleFlip = () => {
     setIsFlipped((prev) => !prev);
@@ -89,7 +105,8 @@ export default function CardPage() {
       return;
     }
     await saveCardResult(cardId, startTime, endTime, selection, rating);
-    window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
+    setIsResultsUpdated(true);
+    // window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
   };
 
   if (flashcards.length === 0) {
@@ -106,6 +123,8 @@ export default function CardPage() {
     <div className="flex flex-col items-center justify-center md:p-8">
       <div className="w-full max-w-4xl rounded-3xl md:p-8">
         <div className="items-center gap-4">
+          {!allAnswered && (
+          <>
           <div className="flex-1">
             <div className="w-full h-[425px] flex items-center gap-3">
               <button
@@ -190,35 +209,76 @@ export default function CardPage() {
               ))}
             </div>
           </div>
-
+</>
+          )}
           {allAnswered && (
             <div className="mt-6 flex flex-col items-center gap-4">
               <div className="mt-4">
-                <label className="block text-center mb-2">
+                {/* <label className="block text-center mb-2">
                   How easy were the cards?
-                </label>
-                <div className="mt-4 flex gap-3">
+                </label> */}
+                      <PageHeader className="mb-10 text-center" title={"How difficult were the cards?"} />
+
+                <div className="mt-4 flex gap-3 flex-col align-center justify-center items-center">
                   <input
                     type="number"
-                    min={1}
+                    // style={{ WeMozAppearance: "textfield" }}
+                    min={0}
                     max={5}
                     value={rating || ""}
                     onChange={(e) =>
                       handleRatingChange(Number(e.target.value))
                     }
-                    className="w-16 text-center border border-gray-300 rounded-lg p-2"
-                    placeholder="1-5"
+                    className="w-fit text-center border border-gray-300  rounded-lg p-2 text-3xl mb-7"
+                    placeholder="0-5"
                   />
-                  <button
+                  <Button
+              variant = "default"
+              size="lg"
+              onClick={saveCardResultsHandler}
+                    >
+                    Save Results
+                  </Button>
+                  {/* <button
                     onClick={saveCardResultsHandler}
                     className="px-6 py-2 hover:text-white hover:bg-[--neutral] rounded-lg border transition-colors"
                   >
                     Save Results
-                  </button>
+                  </button> */}
                 </div>
               </div>
+              <div>
+              
+              </div>
             </div>
+            
           )}
+
+{isResultsUpdated && (
+        <AlertDialog open>
+      
+
+          <AlertDialogContent className="bg-white">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Do you want also to update spaced repetition?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action will update the studying plan for the course based on the results of this card.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Link href={`/workspace/courses/${courseId}/modules/${moduleId}`}>
+              <AlertDialogCancel>Do not update</AlertDialogCancel>
+              </Link>
+              <AlertDialogAction
+                className="text-white bg-[--neutral] border-2 border-[--neutral] hover:text-white hover:bg-[--neutral]"
+                onClick={handleupdateSpacedRepetitionWithAi}
+              >
+                Update Spaced Repetition
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
         </div>
       </div>
     </div>
