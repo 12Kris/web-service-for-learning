@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
+import {signInWithProvider} from "@/lib/auth/oauth";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -163,6 +164,7 @@ export default function RegisterPage() {
 
             <div className="mt-6 flex justify-center gap-4">
               <button
+                  onClick={() => signInWithProvider("google")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
@@ -172,6 +174,7 @@ export default function RegisterPage() {
                 />
               </button>
               <button
+                  onClick={() => signInWithProvider("facebook")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
@@ -181,6 +184,7 @@ export default function RegisterPage() {
                 />
               </button>
               <button
+                  onClick={() => signInWithProvider("twitter")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
