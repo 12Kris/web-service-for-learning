@@ -10,6 +10,7 @@ import { RadioGroup } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { completeTest } from "@/lib/tests/actions"
 
 export default function TestPage() {
     const params = useParams();
@@ -72,10 +73,13 @@ export default function TestPage() {
             const endTime = Date.now();
             const duration = Math.floor((endTime - startTime) / 1000)
             const result = await saveTestResults(testId, answers, duration);
+            await completeTest(testId);
+
             if (result) {
                 alert("Results saved successfully!");
                 window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
             }
+            
         } catch (error) {
             console.error("Error saving results:", error);
         }

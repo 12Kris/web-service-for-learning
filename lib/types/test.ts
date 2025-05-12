@@ -18,6 +18,7 @@ export interface TestData {
     question: string;
   }[];
   Block?: BlockData;
+  is_completed: boolean;
 }
 
 export interface TestWithQuestions {
@@ -25,6 +26,8 @@ export interface TestWithQuestions {
   blockId: number;
   question: string;
   questions: TestQuestion[];
+  is_completed: boolean;
+
 }
 
 export interface TestQuestion {
