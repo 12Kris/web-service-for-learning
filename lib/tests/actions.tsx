@@ -53,6 +53,18 @@ export async function updateBlock(
   return data[0] ?? null;
 }
 
+export async function completeTest(testId: number) {
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("Test")
+    .update({ is_completed: true })
+    .eq("id", testId);
+
+  if (error) throw new Error(error.message);
+}
+
 export async function deleteBlock(blockId: number): Promise<void> {
   const supabase = await createClient();
 
@@ -78,7 +90,9 @@ export async function getTestById(testId: number): Promise<TestWithQuestions | n
                     id,
                     answer
                 )
-            )
+            ),
+              is_completed
+
         `,
     )
     .eq("id", testId)
@@ -105,6 +119,7 @@ export async function getTestById(testId: number): Promise<TestWithQuestions | n
         correct: a.id === q.correct_id,
       })),
     })),
+    is_completed: testData.is_completed,
   }
 }
 

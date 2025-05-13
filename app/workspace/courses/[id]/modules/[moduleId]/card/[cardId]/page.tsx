@@ -10,6 +10,7 @@ import { saveCardResult } from "@/lib/results/actions";
 import { PageHeader } from "@/components/ui/page-header";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
+import { completeMaterial } from "@/lib/courses/actions";
 import Link from "next/link";
 
 import {updateSpacedRepetitionWithAi} from "@/lib/courses/spaced-repetition-ai-actions";
@@ -99,12 +100,14 @@ export default function CardPage() {
   };
 
   const saveCardResultsHandler = async () => {
+    
     const endTime = Date.now();
     if (rating === null) {
       alert("Please provide a rating.");
       return;
     }
     await saveCardResult(cardId, startTime, endTime, selection, rating);
+    await completeMaterial(cardId);
     setIsResultsUpdated(true);
     // window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
   };

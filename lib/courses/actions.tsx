@@ -617,7 +617,7 @@ export async function getTestsByBlockId(blockId: number): Promise<TestData[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("Test")
-    .select("id, block_id, question, TestQuestions(id, question)")
+    .select("id, block_id, question, TestQuestions(id, question), is_completed")
     .eq("block_id", blockId);
 
   if (error) {
@@ -672,6 +672,19 @@ export async function getTestQuestions(testId: number): Promise<
   });
 }
 
+
+export async function completeMaterial(materialId: number) {
+
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("LearningMaterial")
+    .update({ is_completed: true })
+    .eq("id", materialId);
+
+  if (error) throw new Error(error.message);
+}
+
 export async function getMaterialsByBlockId(
   blockId: number
 ): Promise<LearningMaterial[]> {
@@ -679,7 +692,7 @@ export async function getMaterialsByBlockId(
   const { data, error } = await supabase
     .from("LearningMaterial")
     .select(
-      "id, block_id, title, content, material_type, order_number, flashcards(id, front, back)"
+      "id, block_id, title, content, material_type, order_number, flashcards(id, front, back), is_completed"
     )
     .eq("block_id", blockId)
     .order("order_number", { ascending: true });
