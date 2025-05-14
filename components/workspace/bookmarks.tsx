@@ -124,7 +124,7 @@ export default function BookmarksPage({
               )
             ) : (
               <div className="text-center text-lg mt-8">       
-                {`You haven't enrolled in any courses yet.`}
+                You haven&apos;t enrolled in any courses yet.
                 <div className="mt-4">
                   <Link href="/workspace/courses/browse">
                     <Button variant="default">Browse Courses</Button>
