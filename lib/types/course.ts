@@ -32,6 +32,12 @@ export interface Course {
       next_review_dates: string[]
     }
   }[]
+  isCourseCompleted?: boolean;
+}
+
+export interface ResivedPointsForCourse {
+  user_id: string;
+  course_id: number;
 }
 
 export interface CourseWithStudents {

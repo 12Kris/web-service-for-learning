@@ -513,7 +513,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     onClick={(e) => {
                       e.preventDefault()
                       setMaterialModalOpen(true)
-                      setCurrentMaterial({ id: 0, title: "", content: "", is_completed: false })
+                      setCurrentMaterial({ id: 0, title: "", content: "" })
                       setMaterialTitle("")
                       setMaterialContents([])
                       setCurrentBlockId(module.id)

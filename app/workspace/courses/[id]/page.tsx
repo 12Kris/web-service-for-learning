@@ -12,6 +12,7 @@ import CourseDescriptionJumpotron from "@/components/workspace/courses/course-de
 import CourseInfo from "@/components/workspace/courses/course-info";
 import CourseCurriculum from "@/components/workspace/courses/course-curriculum";
 import MeetTutor from "@/components/workspace/courses/meet-tutor";
+import CompletedInfo from "@/components/workspace/courses/completed-info";
 
 export default function FlashcardPage({
   params,
@@ -30,6 +31,8 @@ export default function FlashcardPage({
       setModules(modulesData);
 
       const courseData = await getCourseById(courseId);
+      // console.log("Is course finished:", await isCourseCompleted(courseId));
+
       setCourse(courseData);
 
       const ratingData = await getCourseRating(courseId);
@@ -73,6 +76,8 @@ export default function FlashcardPage({
         id={id}
         onSubscriptionChange={handleSubscriptionChange}
       />
+      {course?.isCourseCompleted && <CompletedInfo courseId={course.id} />}
+      {/* <CompletedInfo /> */}
 
       <CourseInfo
         course_details={course?.course_details || []}

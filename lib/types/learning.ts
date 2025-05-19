@@ -12,7 +12,7 @@ export interface LearningMaterial {
   content: string;
   block_id?: number;
   flashcards?: { id: number; front: string; back: string }[];
-  is_completed: boolean;
+  is_completed?: boolean;
 }
 
 export interface MaterialData {
