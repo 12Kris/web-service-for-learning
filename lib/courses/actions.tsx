@@ -7,6 +7,7 @@ import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 
+
 export async function getCourseById(courseId: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -22,7 +23,8 @@ export async function getCourseById(courseId: number) {
     return null;
   }
 
-  return data;
+  const completed = await isCourseCompleted(courseId);
+  return { ...data, isCourseCompleted: completed };
 }
 
 export async function getCardsByBlock(blockId: number) {
@@ -61,35 +63,37 @@ export async function isCourseAddedToUser(courseId: number) {
   return data.length > 0;
 }
 
-export const getUserCourses = cache(async (offset = 0, limit = 30): Promise<Course[]> => {
-  const supabase = await createClient();
-  try {
-    const user = await getUser();
+export const getUserCourses = cache(
+  async (offset = 0, limit = 30): Promise<Course[]> => {
+    const supabase = await createClient();
+    try {
+      const user = await getUser();
 
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
+      if (!user) {
+        throw new Error("User not authenticated");
+      }
 
-    const { data: userCourses, error: userCourseError } = await supabase
-      .from("UserCourse")
-      .select("course_id")
-      .eq("user_id", user.id)
-      .range(offset, offset + limit - 1);
+      const { data: userCourses, error: userCourseError } = await supabase
+        .from("UserCourse")
+        .select("course_id")
+        .eq("user_id", user.id)
+        .range(offset, offset + limit - 1);
 
-    if (userCourseError) {
-      console.error("Error fetching user course relations:", userCourseError);
-      return [];
-    }
+      if (userCourseError) {
+        console.error("Error fetching user course relations:", userCourseError);
+        return [];
+      }
 
-    if (!userCourses?.length) {
-      return [];
-    }
+      if (!userCourses?.length) {
+        return [];
+      }
 
-    const courseIds = userCourses.map((item) => item.course_id);
+      const courseIds = userCourses.map((item) => item.course_id);
 
-    const { data: courses, error: courseError } = await supabase
-      .from("Course")
-        .select(`
+      const { data: courses, error: courseError } = await supabase
+        .from("Course")
+        .select(
+          `
         *,
           creator:profiles!Course_creator_id_fkey1 (
             id,
@@ -97,46 +101,54 @@ export const getUserCourses = cache(async (offset = 0, limit = 30): Promise<Cour
           ),
           student_count:UserCourse(count),
           rating_count
-      `)
-      .in("id", courseIds);
+      `
+        )
+        .in("id", courseIds);
 
-    if (courseError) {
-      console.error("Error fetching courses:", courseError);
+      if (courseError) {
+        console.error("Error fetching courses:", courseError);
+        return [];
+      }
+
+      const courseIdsForRatings = courses.map((course) => course.id);
+      const { data: ratingsData, error: ratingsError } = await supabase
+        .from("CourseRating")
+        .select("course_id, rating")
+        .in("course_id", courseIdsForRatings);
+
+      if (ratingsError) {
+        console.error(
+          "Error fetching ratings:",
+          JSON.stringify(ratingsError, null, 2)
+        );
+      }
+
+      const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
+        if (!acc[course_id]) acc[course_id] = [];
+        acc[course_id].push(rating);
+        return acc;
+      }, {} as Record<number, number[]>);
+
+      const coursesWithRating = courses.map((course) => {
+        const ratings = ratingsMap?.[course.id] || [];
+        const averageRating =
+          ratings.length > 0
+            ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+            : 0;
+        return {
+          ...course,
+          rating: Number.parseFloat(averageRating.toFixed(1)),
+          student_count: course.student_count?.[0]?.count || 0,
+        };
+      });
+
+      return coursesWithRating;
+    } catch (error) {
+      console.error("Error fetching user courses:", error);
       return [];
     }
-
-    const courseIdsForRatings = courses.map((course) => course.id);
-    const { data: ratingsData, error: ratingsError } = await supabase
-      .from("CourseRating")
-      .select("course_id, rating")
-      .in("course_id", courseIdsForRatings);
-
-    if (ratingsError) {
-      console.error("Error fetching ratings:", JSON.stringify(ratingsError, null, 2));
-    }
-
-    const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
-      if (!acc[course_id]) acc[course_id] = [];
-      acc[course_id].push(rating);
-      return acc;
-    }, {} as Record<number, number[]>);
-
-    const coursesWithRating = courses.map((course) => {
-      const ratings = ratingsMap?.[course.id] || [];
-      const averageRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0;
-      return {
-        ...course,
-        rating: Number.parseFloat(averageRating.toFixed(1)),
-        student_count: course.student_count?.[0]?.count || 0,
-      };
-    });
-
-    return coursesWithRating;
-  } catch (error) {
-    console.error("Error fetching user courses:", error);
-    return [];
   }
-});
+);
 
 // export async function getUserCourses(): Promise<Course[]> {
 //   const supabase = await createClient();
@@ -329,15 +341,17 @@ export async function removeCourseFromUser(
   }
 }
 
-export const getUserCreatedCourses = cache(async (offset = 0, limit = 10): Promise<Course[]> => {
-  const supabase = await createClient();
-  try {
-    const user = await getUser();
-    if (!user) throw new Error("User not authenticated");
+export const getUserCreatedCourses = cache(
+  async (offset = 0, limit = 10): Promise<Course[]> => {
+    const supabase = await createClient();
+    try {
+      const user = await getUser();
+      if (!user) throw new Error("User not authenticated");
 
-    const { data, error } = await supabase
-      .from("Course")
-      .select(`
+      const { data, error } = await supabase
+        .from("Course")
+        .select(
+          `
           *,
           creator:profiles!Course_creator_id_fkey1 (
             id,
@@ -348,50 +362,55 @@ export const getUserCreatedCourses = cache(async (offset = 0, limit = 10): Promi
             username
           ),
           rating_count
-      `)
-      .eq("creator_id", user.id)
-      .range(offset, offset + limit - 1);
+      `
+        )
+        .eq("creator_id", user.id)
+        .range(offset, offset + limit - 1);
 
-    if (error) {
-      console.error("Error fetching courses from Supabase:", error);
+      if (error) {
+        console.error("Error fetching courses from Supabase:", error);
+        return [];
+      }
+
+      if (!data) return [];
+
+      const courseIds = data.map((course) => course.id);
+      const { data: ratingsData, error: ratingsError } = await supabase
+        .from("CourseRating")
+        .select("course_id, rating")
+        .in("course_id", courseIds);
+
+      if (ratingsError) {
+        console.error("Error fetching ratings:", ratingsError);
+      }
+
+      const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
+        if (!acc[course_id]) acc[course_id] = [];
+        acc[course_id].push(rating);
+        return acc;
+      }, {} as Record<number, number[]>);
+
+      const coursesWithRating = data.map((course) => {
+        const ratings = ratingsMap?.[course.id] || [];
+        const averageRating =
+          ratings.length > 0
+            ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+            : 0;
+        return {
+          ...course,
+          rating: Number.parseFloat(averageRating.toFixed(1)),
+          student_count: course.rating_count || 0,
+          creator: course.creator?.[0] || { id: "", full_name: "Unknown" },
+        };
+      });
+
+      return coursesWithRating;
+    } catch (error) {
+      console.error("Error fetching user created courses:", error);
       return [];
     }
-
-    if (!data) return [];
-
-    const courseIds = data.map((course) => course.id);
-    const { data: ratingsData, error: ratingsError } = await supabase
-      .from("CourseRating")
-      .select("course_id, rating")
-      .in("course_id", courseIds);
-
-    if (ratingsError) {
-      console.error("Error fetching ratings:", ratingsError);
-    }
-
-    const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
-      if (!acc[course_id]) acc[course_id] = [];
-      acc[course_id].push(rating);
-      return acc;
-    }, {} as Record<number, number[]>);
-
-    const coursesWithRating = data.map((course) => {
-      const ratings = ratingsMap?.[course.id] || [];
-      const averageRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0;
-      return {
-        ...course,
-        rating: Number.parseFloat(averageRating.toFixed(1)),
-        student_count: course.rating_count || 0,
-        creator: course.creator?.[0] || { id: "", full_name: "Unknown" },
-      };
-    });
-
-    return coursesWithRating;
-  } catch (error) {
-    console.error("Error fetching user created courses:", error);
-    return [];
   }
-});
+);
 
 // export async function getUserCreatedCourses(): Promise<Course[]> {
 //   const supabase = await createClient();
@@ -442,11 +461,13 @@ export const getUserCreatedCourses = cache(async (offset = 0, limit = 10): Promi
 //   }
 // }
 
-export const getCourses = cache(async (offset = 0, limit = 30): Promise<Course[]> => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("Course")
-    .select(`
+export const getCourses = cache(
+  async (offset = 0, limit = 30): Promise<Course[]> => {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("Course")
+      .select(
+        `
       *,
       creator:profiles!Course_creator_id_fkey1 (
         id,
@@ -454,42 +475,50 @@ export const getCourses = cache(async (offset = 0, limit = 30): Promise<Course[]
       ),
       student_count:UserCourse(count),
       rating_count
-    `)
-    .range(offset, offset + limit - 1);
+    `
+      )
+      .range(offset, offset + limit - 1);
 
-  if (error) {
-    console.error("Error fetching courses:", JSON.stringify(error, null, 2));
-    return [];
+    if (error) {
+      console.error("Error fetching courses:", JSON.stringify(error, null, 2));
+      return [];
+    }
+
+    const courseIds = data.map((course) => course.id);
+    const { data: ratingsData, error: ratingsError } = await supabase
+      .from("CourseRating")
+      .select("course_id, rating")
+      .in("course_id", courseIds);
+
+    if (ratingsError) {
+      console.error(
+        "Error fetching ratings:",
+        JSON.stringify(ratingsError, null, 2)
+      );
+    }
+
+    const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
+      if (!acc[course_id]) acc[course_id] = [];
+      acc[course_id].push(rating);
+      return acc;
+    }, {} as Record<number, number[]>);
+
+    const coursesWithRating = data.map((course) => {
+      const ratings = ratingsMap?.[course.id] || [];
+      const averageRating =
+        ratings.length > 0
+          ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+          : 0;
+      return {
+        ...course,
+        rating: Number.parseFloat(averageRating.toFixed(1)),
+        student_count: course.student_count?.[0]?.count || 0,
+      };
+    });
+
+    return coursesWithRating;
   }
-
-  const courseIds = data.map((course) => course.id);
-  const { data: ratingsData, error: ratingsError } = await supabase
-    .from("CourseRating")
-    .select("course_id, rating")
-    .in("course_id", courseIds);
-
-  if (ratingsError) {
-    console.error("Error fetching ratings:", JSON.stringify(ratingsError, null, 2));
-  }
-
-  const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
-    if (!acc[course_id]) acc[course_id] = [];
-    acc[course_id].push(rating);
-    return acc;
-  }, {} as Record<number, number[]>);
-
-  const coursesWithRating = data.map((course) => {
-    const ratings = ratingsMap?.[course.id] || [];
-    const averageRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0;
-    return {
-      ...course,
-      rating: Number.parseFloat(averageRating.toFixed(1)),
-      student_count: course.student_count?.[0]?.count || 0,
-    };
-  });
-
-  return coursesWithRating;
-})
+);
 
 // export async function getCourses(): Promise<Course[]> {
 //   const supabase = await createClient();
@@ -522,12 +551,14 @@ export const getCourses = cache(async (offset = 0, limit = 30): Promise<Course[]
 //   return coursesWithRating as Course[];
 // }
 
-export const getCoursesWithUserProgress = cache(async (offset = 0, limit = 30): Promise<Course[]> => {
-  const supabase = await createClient();
-  const user = await getUser();
-  const { data, error } = await supabase
-    .from("Course")
-    .select(`
+export const getCoursesWithUserProgress = cache(
+  async (offset = 0, limit = 30): Promise<Course[]> => {
+    const supabase = await createClient();
+    const user = await getUser();
+    const { data, error } = await supabase
+      .from("Course")
+      .select(
+        `
       *,
     creator:profiles!Course_creator_id_fkey1 (
       id,
@@ -538,43 +569,54 @@ export const getCoursesWithUserProgress = cache(async (offset = 0, limit = 30): 
     ), 
     student_count:UserCourse(count),
     rating_count
-    `)
-    .eq("user_progress.user_id", user.id)
-    .range(offset, offset + limit - 1);
+    `
+      )
+      .eq("user_progress.user_id", user.id)
+      .range(offset, offset + limit - 1);
 
-  if (error) {
-    console.error("Error fetching courses with progress:", JSON.stringify(error, null, 2));
-    return [];
+    if (error) {
+      console.error(
+        "Error fetching courses with progress:",
+        JSON.stringify(error, null, 2)
+      );
+      return [];
+    }
+
+    const courseIds = data.map((course) => course.id);
+    const { data: ratingsData, error: ratingsError } = await supabase
+      .from("CourseRating")
+      .select("course_id, rating")
+      .in("course_id", courseIds);
+
+    if (ratingsError) {
+      console.error(
+        "Error fetching ratings:",
+        JSON.stringify(ratingsError, null, 2)
+      );
+    }
+
+    const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
+      if (!acc[course_id]) acc[course_id] = [];
+      acc[course_id].push(rating);
+      return acc;
+    }, {} as Record<number, number[]>);
+
+    const coursesWithRating = data.map((course) => {
+      const ratings = ratingsMap?.[course.id] || [];
+      const averageRating =
+        ratings.length > 0
+          ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+          : 0;
+      return {
+        ...course,
+        rating: Number.parseFloat(averageRating.toFixed(1)),
+        student_count: course.student_count?.[0]?.count || 0,
+      };
+    });
+
+    return coursesWithRating;
   }
-
-  const courseIds = data.map((course) => course.id);
-  const { data: ratingsData, error: ratingsError } = await supabase
-    .from("CourseRating")
-    .select("course_id, rating")
-    .in("course_id", courseIds);
-
-  if (ratingsError) {
-    console.error("Error fetching ratings:", JSON.stringify(ratingsError, null, 2));
-  }
-
-  const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
-    if (!acc[course_id]) acc[course_id] = [];
-    acc[course_id].push(rating);
-    return acc;
-  }, {} as Record<number, number[]>);
-
-  const coursesWithRating = data.map((course) => {
-    const ratings = ratingsMap?.[course.id] || [];
-    const averageRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0;
-    return {
-      ...course,
-      rating: Number.parseFloat(averageRating.toFixed(1)),
-      student_count: course.student_count?.[0]?.count || 0,
-    };
-  });
-
-  return coursesWithRating;
-});
+);
 
 // export async function getCoursesWithUserProgress(): Promise<Course[]> {
 //   const supabase = await createClient();
@@ -594,7 +636,7 @@ export const getCoursesWithUserProgress = cache(async (offset = 0, limit = 30): 
 //     ),
 //     user_progress:UserCourse!inner (
 //       spaced_repetition
-//     ), 
+//     ),
 //     student_count:UserCourse(count),
 //     rating_count
 //   `
@@ -861,7 +903,7 @@ export async function getTestsByBlockId(blockId: number): Promise<TestData[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("Test")
-    .select("id, block_id, question, TestQuestions(id, question), is_completed")
+    .select("id, block_id, question, TestQuestions(id, question)")
     .eq("block_id", blockId);
 
   if (error) {
@@ -869,7 +911,13 @@ export async function getTestsByBlockId(blockId: number): Promise<TestData[]> {
     return [];
   }
 
-  return data as unknown as TestData[];
+  const testsWithCompleted = await Promise.all(
+    data.map(async (test) => ({
+      ...test,
+      is_completed: await isTestCompleted(test.id),
+    }))
+  );
+  return testsWithCompleted;
 }
 
 export async function getTestQuestions(testId: number): Promise<
@@ -916,17 +964,42 @@ export async function getTestQuestions(testId: number): Promise<
   });
 }
 
-
 export async function completeMaterial(materialId: number) {
-
   const supabase = await createClient();
-
+  const user = await getUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  
   const { error } = await supabase
-    .from("LearningMaterial")
-    .update({ is_completed: true })
-    .eq("id", materialId);
+    .from("finished_user_materials")
+    .insert({ user_id: user.id, material_id: materialId });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function isMaterialCompleted(materialId: number): Promise<boolean> {
+  const supabase = await createClient();
+  const user = await getUser();
+  
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  
+  const { data, error } = await supabase
+    .from("finished_user_materials")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("material_id", materialId);
+
+  if (error) {
+    console.error("Error checking material completion:", error);
+    return false;
+  }
+  
+  return data && data.length > 0;
 }
 
 export async function getMaterialsByBlockId(
@@ -936,7 +1009,7 @@ export async function getMaterialsByBlockId(
   const { data, error } = await supabase
     .from("LearningMaterial")
     .select(
-      "id, block_id, title, content, material_type, order_number, flashcards(id, front, back), is_completed"
+      "id, block_id, title, content, material_type, order_number, flashcards(id, front, back)"
     )
     .eq("block_id", blockId)
     .order("order_number", { ascending: true });
@@ -946,7 +1019,13 @@ export async function getMaterialsByBlockId(
     return [];
   }
 
-  return data as LearningMaterial[];
+  const materialsWithCompleted = await Promise.all(
+    data.map(async (material: LearningMaterial) => ({
+      ...material,
+      is_completed: await isMaterialCompleted(material.id),
+    }))
+  );
+  return materialsWithCompleted;
 }
 
 export async function updateQuestion(questionId: number, questionText: string) {
@@ -990,49 +1069,196 @@ export async function deleteFlashcard(cardId: number) {
   if (error) throw error;
 }
 
-export const getTopUsersByPoints = cache(async (offset = 0, limit = 10): Promise<{
-  rank: number;
-  initials: string;
-  name: string;
-  totalPoints: number;
-  color: string;
-}[]> => {
-  const supabase = await createClient();
-  try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("full_name, username, total_points")
-      .order("total_points", { ascending: false })
-      .range(offset, offset + limit - 1);
+export const getTopUsersByPoints = cache(
+  async (
+    offset = 0,
+    limit = 10
+  ): Promise<
+    {
+      rank: number;
+      initials: string;
+      name: string;
+      totalPoints: number;
+      color: string;
+    }[]
+  > => {
+    const supabase = await createClient();
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, username, total_points")
+        .order("total_points", { ascending: false })
+        .range(offset, offset + limit - 1);
 
-    if (error) {
-      console.error("Error fetching top users by points:", error);
+      if (error) {
+        console.error("Error fetching top users by points:", error);
+        return [];
+      }
+
+      if (!data || data.length === 0) {
+        return [];
+      }
+
+      return data.map((user, index) => {
+        const name = user.full_name || user.username || "Unknown User";
+        const initials = name
+          .split(" ")
+          .map((word: string) => word.charAt(0))
+          .slice(0, 2)
+          .join("")
+          .toUpperCase();
+
+        return {
+          rank: offset + index + 1,
+          initials,
+          name,
+          totalPoints: user.total_points || 0,
+          color: "bg-blue-100",
+        };
+      });
+    } catch (error) {
+      console.error("Error in getTopUsersByPoints:", error);
       return [];
     }
-
-    if (!data || data.length === 0) {
-      return [];
-    }
-
-    return data.map((user, index) => {
-      const name = user.full_name || user.username || "Unknown User";
-      const initials = name
-        .split(" ")
-        .map((word: string) => word.charAt(0))
-        .slice(0, 2)
-        .join("")
-        .toUpperCase();
-
-      return {
-        rank: offset + index + 1,
-        initials,
-        name,
-        totalPoints: user.total_points || 0,
-        color: "bg-blue-100",
-      };
-    });
-  } catch (error) {
-    console.error("Error in getTopUsersByPoints:", error);
-    return [];
   }
-});
+);
+
+export async function isCourseCompleted(courseId: number): Promise<boolean> {
+  const supabase = await createClient();
+
+  // 1. Fetch all module IDs for this course
+  const { data: modules, error: modulesError } = await supabase
+    .from("Module")
+    .select("id")
+    .eq("course_id", courseId);
+  if (modulesError) {
+    console.error("Error fetching modules for course:", modulesError);
+    return false;
+  }
+  const moduleIds = modules?.map((m) => m.id) ?? [];
+  if (!moduleIds.length) return false;
+
+  // 2. Fetch all learning materials (blocks) for those modules
+  const { data: materials, error: materialsError } = await supabase
+    .from("LearningMaterial")
+    .select("id")
+    .in("block_id", moduleIds);
+  if (materialsError || !materials) {
+    console.error("Error fetching learning materials:", materialsError);
+    return false;
+  }
+  const totalMaterials = materials.length;
+  if (totalMaterials === 0) return false;
+
+  // 3. Check each material's completion status using isMaterialCompleted
+  const completedStatuses = await Promise.all(
+    materials.map(async (material) => isMaterialCompleted(material.id))
+  );
+  const completedCount = completedStatuses.filter(status => status).length;
+
+  // 4. Return true if 75% or more of the materials are completed
+  return completedCount / totalMaterials >= 0.75;
+}
+
+// export interface ResivedPointsForCourse {
+//   user_id: string;
+//   course_id: number;
+// }
+
+export async function addReceivedPointsForCourse(
+  courseId: number
+): Promise<{ success: boolean; message: string }> {
+  const supabase = await createClient();
+  const user = await getUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const { error } = await supabase
+    .from("received_points_for_course")
+    .insert({ user_id: user.id, course_id: courseId });
+
+  if (error) {
+    console.error("Error adding received points:", error);
+    return { success: false, message: error.message };
+  }
+  return { success: true, message: "Points recorded successfully" };
+}
+
+export async function isReceivedPointsForCourse(
+  courseId: number
+): Promise<boolean> {
+  const user = await getUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  const supabase = await createClient();
+  const { count, error } = await supabase
+    .from("received_points_for_course")
+    .select("*", { head: true, count: "exact" })
+    .eq("user_id", user.id)
+    .eq("course_id", courseId);
+
+  if (error) {
+    console.error("Error checking received points:", error);
+    return false;
+  }
+  return (count ?? 0) > 0;
+}
+
+export async function addPointsToProfile(points: number): Promise<{ success: boolean; message: string }> {
+  const supabase = await createClient();
+  const user = await getUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Fetch current total_points for the user
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("total_points")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    console.error("Error fetching profile:", profileError);
+    return { success: false, message: "Failed to fetch user profile" };
+  }
+
+  const currentPoints = Number(profile.total_points) || 0;
+  const newTotal = currentPoints + points;
+
+  // Update the total_points field
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({ total_points: newTotal })
+    .eq("id", user.id);
+
+  if (updateError) {
+    console.error("Error updating points:", updateError);
+    return { success: false, message: updateError.message };
+  }
+
+  return { success: true, message: "Points added successfully" };
+}
+
+// add user-specific test completion functions
+
+
+export async function isTestCompleted(testId: number): Promise<boolean> {
+  const supabase = await createClient();
+  const user = await getUser();
+  if (!user) throw new Error("User not authenticated");
+
+  const { data, error } = await supabase
+    .from("finished_user_tests")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("test_id", testId);
+
+  if (error) {
+    console.error("Error checking test completion:", error);
+    return false;
+  }
+  return data.length > 0;
+}

@@ -15,6 +15,8 @@ import { LearningMaterial } from "@/lib/types/learning";
 import { Block } from "@/lib/types/block";
 import { Card } from "@/lib/types/card";
 import { createClient } from "@/utils/supabase/server";
+import { getUser } from "@/utils/supabase/server";
+
 
 type SupabaseResponse<T> = { data: T | null; error: Error | null };
 
@@ -54,13 +56,13 @@ export async function updateBlock(
 }
 
 export async function completeTest(testId: number) {
-
   const supabase = await createClient();
+  const user = await getUser();
+  if (!user) throw new Error("User not authenticated");
 
   const { error } = await supabase
-    .from("Test")
-    .update({ is_completed: true })
-    .eq("id", testId);
+    .from("finished_user_tests")
+    .insert({ user_id: user.id, test_id: testId });
 
   if (error) throw new Error(error.message);
 }

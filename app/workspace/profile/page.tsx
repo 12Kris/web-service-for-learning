@@ -16,6 +16,7 @@ export default async function Page() {
     email: currentUser.email || "Unknown Email",
     avatar_url: currentUser.user_metadata?.avatar_url || "/placeholder.svg",
     full_name: currentUser.user_metadata?.full_name,
+    total_points: 0,
   };
 
   const createdCourses = await getUserCreatedCourses(0, 50);
