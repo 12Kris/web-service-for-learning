@@ -7,7 +7,6 @@ import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 
-
 export async function getCourseById(courseId: number) {
   const supabase = await createClient();
   const { data, error } = await supabase
@@ -149,77 +148,6 @@ export const getUserCourses = cache(
     }
   }
 );
-
-// export async function getUserCourses(): Promise<Course[]> {
-//   const supabase = await createClient();
-//   try {
-//     const user = await getUser();
-
-//     if (!user) {
-//       throw new Error("User not authenticated");
-//     }
-
-//     const { data: userCourses, error: userCourseError } = await supabase
-//       .from("UserCourse")
-//       .select(
-//         `
-//           course_id
-//         `
-//       )
-//       .eq("user_id", user.id);
-
-//     if (userCourseError) {
-//       console.error("Error fetching user course relations:", userCourseError);
-//       return [];
-//     }
-
-//     if (!userCourses?.length) {
-//       return [];
-//     }
-
-//     const courseIds = userCourses.map((item) => item.course_id);
-
-//     const { data: courses, error: courseError } = await supabase
-//       .from("Course")
-//       .select(
-//         `
-//           *,
-//           creator:profiles!Course_creator_id_fkey1 (
-//             id,
-//             email,
-//             full_name,
-//             avatar_url,
-//             bio,
-//             username
-//           ),
-//           student_count:UserCourse(count),
-//           rating_count
-//         `
-//       )
-//       .in("id", courseIds);
-
-//     if (courseError) {
-//       console.error("Error fetching courses:", courseError);
-//       return [];
-//     }
-
-//     const coursesWithRating = await Promise.all(
-//       courses.map(async (course) => {
-//         const ratingData = await getCourseRating(course.id);
-//         return {
-//           ...course,
-//           rating: ratingData.rating,
-//           student_count: course.student_count?.[0]?.count || 0,
-//         };
-//       })
-//     );
-
-//     return coursesWithRating as Course[];
-//   } catch (error) {
-//     console.error("Error fetching user courses:", error);
-//     return [];
-//   }
-// }
 
 export async function addCourseToUser(
   courseId: number
@@ -412,55 +340,6 @@ export const getUserCreatedCourses = cache(
   }
 );
 
-// export async function getUserCreatedCourses(): Promise<Course[]> {
-//   const supabase = await createClient();
-//   try {
-//     const user = await getUser();
-//     if (!user) throw new Error("User not authenticated");
-
-//     const { data, error } = await supabase
-//       .from("Course")
-//       .select(
-//         `
-//           *,
-//           creator:profiles!Course_creator_id_fkey1 (
-//             id,
-//             email,
-//             full_name,
-//             avatar_url,
-//             bio,
-//             username
-//           ),
-//           rating_count
-//         `
-//       )
-//       .eq("creator_id", user.id);
-
-//     if (error) {
-//       console.error("Error fetching courses from Supabase:", error);
-//       return [];
-//     }
-
-//     if (!data) return [];
-
-//     const coursesWithRating = await Promise.all(
-//       data.map(async (course) => {
-//         const ratingData = await getCourseRating(course.id);
-//         return {
-//           ...course,
-//           rating: ratingData.rating,
-//           student_count: course.rating_count || 0,
-//         };
-//       })
-//     );
-
-//     return coursesWithRating as Course[];
-//   } catch (error) {
-//     console.error("Error fetching user created courses:", error);
-//     return [];
-//   }
-// }
-
 export const getCourses = cache(
   async (offset = 0, limit = 30): Promise<Course[]> => {
     const supabase = await createClient();
@@ -519,37 +398,6 @@ export const getCourses = cache(
     return coursesWithRating;
   }
 );
-
-// export async function getCourses(): Promise<Course[]> {
-//   const supabase = await createClient();
-//   const { data, error } = await supabase.from("Course").select(`
-//       *,
-//       creator:profiles!Course_creator_id_fkey1 (
-//         id,
-//         full_name
-//       ),
-//       student_count:UserCourse(count),
-//       rating_count
-//     `);
-
-//   if (error) {
-//     console.error("Error fetching courses:", JSON.stringify(error, null, 2));
-//     return [];
-//   }
-
-//   const coursesWithRating = await Promise.all(
-//     data.map(async (course) => {
-//       const ratingData = await getCourseRating(course.id);
-//       return {
-//         ...course,
-//         rating: ratingData.rating,
-//         student_count: course.student_count?.[0]?.count || 0,
-//       };
-//     })
-//   );
-
-//   return coursesWithRating as Course[];
-// }
 
 export const getCoursesWithUserProgress = cache(
   async (offset = 0, limit = 30): Promise<Course[]> => {
@@ -617,50 +465,6 @@ export const getCoursesWithUserProgress = cache(
     return coursesWithRating;
   }
 );
-
-// export async function getCoursesWithUserProgress(): Promise<Course[]> {
-//   const supabase = await createClient();
-//   const user = await getUser();
-//   const { data, error } = await supabase
-//     .from("Course")
-//     .select(
-//       `
-//     *,
-//     creator:profiles!Course_creator_id_fkey1 (
-//       id,
-//       email,
-//       full_name,
-//       avatar_url,
-//       bio,
-//       username
-//     ),
-//     user_progress:UserCourse!inner (
-//       spaced_repetition
-//     ),
-//     student_count:UserCourse(count),
-//     rating_count
-//   `
-//     )
-//     .eq("user_progress.user_id", user.id);
-
-//   if (error) {
-//     console.error("Error fetching courses:", JSON.stringify(error, null, 2));
-//     return [];
-//   }
-
-//   const coursesWithRating = await Promise.all(
-//     data.map(async (course) => {
-//       const ratingData = await getCourseRating(course.id);
-//       return {
-//         ...course,
-//         rating: ratingData.rating,
-//         student_count: course.student_count?.[0]?.count || 0,
-//       };
-//     })
-//   );
-
-//   return coursesWithRating as Course[];
-// }
 
 export async function createCourse(
   courseData: Omit<Course, "id" | "creator_id" | "creator">
@@ -970,7 +774,7 @@ export async function completeMaterial(materialId: number) {
   if (!user) {
     throw new Error("User not authenticated");
   }
-  
+
   const { error } = await supabase
     .from("finished_user_materials")
     .insert({ user_id: user.id, material_id: materialId });
@@ -980,14 +784,16 @@ export async function completeMaterial(materialId: number) {
   }
 }
 
-export async function isMaterialCompleted(materialId: number): Promise<boolean> {
+export async function isMaterialCompleted(
+  materialId: number
+): Promise<boolean> {
   const supabase = await createClient();
   const user = await getUser();
-  
+
   if (!user) {
     throw new Error("User not authenticated");
   }
-  
+
   const { data, error } = await supabase
     .from("finished_user_materials")
     .select("id")
@@ -998,7 +804,7 @@ export async function isMaterialCompleted(materialId: number): Promise<boolean> 
     console.error("Error checking material completion:", error);
     return false;
   }
-  
+
   return data && data.length > 0;
 }
 
@@ -1126,7 +932,6 @@ export const getTopUsersByPoints = cache(
 export async function isCourseCompleted(courseId: number): Promise<boolean> {
   const supabase = await createClient();
 
-  // 1. Fetch all module IDs for this course
   const { data: modules, error: modulesError } = await supabase
     .from("Module")
     .select("id")
@@ -1138,7 +943,6 @@ export async function isCourseCompleted(courseId: number): Promise<boolean> {
   const moduleIds = modules?.map((m) => m.id) ?? [];
   if (!moduleIds.length) return false;
 
-  // 2. Fetch all learning materials (blocks) for those modules
   const { data: materials, error: materialsError } = await supabase
     .from("LearningMaterial")
     .select("id")
@@ -1149,21 +953,30 @@ export async function isCourseCompleted(courseId: number): Promise<boolean> {
   }
   const totalMaterials = materials.length;
   if (totalMaterials === 0) return false;
+  const { data: tests, error: testsError } = await supabase
+    .from("Test")
+    .select("id")
+    .in("block_id", moduleIds);
+  if (testsError) {
+    console.error("Error fetching tests for course:", testsError);
+    return false;
+  }
+  if (tests && tests.length > 0) {
+    const testsCompleted = await Promise.all(
+      tests.map((test) => isTestCompleted(test.id))
+    );
+    if (!testsCompleted.every((completed) => completed)) {
+      return false;
+    }
+  }
 
-  // 3. Check each material's completion status using isMaterialCompleted
   const completedStatuses = await Promise.all(
     materials.map(async (material) => isMaterialCompleted(material.id))
   );
-  const completedCount = completedStatuses.filter(status => status).length;
+  const completedCount = completedStatuses.filter((status) => status).length;
 
-  // 4. Return true if 75% or more of the materials are completed
   return completedCount / totalMaterials >= 0.75;
 }
-
-// export interface ResivedPointsForCourse {
-//   user_id: string;
-//   course_id: number;
-// }
 
 export async function addReceivedPointsForCourse(
   courseId: number
@@ -1206,14 +1019,15 @@ export async function isReceivedPointsForCourse(
   return (count ?? 0) > 0;
 }
 
-export async function addPointsToProfile(points: number): Promise<{ success: boolean; message: string }> {
+export async function addPointsToProfile(
+  points: number
+): Promise<{ success: boolean; message: string }> {
   const supabase = await createClient();
   const user = await getUser();
   if (!user) {
     throw new Error("User not authenticated");
   }
 
-  // Fetch current total_points for the user
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("total_points")
@@ -1228,7 +1042,6 @@ export async function addPointsToProfile(points: number): Promise<{ success: boo
   const currentPoints = Number(profile.total_points) || 0;
   const newTotal = currentPoints + points;
 
-  // Update the total_points field
   const { error: updateError } = await supabase
     .from("profiles")
     .update({ total_points: newTotal })
@@ -1241,9 +1054,6 @@ export async function addPointsToProfile(points: number): Promise<{ success: boo
 
   return { success: true, message: "Points added successfully" };
 }
-
-// add user-specific test completion functions
-
 
 export async function isTestCompleted(testId: number): Promise<boolean> {
   const supabase = await createClient();

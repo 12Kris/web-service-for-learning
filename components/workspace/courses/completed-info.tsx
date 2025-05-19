@@ -52,7 +52,7 @@ export default function CompletedInfo({
               variant="solid"
               size="lg"
               onClick={() => handleReceivePoints(courseId)}
-              disabled={isAlreadyReceivedPoints}
+              disabled={!isCompleted || isAlreadyReceivedPoints}
             >
               Receive points
             </Button>
