@@ -102,13 +102,14 @@ export default function Catalog() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {courses.map((course) => (
+        {courses.map((course, index) => (
           <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-video relative">
               <Image
                 src={course.image}
                 alt={course.title}
                 fill
+                priority={index === 0}
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />

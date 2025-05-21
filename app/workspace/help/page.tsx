@@ -46,7 +46,7 @@ export default function HelpPage() {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[#5c7d73] mb-4">Help & User Guide</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Welcome to our help center. Here you'll find everything you need to know about using our platform effectively.
+            Welcome to our help center. Here you&apos;ll find everything you need to know about using our platform effectively.
           </p>
         </div>
   
