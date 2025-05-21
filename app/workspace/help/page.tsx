@@ -7,41 +7,36 @@ import {
   HelpCircle 
 } from "lucide-react";
 
-export default function Help() {
+export default function HelpPage() {
     const sections = [
       {
         id: 1,
         title: "Navigating the Workspace",
-        content:
-          "The workspace consists of a sidebar for navigation and a main content area for browsing courses.",
+        content: "Learn how to navigate through different sections of the workspace and access your courses.",
         icon: LayoutDashboard,
       },
       {
         id: 2,
         title: "Main Features",
-        content:
-          "You can browse courses, bookmark them, and access helpful resources. Click on a course to view details.",
+        content: "Discover the key features that will help you make the most of your learning experience.",
         icon: BookOpen,
       },
       {
         id: 3,
-        title: "Using Filters & Navigation",
-        content:
-          "Use the Filter button to sort courses based on your preferences. Navigate between pages using the provided arrows.",
+        title: "Using Filters",
+        content: "Learn how to use filters to find exactly what you&apos;re looking for in your courses.",
         icon: Filter,
       },
       {
         id: 4,
         title: "Creating a Course",
-        content:
-          "Click the + Create New button at the top right. Fill in the course details, then submit.",
+        content: "Step-by-step guide on how to create and manage your own courses.",
         icon: PlusCircle,
       },
       {
         id: 5,
-        title: "Need Further Assistance?",
-        content:
-          "If you encounter any issues, visit the Contact Us page to get support.",
+        title: "Further Assistance",
+        content: "Need more help? Here&apos;s how to get in touch with our support team.",
         icon: HelpCircle,
       },
     ];

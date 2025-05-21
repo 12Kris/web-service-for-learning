@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 import { 
   Code2,
   Database,
@@ -104,10 +105,12 @@ export default function Catalog() {
         {courses.map((course) => (
           <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow">
             <div className="aspect-video relative">
-              <img
+              <Image
                 src={course.image}
                 alt={course.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
               <div className="absolute top-4 right-4">
                 <Badge variant="secondary" className="bg-white/90">
