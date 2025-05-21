@@ -40,7 +40,7 @@ const courses = [
   },
   {
     id: 3,
-    title: "Algorithms & Data Structures",
+    title: "Algorithms and Data Structures",
     description: "Deep dive into algorithms and data structures for technical interviews.",
     type: "Computer Science",
     duration: "10 weeks",
