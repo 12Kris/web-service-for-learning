@@ -1,31 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { CourseCarousel } from "@/components/course-slider/course-slider";
 import { CourseGrid } from "@/components/course-grid";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+import { Filter, Search } from "lucide-react";
 import { FilterModal } from "@/components/workspace/modals/filter-modal";
 import type { Course } from "@/lib/types/course";
+import { Card, CardContent } from "../ui/card";
+// import { Input } from "../ui/input";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
+import { cn } from "@/lib/utils";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+// import type { Swiper as SwiperType } from "swiper";
 
 interface ClientComponentProps {
-  initialCourses: Course[];
+  // initialCourses?: Course[];
   initialEnrolledCourses: Course[];
   initialCoursesToRepeat: Course[];
   initialCoursesByType: Record<string, { displayName: string; courses: Course[] }>;
   initialCourseTypes: string[];
+  autoplay?: boolean;
+  showPagination?: boolean;
 }
 
 export default function BookmarksPage({
-  initialCourses,
+  // initialCourses,
   initialEnrolledCourses,
   initialCoursesToRepeat,
   initialCoursesByType,
+  initialCourseTypes,
+  autoplay = false,
+  showPagination = false,
 }: ClientComponentProps) {
-  const [courses] = useState<Course[]>(initialCourses);
-  const [filteredCourses, setFilteredCourses] = useState<Course[]>(initialCourses);
+  // const [courses] = useState<Course[]>(initialCourses);
   const [enrolledCourses] = useState<Course[]>(initialEnrolledCourses);
   const [filteredEnrolledCourses, setFilteredEnrolledCourses] = useState<Course[]>(initialEnrolledCourses);
   const [repeatCourses] = useState<Course[]>(initialCoursesToRepeat);
@@ -33,6 +46,11 @@ export default function BookmarksPage({
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [enrolledCoursesByType, setEnrolledCoursesByType] = useState(initialCoursesByType);
+  const [courseTypes, setCourseTypes] = useState(initialCourseTypes);
+  const [searchText, setSearchText] = useState("");
+  // const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
+  // const [isBeginning, setIsBeginning] = useState(true);
+  // const [isEnd, setIsEnd] = useState(false);
 
   const groupEnrolledCoursesByType = (coursesToGroup: Course[]) => {
     const groupedCourses = coursesToGroup.reduce((acc, course) => {
@@ -52,10 +70,55 @@ export default function BookmarksPage({
     }, {} as Record<string, { displayName: string; courses: Course[] }>);
 
     setEnrolledCoursesByType(groupedCourses);
+    setCourseTypes(Object.keys(groupedCourses));
   };
 
+  const applySearchFilter = (search: string, types: string[]) => {
+    let newFilteredEnrolledCourses = [...enrolledCourses];
+
+    if (search.trim()) {
+      const searchLower = search.toLowerCase();
+      newFilteredEnrolledCourses = newFilteredEnrolledCourses.filter(
+        (course) =>
+          course.name.toLowerCase().includes(searchLower) ||
+          (course.type && course.type.toLowerCase().includes(searchLower)),
+      );
+    }
+
+    if (types.length > 0) {
+      newFilteredEnrolledCourses = newFilteredEnrolledCourses.filter((course) =>
+        types.includes((course.type || "Uncategorized").toLowerCase()),
+      );
+    }
+
+    setFilteredEnrolledCourses(newFilteredEnrolledCourses);
+    setIsFilterActive(
+      newFilteredEnrolledCourses.length !== enrolledCourses.length ||
+      search.trim() !== "" ||
+      types.length > 0
+    );
+    groupEnrolledCoursesByType(newFilteredEnrolledCourses);
+  };
+
+  const handleCategoryClick = (type: string) => {
+    const normalizedType = type.toLowerCase();
+    let newSelectedTypes = [...selectedTypes];
+
+    if (newSelectedTypes.includes(normalizedType)) {
+      newSelectedTypes = newSelectedTypes.filter((t) => t !== normalizedType);
+    } else {
+      newSelectedTypes.push(normalizedType);
+    }
+
+    setSelectedTypes(newSelectedTypes);
+    applySearchFilter(searchText, newSelectedTypes);
+  };
+
+  useEffect(() => {
+    applySearchFilter(searchText, selectedTypes);
+  }, [searchText, enrolledCourses]);
+
   const handleFilterApply = (newFilteredCourses: Course[], activeTypes: string[]) => {
-    setFilteredCourses(newFilteredCourses);
     const enrolledIds = new Set(enrolledCourses.map((course) => course.id));
     const newFilteredEnrolled = newFilteredCourses.filter((course) =>
       enrolledIds.has(course.id)
@@ -88,49 +151,112 @@ export default function BookmarksPage({
           </div>
         </div>
 
-        {filteredCourses.length === 0 ? (
-          <div className="text-center text-lg">No courses available!</div>
+        <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search courses..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5c7d73]"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="relative">
+          <Swiper
+            modules={[Navigation, Pagination, A11y, Autoplay]}
+            spaceBetween={16}
+            slidesPerView={1}
+            breakpoints={{
+              640: { slidesPerView: 2, spaceBetween: 16 },
+              1024: { slidesPerView: 3, spaceBetween: 24 },
+              1280: { slidesPerView: 3, spaceBetween: 24 },
+            }}
+            pagination={showPagination ? { clickable: true } : false}
+            autoplay={
+              autoplay ? { delay: 5000, disableOnInteraction: false } : false
+            }
+            // onSwiper={(swiper) => setSwiperInstance(swiper)}
+            // onSlideChange={(swiper) => {
+            //   setIsBeginning(swiper.isBeginning);
+            //   setIsEnd(swiper.isEnd);
+            // }}
+            className="w-full"
+          >
+            {courseTypes.map((type) => (
+              <SwiperSlide key={enrolledCoursesByType[type].displayName} className="hover:shadow-lg transition-shadow cursor-pointer">
+                <Card
+                  onClick={() => handleCategoryClick(type)}
+                  className={cn(
+                    "transition-colors",
+                    selectedTypes.includes(type.toLowerCase())
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-200"
+                  )}
+                >
+                  <CardContent className="p-3 sm:p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-base sm:text-lg">{enrolledCoursesByType[type].displayName}</h3>
+                        <p className="text-xs sm:text-sm text-gray-500">{enrolledCoursesByType[type].courses.length} courses</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        {filteredEnrolledCourses.length === 0 ? (
+          <div className="text-center text-lg mt-8">
+            {`You haven't enrolled in any courses yet.`}
+            <div className="mt-4">
+              <Link href="/workspace/courses/browse">
+                <Button variant="default">Browse Courses</Button>
+              </Link>
+            </div>
+          </div>
         ) : (
           <>
             {repeatCourses.length >= 1 && (
               <CourseCarousel title="Repeat Today" courses={repeatCourses} />
             )}
 
-            {filteredEnrolledCourses.length > 0 ? (
-              isFilterActive ? (
-                selectedTypes.length > 0 ? (
-                  selectedTypes.map((type) => (
-                    <div key={type} className="mb-12">
-                      <CourseCarousel
-                        title={
-                          enrolledCoursesByType[type]?.displayName ||
-                          type.charAt(0).toUpperCase() + type.slice(1)
-                        }
-                        courses={enrolledCoursesByType[type]?.courses || []}
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <CourseGrid
-                    title="Search Results"
-                    courses={filteredEnrolledCourses}
-                  />
-                )
+            {isFilterActive ? (
+              selectedTypes.length === 1 ? (
+                <CourseGrid
+                  title={
+                    enrolledCoursesByType[selectedTypes[0]]?.displayName ||
+                    selectedTypes[0].charAt(0).toUpperCase() + selectedTypes[0].slice(1)
+                  }
+                  courses={enrolledCoursesByType[selectedTypes[0]]?.courses || []}
+                />
+              ) : selectedTypes.length > 1 ? (
+                selectedTypes.map((type) => (
+                  <div key={type} className="mb-12">
+                    <CourseCarousel
+                      title={
+                        enrolledCoursesByType[type]?.displayName ||
+                        type.charAt(0).toUpperCase() + type.slice(1)
+                      }
+                      courses={enrolledCoursesByType[type]?.courses || []}
+                    />
+                  </div>
+                ))
               ) : (
                 <CourseGrid
-                  title="Enrolled Courses"
+                  title="Search Results"
                   courses={filteredEnrolledCourses}
                 />
               )
             ) : (
-              <div className="text-center text-lg mt-8">       
-                {`You haven't enrolled in any courses yet.`}
-                <div className="mt-4">
-                  <Link href="/workspace/courses/browse">
-                    <Button variant="default">Browse Courses</Button>
-                  </Link>
-                </div>
-              </div>
+              <CourseGrid
+                title="Enrolled Courses"
+                courses={filteredEnrolledCourses}
+              />
             )}
           </>
         )}
@@ -139,7 +265,7 @@ export default function BookmarksPage({
       <FilterModal
         isOpen={isFilterModalOpen}
         onClose={() => setIsFilterModalOpen(false)}
-        courses={courses}
+        courses={enrolledCourses}
         onFilter={handleFilterApply}
       />
     </div>

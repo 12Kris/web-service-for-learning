@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronRight, Clock, Flame, Plus } from "lucide-react";
+import { ChevronRight, Flame, Plus, Sparkles } from "lucide-react";
 import type { Course } from "@/lib/types/course";
 import Link from "next/link";
 
@@ -57,7 +57,29 @@ export default function HomePage({
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
         <PageHeader className="mt-0 mb-3 md:mb-0" title="Home" />
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-3 md:gap-0 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:items-center sm:space-x-4 sm:mt-0">
+            <Link href="/workspace/courses/create" className="col-span-1">
+              <Button
+                variant="default"
+                className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
+              >
+                <Plus strokeWidth={3} className="h-4 w-4" />
+                <span className="hidden sm:inline">Create Course</span>
+              </Button>
+            </Link>
+
+            <Link href="/workspace/courses/create-ai" className="col-span-1">
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
+              >
+                <Sparkles strokeWidth={3} className="h-4 w-4" />
+                <span className="hidden sm:inline">AI Generate</span>
+              </Button>
+            </Link>
+          </div>
+        </div>
+        {/* <div className="flex items-center gap-2">
           <Link href="/workspace/courses/create" className="col-span-1">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
@@ -71,7 +93,7 @@ export default function HomePage({
             </Button>
           </Link>
         </div>
-      </div>
+      </div> */}
 
       <Card className="border border-gray-200 rounded-3xl shadow-sm">
         <CardContent className="p-6 text-[#5c7d73]">

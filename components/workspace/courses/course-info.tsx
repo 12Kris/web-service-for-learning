@@ -8,12 +8,21 @@ import { getCourseRating, getUserRating, hasUserRatedCourse, rateCourse } from "
 import { isCourseAddedToUser } from "@/lib/courses/actions";
 import { toast } from "sonner";
 
+const hexToRgba = (hex: string, alpha: number = 0.5): string => {
+  const cleanHex = hex.replace("#", "");
+  const r = parseInt(cleanHex.substring(0, 2), 16);
+  const g = parseInt(cleanHex.substring(2, 4), 16);
+  const b = parseInt(cleanHex.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 interface CourseInfoProps {
   course_details: CourseDetails[];
   what_you_learn: WhatWillLearn[];
   course_rating: number;
   reviews: number;
   courseId: number;
+  color?: string;
 }
 
 const CourseInfo: React.FC<CourseInfoProps> = ({
@@ -22,6 +31,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   course_rating: initialRating,
   reviews: initialReviews,
   courseId,
+  color,
 }) => {
   const [rating, setRating] = useState<number>(initialRating);
   const [reviews, setReviews] = useState<number>(initialReviews);
@@ -87,10 +97,12 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
     }
   };
 
+  const bgColor = color ? hexToRgba(color, 0.5) : "rgba(98, 255, 187, 0.5)";
+
   return (
     <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="h-full">
+        <Card className="h-full" style={{backgroundColor: bgColor}}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
           </CardHeader>
@@ -110,7 +122,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full">
+        <Card className="h-full" style={{backgroundColor: bgColor}}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">
               What you will learn
@@ -133,7 +145,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full">
+        <Card className="h-full" style={{backgroundColor: bgColor}}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
           </CardHeader>
