@@ -1072,3 +1072,40 @@ export async function isTestCompleted(testId: number): Promise<boolean> {
   }
   return data.length > 0;
 }
+
+export async function getTotalStudents(): Promise<number> {
+  const supabase = await createClient();
+  try {
+    const { error, count } = await supabase
+      .from("profiles")
+      .select("id", { count: "exact", head: true })
+
+    if (error) {
+      console.error("Error fetching total students:", error);
+      return 0;
+    }
+
+    return count || 0;
+  } catch (error) {
+    console.error("Error in getTotalStudents:", error);
+    return 0;
+  }
+}
+
+// export async function getTotalStudents(): Promise<number> {
+//   const supabase = await createClient();
+//   try {
+//     const { data, error } = await supabase.from("UserCourse").select("user_id");
+
+//     if (error) {
+//       console.error("Error fetching total students:", error);
+//       return 0;
+//     }
+
+//     const uniqueUserIds = new Set(data.map((item) => item.user_id));
+//     return uniqueUserIds.size;
+//   } catch (error) {
+//     console.error("Error in getTotalStudents:", error);
+//     return 0;
+//   }
+// }

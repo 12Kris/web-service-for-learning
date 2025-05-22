@@ -3,6 +3,7 @@ import { Jumbotron } from "@/components/landing/jumbotron";
 import { MetricsShowcase } from "@/components/landing/metrics-showcase";
 import ProblemsTable from "@/components/problems-table/page";
 import { StudyCarousel } from "@/components/study-carousel/study-carousel";
+import { getCourses, getTotalStudents } from "@/lib/courses/actions";
 
 const studyTopics = [
   {
@@ -73,18 +74,26 @@ const studyTopics = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const courses = await getCourses(0, 50000000);
+  const totalStudents = await getTotalStudents();
+
+  const totalCreatedCourses = courses.length;
+
+  const totalRatings = courses.reduce((sum, course) => sum + (course.rating || 0), 0);
+  const satisfactionRate = totalCreatedCourses > 0 ? (totalRatings / totalCreatedCourses).toFixed(1) : "0.0";
+
   const metrics = [
     {
-      value: "5k+",
+      value: totalStudents.toString(),
       label: "Students total",
     },
     {
-      value: "1.6k+",
+      value: totalCreatedCourses.toString(),
       label: "Created courses",
     },
     {
-      value: "9.3",
+      value: satisfactionRate,
       label: "Satisfaction rate",
       hasStar: true,
     },
