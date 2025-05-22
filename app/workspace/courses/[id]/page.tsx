@@ -74,6 +74,7 @@ export default function FlashcardPage({
         description={course?.description}
         type={course?.type}
         id={id}
+        color={course.color}
         onSubscriptionChange={handleSubscriptionChange}
       />
       {course?.isCourseCompleted && <CompletedInfo courseId={course.id} />}
@@ -85,9 +86,10 @@ export default function FlashcardPage({
         course_rating={courseRating}
         reviews={reviews}
         courseId={id}
+        color={course.color}
       />
 
-      <CourseCurriculum modules={modules} courseId={id} />
+      <CourseCurriculum modules={modules} courseId={id} color={course.color}/>
 
       <MeetTutor
         name={course?.creator?.full_name || undefined}

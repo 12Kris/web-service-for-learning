@@ -10,11 +10,9 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
 import type { Course } from "@/lib/types/course";
 
 interface FilterModalProps {
@@ -25,7 +23,6 @@ interface FilterModalProps {
 }
 
 export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalProps) {
-  const [searchText, setSearchText] = useState("");
   const [selectedTypes, setSelectedTypes] = useState<Record<string, boolean>>({});
 
   const uniqueTypes = useMemo(() => {
@@ -55,15 +52,6 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
   const applyFilters = () => {
     let filteredCourses = [...courses];
 
-    if (searchText.trim()) {
-      const searchLower = searchText.toLowerCase();
-      filteredCourses = filteredCourses.filter(
-        (course) =>
-          course.name.toLowerCase().includes(searchLower) ||
-          (course.type && course.type.toLowerCase().includes(searchLower)),
-      );
-    }
-
     const activeTypes = Object.entries(selectedTypes)
       .filter(([, isSelected]) => isSelected)
       .map(([type]) => type);
@@ -79,7 +67,6 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
   };
 
   const resetFilters = () => {
-    setSearchText("");
     const resetTypes: Record<string, boolean> = {};
     uniqueTypes.forEach((type) => {
       resetTypes[type.value] = false;
@@ -96,20 +83,6 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
         </AlertDialogHeader>
 
         <div className="space-y-6 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="search">Search</Label>
-            <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                id="search"
-                placeholder="Search by course name or type"
-                className="pl-8"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-              />
-            </div>
-          </div>
-
           <div className="space-y-2">
             <Label>Course Types</Label>
             <div className="max-h-[200px] overflow-y-auto space-y-2 border rounded-md p-3">

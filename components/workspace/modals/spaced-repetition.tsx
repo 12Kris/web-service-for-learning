@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "../../ui/button";
+// import { Button } from "../../ui/button";
 
 import {
   AlertDialog,
-  AlertDialogAction,
+  // AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   getSpacedRepetition,
-  updateSpacedRepetition,
+  // updateSpacedRepetition,
 } from "@/lib/courses/spaced-repetition-actions";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { SpacedRepetition } from "@/lib/types/learning";
@@ -49,55 +49,55 @@ export const SpacedRepetitionModal = ({
 
 
 
-  const handleSave = async () => {
-    if (!spacedRepetition) return;
+  // const handleSave = async () => {
+  //   if (!spacedRepetition) return;
 
-    try {
-      const updatedSpacedRepetition = {
-        start_date: spacedRepetition.start_date,
-        schedule: spacedRepetition.schedule,
-        next_review_dates: spacedRepetition.next_review_dates,
-      };
+  //   try {
+  //     const updatedSpacedRepetition = {
+  //       start_date: spacedRepetition.start_date,
+  //       schedule: spacedRepetition.schedule,
+  //       next_review_dates: spacedRepetition.next_review_dates,
+  //     };
 
-      await updateSpacedRepetition(courseId, updatedSpacedRepetition);
-      onClose();
-    } catch (error) {
-      console.error("Error saving spaced repetition:", error);
-    }
-  };
+  //     await updateSpacedRepetition(courseId, updatedSpacedRepetition);
+  //     onClose();
+  //   } catch (error) {
+  //     console.error("Error saving spaced repetition:", error);
+  //   }
+  // };
 
-  const handleDateChange = (index: number, newDate: string) => {
-    if (spacedRepetition && spacedRepetition.next_review_dates) {
-      const updatedDates = [...spacedRepetition.next_review_dates];
-      updatedDates[index] = newDate;
-      setSpacedRepetition({
-        ...spacedRepetition,
-        next_review_dates: updatedDates,
-      });
-    }
-  };
+  // const handleDateChange = (index: number, newDate: string) => {
+  //   if (spacedRepetition && spacedRepetition.next_review_dates) {
+  //     const updatedDates = [...spacedRepetition.next_review_dates];
+  //     updatedDates[index] = newDate;
+  //     setSpacedRepetition({
+  //       ...spacedRepetition,
+  //       next_review_dates: updatedDates,
+  //     });
+  //   }
+  // };
 
-  const handleAddDate = () => {
-    if (spacedRepetition && spacedRepetition.next_review_dates) {
-      const updatedDates = [...spacedRepetition.next_review_dates, ""];
-      setSpacedRepetition({
-        ...spacedRepetition,
-        next_review_dates: updatedDates,
-      });
-    }
-  };
+  // const handleAddDate = () => {
+  //   if (spacedRepetition && spacedRepetition.next_review_dates) {
+  //     const updatedDates = [...spacedRepetition.next_review_dates, ""];
+  //     setSpacedRepetition({
+  //       ...spacedRepetition,
+  //       next_review_dates: updatedDates,
+  //     });
+  //   }
+  // };
 
-  const handleRemoveDate = (index: number) => {
-    if (spacedRepetition && spacedRepetition.next_review_dates) {
-      const updatedDates = spacedRepetition.next_review_dates.filter(
-        (_, i) => i !== index
-      );
-      setSpacedRepetition({
-        ...spacedRepetition,
-        next_review_dates: updatedDates,
-      });
-    }
-  };
+  // const handleRemoveDate = (index: number) => {
+  //   if (spacedRepetition && spacedRepetition.next_review_dates) {
+  //     const updatedDates = spacedRepetition.next_review_dates.filter(
+  //       (_, i) => i !== index
+  //     );
+  //     setSpacedRepetition({
+  //       ...spacedRepetition,
+  //       next_review_dates: updatedDates,
+  //     });
+  //   }
+  // };
 
   if (isLoading) {
     return (
@@ -131,17 +131,18 @@ export const SpacedRepetitionModal = ({
                   <input
                     type="date"
                     value={date}
-                    onChange={(e) => handleDateChange(index, e.target.value)}
+                    // onChange={(e) => handleDateChange(index, e.target.value)}
+                    readOnly
                     className="p-2 border rounded-lg bg-[--card] flex-1"
                   />
-                  <Button
+                  {/* <Button
                     type="button"
                     variant="destructive"
                     onClick={() => handleRemoveDate(index)}
                     className="h-8 w-8 p-0 flex items-center justify-center"
                   >
                     -
-                  </Button>
+                  </Button> */}
                 </div>
               ))
             ) : (
@@ -150,11 +151,11 @@ export const SpacedRepetitionModal = ({
           </div>
         </div>
 
-        <div className="flex justify-end mt-2">
+        {/* <div className="flex justify-end mt-2">
           <Button variant="outline" onClick={handleAddDate} className="mr-2">
             Add Date
           </Button>
-        </div>
+        </div> */}
         <div className="flex flex-col mt-2 gap-2">
 
           {/* {updateError && <p className="text-red-500">{updateError}</p>} */}
@@ -162,7 +163,7 @@ export const SpacedRepetitionModal = ({
 
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onClose}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction>
+          {/* <AlertDialogAction onClick={handleSave}>Save</AlertDialogAction> */}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
