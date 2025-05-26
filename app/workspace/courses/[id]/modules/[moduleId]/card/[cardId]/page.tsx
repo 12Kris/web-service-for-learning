@@ -1,11 +1,13 @@
 "use client";
 
+import type React from "react";
+
 import { useEffect, useState } from "react";
 import Flashcard from "@/components/card/card";
 import { X, Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useParams } from "next/navigation";
 import { getCardsByLearningMaterial } from "@/lib/courses/actions";
-import { FlashCards } from "@/lib/types/card";
+import type { FlashCards } from "@/lib/types/card";
 import { saveCardResult } from "@/lib/results/actions";
 import { PageHeader } from "@/components/ui/page-header";
 import {
@@ -46,6 +48,15 @@ export default function CardPage() {
     Record<number, boolean | undefined>
   >({});
   const [isResultsUpdated, setIsResultsUpdated] = useState(false);
+
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const [isDragging, setIsDragging] = useState(false);
+  const [swipeOffset, setSwipeOffset] = useState(0);
 
   const allAnswered =
     flashcards.length > 0 &&
@@ -106,6 +117,7 @@ export default function CardPage() {
 
   const handleSelection = (flashcardId: number | undefined, value: boolean) => {
     handleSelectionChange(flashcardId, value);
+    handleNext();
   };
 
   const handleRatingChange = (value: number) => {
@@ -121,7 +133,54 @@ export default function CardPage() {
     await saveCardResult(cardId, startTime, endTime, selection, rating);
     await completeMaterial(cardId);
     setIsResultsUpdated(true);
-    // window.location.href = `/workspace/courses/${courseId}/modules/${moduleId}`;
+  };
+
+  const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    setTouchStart({ x: clientX, y: clientY });
+    setTouchEnd(null);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if (!touchStart || !isDragging) return;
+
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    setTouchEnd({ x: clientX, y: clientY });
+
+    const deltaX = clientX - touchStart.x;
+    const deltaY = Math.abs(clientY - touchStart.y);
+
+    if (deltaY < 50) {
+      setSwipeOffset(Math.max(-150, Math.min(150, deltaX)));
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd || !isDragging) {
+      setIsDragging(false);
+      setSwipeOffset(0);
+      return;
+    }
+
+    const deltaX = touchEnd.x - touchStart.x;
+    const deltaY = Math.abs(touchEnd.y - touchStart.y);
+    const minSwipeDistance = 100;
+
+    if (deltaY < 50 && Math.abs(deltaX) > minSwipeDistance) {
+      if (deltaX > 0) {
+        handleSelection(currentFlashcard?.id, true);
+      } else {
+        handleSelection(currentFlashcard?.id, false);
+      }
+    }
+
+    setIsDragging(false);
+    setSwipeOffset(0);
+    setTouchStart(null);
+    setTouchEnd(null);
   };
 
   if (flashcards.length === 0) {
@@ -135,51 +194,66 @@ export default function CardPage() {
   const currentFlashcard = flashcards[currentCard];
 
   return (
-    <div className="flex flex-col items-center justify-center md:p-8">
+    <div className="flex flex-col items-center justify-center md:p-8 select-none">
       <div className="w-full max-w-4xl rounded-3xl md:p-8">
         <div className="items-center gap-4">
           {!allAnswered && (
             <>
               <div className="flex-1">
                 <div className="w-full h-[425px] flex items-center gap-3">
-                  <button
-                    onClick={handlePrev}
-                    disabled={currentCard === 0}
-                    className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors 
-                  ${
-                    currentCard === 0
-                      ? "cursor-not-allowed opacity-50"
-                      : "hover:text-white hover:bg-[--neutral]"
-                  }`}
-                    aria-label="Previous card"
+                  <div
+                    className="relative flex-1 touch-none select-none"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    onMouseDown={handleTouchStart}
+                    onMouseMove={isDragging ? handleTouchMove : undefined}
+                    onMouseUp={handleTouchEnd}
+                    onMouseLeave={handleTouchEnd}
                   >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
+                    <div
+                      className="transition-transform duration-200 ease-out"
+                      style={{
+                        transform: `translateX(${swipeOffset}px)`,
+                        opacity: isDragging ? 0.8 : 1,
+                      }}
+                    >
+                      <Flashcard
+                        frontContent={currentFlashcard.front}
+                        backContent={currentFlashcard.back}
+                        isFlipped={isFlipped}
+                        onClick={handleFlip}
+                      />
+                    </div>
 
-                  <Flashcard
-                    frontContent={currentFlashcard.front}
-                    backContent={currentFlashcard.back}
-                    isFlipped={isFlipped}
-                    onClick={handleFlip}
-                  />
-
-                  <button
-                    onClick={handleNext}
-                    disabled={currentCard === flashcards.length - 1}
-                    className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors 
-                  ${
-                    currentCard === flashcards.length - 1
-                      ? "cursor-not-allowed opacity-50"
-                      : "hover:text-white hover:bg-[--neutral]"
-                  }`}
-                    aria-label="Next card"
-                  >
-                    <ChevronRight className="w-6 h-6" />
-                  </button>
+                    {/* Swipe indicators */}
+                    {isDragging && (
+                      <>
+                        <div
+                          className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 ${
+                            swipeOffset > 50 ? "opacity-100" : "opacity-30"
+                          }`}
+                        >
+                          <div className="bg-green-500 text-white p-3 rounded-full">
+                            <Check className="w-6 h-6" />
+                          </div>
+                        </div>
+                        <div
+                          className={`absolute right-4 top-1/2 transform -translate-y-1/2 transition-opacity duration-200 ${
+                            swipeOffset < -50 ? "opacity-100" : "opacity-30"
+                          }`}
+                        >
+                          <div className="bg-red-500 text-white p-3 rounded-full">
+                            <X className="w-6 h-6" />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              <div className="flex justify-center mt-5 space-x-5 items-center">
+              <div className="hidden md:flex justify-center mt-5 space-x-5 items-center">
                 <button
                   onClick={() => handleSelection(currentFlashcard?.id, false)}
                   className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
@@ -213,6 +287,16 @@ export default function CardPage() {
                 </button>
               </div>
 
+              <div className="md:hidden text-center mt-4 text-sm text-gray-600">
+                Swipe left for incorrect, swipe right for correct
+              </div>
+
+              <div className="flex justify-center mt-5 space-x-5 items-center md:hidden">
+                <div className="text-center text-lg font-medium text-gray-700">
+                  {currentCard + 1} / {flashcards.length}
+                </div>
+              </div>
+
               <div className="mt-6 flex justify-center">
                 <div className="flex gap-1">
                   {flashcards.map((_, index) => (
@@ -224,6 +308,36 @@ export default function CardPage() {
                     />
                   ))}
                 </div>
+              </div>
+
+              <div className="flex justify-center mt-5 space-x-5 items-center">
+                <button
+                  onClick={handlePrev}
+                  disabled={currentCard === 0}
+                  className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors 
+                  ${
+                    currentCard === 0
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:text-white hover:bg-[--neutral]"
+                  }`}
+                  aria-label="Previous card"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+
+                <button
+                  onClick={handleNext}
+                  disabled={currentCard === flashcards.length - 1}
+                  className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors 
+                  ${
+                    currentCard === flashcards.length - 1
+                      ? "cursor-not-allowed opacity-50"
+                      : "hover:text-white hover:bg-[--neutral]"
+                  }`}
+                  aria-label="Next card"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
               </div>
             </>
           )}
@@ -241,7 +355,6 @@ export default function CardPage() {
                 <div className="mt-4 flex gap-3 flex-col align-center justify-center items-center">
                   <input
                     type="number"
-                    // style={{ WeMozAppearance: "textfield" }}
                     min={0}
                     max={5}
                     value={rating || ""}
