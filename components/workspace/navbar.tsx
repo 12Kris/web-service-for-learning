@@ -44,7 +44,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
           <Sheet>
             <SheetTrigger asChild>
               {/* <Button size="icon" variant="ghost" className="lg:hidden"> */}
-              <div>
+              <div className="bg-white rounded-full p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-center">
                 {/* <Menu style={{ height: "25px", width: "25px" }} /> */}
                 <MenuIcon fontSize={"medium"} className="text-[--neutral]" />
                 <span className="sr-only">Toggle menu</span>

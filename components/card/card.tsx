@@ -79,9 +79,7 @@ export default function Flashcard({
         >
           <Card className="w-full h-full bg-gradient-to-br bg-white border border-blue-200 shadow-xl rounded-3xl overflow-hidden">
             <CardContent className="flex flex-col items-center justify-center h-full p-8 relative">
-              {/* Decorative elements */}
-              <div className="absolute top-4 right-4 w-3 h-3 bg-blue-300 rounded-full opacity-60" />
-              <div className="absolute bottom-4 left-4 w-2 h-2 bg-indigo-300 rounded-full opacity-40" />
+ 
 
               {/* Content */}
               <div className="text-center space-y-4">
@@ -111,9 +109,7 @@ export default function Flashcard({
         >
           <Card className="w-full h-full bg-gradient-to-br bg-white border border-emerald-200 shadow-xl rounded-3xl overflow-hidden">
             <CardContent className="flex flex-col items-center justify-center h-full p-8 relative">
-              {/* Decorative elements */}
-              <div className="absolute top-4 left-4 w-3 h-3 bg-emerald-300 rounded-full opacity-60" />
-              <div className="absolute bottom-4 right-4 w-2 h-2 bg-teal-300 rounded-full opacity-40" />
+
 
               {/* Content */}
               <div className="text-center space-y-4">
