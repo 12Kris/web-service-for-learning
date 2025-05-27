@@ -49,6 +49,8 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
+    // if(!validateForm(setError, formData)) return;
+
     startTransition(async () => {
       try {
         const formdata = new FormData();

@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
 import {signInWithProvider} from "@/lib/auth/oauth";
+import {validateForm} from "@/utils/login/validate";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
-
+    if(!validateForm(setError, formData)) return;
     try {
       const { data, reg_error } = await registerUser(
         name,
@@ -39,9 +40,8 @@ export default function RegisterPage() {
         password,
         confirmPassword
       );
-
       if (reg_error) {
-        setError(reg_error.message || "Registration failed");
+        setError(reg_error || "Registration failed");
         return;
       }
 
