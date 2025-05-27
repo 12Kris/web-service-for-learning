@@ -17,7 +17,7 @@ export const validateForm = (
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&#-_/|\\])[A-Za-z\d@$!%*?&#-_/|\\]{8,}$/;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&#\-_/\\])[A-Za-z\d@$!%*?&#\-_/\\]{8,}$/;
 
     if (!emailRegex.test(email)) {
         const error = "Please enter a valid email address (must include '@').";
@@ -43,6 +43,6 @@ export const validateForm = (
         setError?.(error);
         return error;
     }
-
+ 
     return true;
 };
