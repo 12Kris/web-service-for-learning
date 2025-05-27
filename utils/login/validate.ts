@@ -17,7 +17,7 @@ export const validateForm = (
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z@$!%*?&]{8,}$/;
 
     if (!emailRegex.test(email)) {
         const error = "Please enter a valid email address (must include '@').";
@@ -27,7 +27,7 @@ export const validateForm = (
 
     if (!passwordRegex.test(password)) {
         const error =
-            "Password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.";
+            "Password must be at least 8 characters long and include 1 uppercase letter, 1 lowercase letter, and 1 special character.";
         setError?.(error);
         return error;
     }
