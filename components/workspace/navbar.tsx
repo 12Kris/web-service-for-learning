@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import { useEffect } from "react";
 
@@ -23,8 +22,6 @@ interface NavbarProps {
 }
 
 export function Navbar({ menuItems, data }: NavbarProps) {
-  const pathname = usePathname();
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -41,17 +38,19 @@ export function Navbar({ menuItems, data }: NavbarProps) {
   }, []);
 
   return (
-    <nav className="sticky bg-[--background] top-0 px-4 z-50 w-full border-b  lg:hidden">
+    <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b  lg:hidden">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between">
           <Sheet>
             <SheetTrigger asChild>
-              <Button size="icon" variant="ghost" className="lg:hidden">
-
-                <Menu style={{ height: "25px", width: "25px" }} />
-
+              {/* <Button size="icon" variant="ghost" className="lg:hidden"> */}
+              <div className="bg-white rounded-full p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-center">
+                {/* <Menu style={{ height: "25px", width: "25px" }} /> */}
+                <MenuIcon fontSize={"medium"} className="text-[--neutral]" />
                 <span className="sr-only">Toggle menu</span>
-              </Button>
+              </div>
+
+              {/* </Button> */}
             </SheetTrigger>
             <SheetContent
               side="left"
@@ -62,23 +61,22 @@ export function Navbar({ menuItems, data }: NavbarProps) {
               </VisuallyHidden>
               <nav className="flex flex-col gap-4 mt-4">
                 {menuItems.map((item) => {
-                  const isActive = pathname === item.href;
                   return (
                     <Link
                       href={item.href}
                       key={item.name}
                       className={cn(
-                        "w-full font-semibold text-lg justify-start",
-                        isActive &&
-                          "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-2xl"
+                        "w-full font-semibold text-lg justify-start"
+                        // isActive &&
+                        //   "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-2xl"
                       )}
                     >
                       <Button
-                        variant="ghost"
+                        variant="link"
                         className={cn(
-                          "w-full font-semibold text-lg justify-start ",
-                          isActive &&
-                            "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-md"
+                          "w-full font-bold text-lg justify-start "
+                          // isActive &&
+                          //   "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-md"
                         )}
                       >
                         {item.name}
