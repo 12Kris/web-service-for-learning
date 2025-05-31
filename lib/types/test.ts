@@ -5,8 +5,7 @@ export interface Test {
   answer?: { question_id: number; answer: string } | string;
   TestQuestions?: { id: number; question: string }[];
   correct: boolean;
-    is_completed?: boolean;
-
+  is_completed?: boolean;
 }
 
 export interface TestData {
@@ -29,7 +28,6 @@ export interface TestWithQuestions {
   question: string;
   questions: TestQuestion[];
   is_completed: boolean;
-
 }
 
 export interface TestQuestion {

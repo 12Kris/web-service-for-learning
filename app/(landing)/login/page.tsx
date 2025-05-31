@@ -96,6 +96,7 @@ export default function LoginPage() {
                 required
                 style={{ fontSize: "16px" }}
                 className="pl-10 border-[#517970] focus-visible:ring-[#517970]"
+                icon={<Mail className="h-5 w-5 text-[#517970]" />}
               />
             </div>
 
@@ -111,11 +112,12 @@ export default function LoginPage() {
                 required
                 style={{ fontSize: "16px" }}
                 className="pl-10 pr-10 border-[#517970] focus-visible:ring-[#517970]"
+                icon={<Lock className="h-5 w-5 text-[#517970]" />}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#517970]"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#517970] z-10"
               >
                 {showPassword ? (
                   <Eye className="h-5 w-5" />
@@ -139,7 +141,7 @@ export default function LoginPage() {
 
             {error && <p className="text-sm text-red-500">{error}</p>}
 
-            <div className="pt-4 flex justify-center items-center">
+            <div className="flex justify-center items-center">
               <Button
                 type="submit"
                 disabled={isPending}

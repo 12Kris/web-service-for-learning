@@ -161,7 +161,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
           </Button>
           {isCourseAdded && (
             <Button variant="outline" onClick={() => setIsModalOpen(true)}>
-              Edit Spaced Repetition
+              View Spaced Repetition plan
             </Button>
           )}
         </div>

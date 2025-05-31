@@ -100,14 +100,15 @@ export function Navbar() {
           ) : (
             <>
               <Button
-                className=""
+                className="rounded-3xl"
                 variant={"destructive"}
                 asChild
                 size={"wide"}
               >
                 <Link href="/login">Log In</Link>
               </Button>
-              <Button className="" size={"wide"} variant={"secondary"} asChild>
+              <Button className="rounded-3xl" size={"wide"} variant={"secondary"} asChild>
+              {/* <Button className="rounded-3xl text-[#517971] bg-[#ACEAC7]" size={"wide"} variant={"secondary"} asChild> */}
                 <Link href="/signup">Sign Up</Link>
               </Button>
             </>
