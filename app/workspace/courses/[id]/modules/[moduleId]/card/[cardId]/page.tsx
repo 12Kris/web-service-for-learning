@@ -226,6 +226,10 @@ export default function CardPage() {
                       />
                     </div>
 
+                    <div className="text-center mt-4 text-sm text-gray-600">
+                      {/* Swipe left for incorrect, swipe right for correct */}
+                      Swipe left to mark as unclear, swipe right to mark as clear
+                    </div>
                     {/* Swipe indicators */}
                     {isDragging && (
                       <>
@@ -253,7 +257,7 @@ export default function CardPage() {
                 </div>
               </div>
 
-              <div className="hidden md:flex justify-center mt-5 space-x-5 items-center">
+              {/* <div className="hidden md:flex justify-center mt-5 space-x-5 items-center">
                 <button
                   onClick={() => handleSelection(currentFlashcard?.id, false)}
                   className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
@@ -285,11 +289,7 @@ export default function CardPage() {
                 >
                   <Check className="w-6 h-6" />
                 </button>
-              </div>
-
-              <div className="md:hidden text-center mt-4 text-sm text-gray-600">
-                Swipe left for incorrect, swipe right for correct
-              </div>
+              </div> */}
 
               <div className="flex justify-center mt-5 space-x-5 items-center md:hidden">
                 <div className="text-center text-lg font-medium text-gray-700">

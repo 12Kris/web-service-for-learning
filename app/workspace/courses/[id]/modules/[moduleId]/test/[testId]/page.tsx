@@ -138,11 +138,11 @@ export default function TestPage() {
                                 <Button
                                     key={answer.id}
                                     onClick={() => setSelectedAnswer(answer.id)}
-                                    className={`flex items-center justify-center rounded-lg border p-4 cursor-pointer ${
+                                    className={`flex items-center justify-center rounded-lg border p-4 cursor-pointer h-full ${
                                         selectedAnswer === answer.id ? 'bg-[--neutral] text-white' : ''
                                     }`}
                                 >
-                                    <Label className="cursor-pointer">
+                                    <Label className="cursor-pointer w-full whitespace-normal break-words">
                                         {answer.answer}
                                     </Label>
                                 </Button>
