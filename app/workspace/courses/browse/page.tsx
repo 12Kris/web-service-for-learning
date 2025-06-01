@@ -28,7 +28,7 @@ function groupCoursesByType(coursesToGroup: Course[]) {
 }
 
 export default async function Page() {
-  const fetchedCourses = await getCourses();
+  const fetchedCourses = await getCourses(0, 1000000);
 
   const latestCourses = [...fetchedCourses].sort(
     (a, b) =>

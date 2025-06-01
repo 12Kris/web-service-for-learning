@@ -23,6 +23,8 @@ interface CourseInfoProps {
   reviews: number;
   courseId: number;
   color?: string;
+  creatorId?: string;
+  userId?: string;
 }
 
 const CourseInfo: React.FC<CourseInfoProps> = ({
@@ -32,6 +34,8 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   reviews: initialReviews,
   courseId,
   color,
+  creatorId,
+  userId,
 }) => {
   const [rating, setRating] = useState<number>(initialRating);
   const [reviews, setReviews] = useState<number>(initialReviews);
@@ -66,13 +70,6 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   }, [courseId]);
 
   const handleRatingClick = async (selectedRating: number) => {
-    if (!isSubscribed) {
-      toast.error("Subscription Required", {
-        description: "You must be subscribed to this course to rate it.",
-      });
-      return;
-    }
-
     try {
       const result = await rateCourse(courseId, selectedRating);
       if (result.success) {
@@ -102,7 +99,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   return (
     <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="h-full" style={{backgroundColor: bgColor}}>
+        <Card className="h-full" style={{ backgroundColor: bgColor }}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
           </CardHeader>
@@ -122,11 +119,9 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full" style={{backgroundColor: bgColor}}>
+        <Card className="h-full" style={{ backgroundColor: bgColor }}>
           <CardHeader>
-            <CardTitle className="text-xl font-bold">
-              What you will learn
-            </CardTitle>
+            <CardTitle className="text-xl font-bold">What you will learn</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside space-y-3">
@@ -145,7 +140,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full" style={{backgroundColor: bgColor}}>
+        <Card className="h-full" style={{ backgroundColor: bgColor }}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
           </CardHeader>
@@ -155,15 +150,42 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className={`h-6 w-6 ${isSubscribed ? "cursor-pointer" : "cursor-not-allowed"} ${
+                    className={`h-6 w-6 ${
+                      (isSubscribed && !(userId && creatorId && userId === creatorId))
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed"
+                    } ${
                       star <= (hoverRating || userRating || rating)
                         ? "fill-current text-primary"
                         : "text-muted"
                     }`}
-                    onClick={() => handleRatingClick(star)}
-                    onMouseEnter={() => isSubscribed && setHoverRating(star)}
-                    onMouseLeave={() => isSubscribed && setHoverRating(0)}
+                    onClick={
+                      isSubscribed && !(userId && creatorId && userId === creatorId)
+                        ? () => handleRatingClick(star)
+                        : undefined
+                    }
+                    onMouseEnter={
+                      isSubscribed && !(userId && creatorId && userId === creatorId)
+                        ? () => setHoverRating(star)
+                        : undefined
+                    }
+                    onMouseLeave={
+                      isSubscribed && !(userId && creatorId && userId === creatorId)
+                        ? () => setHoverRating(0)
+                        : undefined
+                    }
                   />
+                  // <Star
+                  //   key={star}
+                  //   className={`h-6 w-6 ${isSubscribed ? "cursor-pointer" : "cursor-not-allowed"} ${
+                  //     star <= (hoverRating || userRating || rating)
+                  //       ? "fill-current text-primary"
+                  //       : "text-muted"
+                  //   }`}
+                  //   onClick={() => handleRatingClick(star)}
+                  //   onMouseEnter={() => isSubscribed && setHoverRating(star)}
+                  //   onMouseLeave={() => isSubscribed && setHoverRating(0)}
+                  // />
                 ))}
               </div>
               <span className="text-2xl font-bold">{rating.toFixed(1)}</span>
@@ -174,6 +196,10 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
             {hasRated ? (
               <p className="text-sm text-muted-foreground">
                 Your rating: {userRating}
+              </p>
+            ) : userId && creatorId && userId === creatorId ? (
+              <p className="text-sm text-muted-foreground text-red-700">
+                You cannot rate your own course.
               </p>
             ) : isSubscribed ? (
               <p className="text-sm text-muted-foreground">

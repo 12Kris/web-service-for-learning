@@ -13,6 +13,7 @@ import CourseInfo from "@/components/workspace/courses/course-info";
 import CourseCurriculum from "@/components/workspace/courses/course-curriculum";
 import MeetTutor from "@/components/workspace/courses/meet-tutor";
 import CompletedInfo from "@/components/workspace/courses/completed-info";
+import { getUser } from "@/utils/supabase/server";
 
 export default function FlashcardPage({
   params,
@@ -24,9 +25,15 @@ export default function FlashcardPage({
   const [courseRating, setCourseRating] = useState<number>(0);
   const [reviews, setReviews] = useState<number>(0);
   const [id, setId] = useState<number | null>(null);
+  const [userId, setUserId] = useState<string | undefined>();
 
   const fetchData = async (courseId: number) => {
     try {
+      const user = await getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+
       const modulesData = await getModulesByCourseId(courseId);
       setModules(modulesData);
 
@@ -87,6 +94,8 @@ export default function FlashcardPage({
         reviews={reviews}
         courseId={id}
         color={course.color}
+        creatorId={course?.creator?.id}
+        userId={userId}
       />
 
       <CourseCurriculum modules={modules} courseId={id} color={course.color}/>

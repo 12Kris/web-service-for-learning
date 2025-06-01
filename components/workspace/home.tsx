@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { useMemo, useState, useEffect } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, Flame, Plus, Sparkles } from "lucide-react";
 import type { Course } from "@/lib/types/course";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface HomePageProps {
   weeklyStreak: {
@@ -20,6 +20,7 @@ interface HomePageProps {
   coursesInProgress: Course[] | null;
   upcomingEvents: Course[];
   leaderboard: { rank: number; initials: string; name: string; totalPoints?: number; color: string }[];
+  completedCoursesCount: number;
 }
 
 export default function HomePage({
@@ -28,6 +29,7 @@ export default function HomePage({
   coursesInProgress,
   upcomingEvents,
   leaderboard,
+  completedCoursesCount,
 }: HomePageProps) {
   const [containerHeight, setContainerHeight] = useState("61vh");
 
@@ -36,64 +38,50 @@ export default function HomePage({
     setContainerHeight(`${initialHeight}px`);
   }, []);
 
-  const stats = useMemo(
-    () => [
-      { title: "Courses Completed", value: "02", color: "border-blue-200" },
-      {
-        title: "Courses in progress",
-        value: coursesInProgress ? String(coursesInProgress.length) : "0",
-        color: "border-green-200",
-      },
-      {
-        title: "Courses created",
-        value: createdCourses ? String(createdCourses.length) : "0",
-        color: "border-purple-200",
-      },
-    ],
-    [createdCourses, coursesInProgress]
-  );
+  const stats = [
+    { 
+      title: "Courses Completed",
+      value: String(completedCoursesCount),
+      color: "border-blue-200",
+    },
+    {
+      title: "Courses in progress",
+      value: coursesInProgress ? String(coursesInProgress.length) : "0",
+      color: "border-green-200",
+    },
+    {
+      title: "Courses created",
+      value: createdCourses ? String(createdCourses.length) : "0",
+      color: "border-purple-200",
+    },
+  ];
 
   return (
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
         <PageHeader className="mt-0 mb-3 md:mb-0" title="Home" />
         <div className="grid grid-cols-3 md:gap-0 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:items-center sm:space-x-4 sm:mt-0">
-            <Link href="/workspace/courses/create" className="col-span-1">
-              <Button
-                variant="default"
-                className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
-              >
-                <Plus strokeWidth={3} className="h-4 w-4" />
-                <span className="hidden sm:inline">Create Course</span>
-              </Button>
-            </Link>
-
-            <Link href="/workspace/courses/create-ai" className="col-span-1">
-              <Button
-                variant="outline"
-                className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
-              >
-                <Sparkles strokeWidth={3} className="h-4 w-4" />
-                <span className="hidden sm:inline">AI Generate</span>
-              </Button>
-            </Link>
-          </div>
-        </div>
-        {/* <div className="flex items-center gap-2">
           <Link href="/workspace/courses/create" className="col-span-1">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Create New
+            <Button
+              variant="default"
+              className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
+            >
+              <Plus strokeWidth={3} className="h-4 w-4" />
+              <span className="hidden sm:inline">Create Course</span>
             </Button>
           </Link>
-          <Link href="/workspace/bookmarks" className="col-span-1">
-            <Button variant="outline">
-              <Clock className="mr-2 h-4 w-4" />
-              Activity
+
+          <Link href="/workspace/courses/create-ai" className="col-span-1">
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto sm:size-wide flex items-center justify-center"
+            >
+              <Sparkles strokeWidth={3} className="h-4 w-4" />
+              <span className="hidden sm:inline">AI Generate</span>
             </Button>
           </Link>
         </div>
-      </div> */}
+      </div>
 
       <Card className="border border-gray-200 rounded-3xl shadow-sm">
         <CardContent className="p-6 text-[#5c7d73]">
@@ -121,69 +109,81 @@ export default function HomePage({
 
               <div className="hidden md:block w-px h-12 bg-gray-200 mx-2"></div>
 
-              <div className="flex flex-col gap-1">
+              <div className="flex gap-4">
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-xs">
-                    {weeklyStreak.courseMinutes.completed}/
-                    {weeklyStreak.courseMinutes.total} course min
-                  </span>
-                  <div className="relative w-16 h-16">
-                    <svg className="w-16 h-16 transform -rotate-90">
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="28"
-                        stroke="#f0f0f0"
-                        strokeWidth="6"
-                        fill="transparent"
-                      />
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="28"
-                        stroke="#ff9b87"
-                        strokeWidth="6"
-                        strokeDasharray={`${
-                          (weeklyStreak.courseMinutes.completed /
-                            weeklyStreak.courseMinutes.total) *
-                          175.9
-                        } 175.9`}
-                        strokeLinecap="round"
-                        fill="transparent"
-                      />
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="22"
-                        stroke="#e6ede6"
-                        strokeWidth="6"
-                        fill="transparent"
-                      />
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="22"
-                        stroke="#b0c5b0"
-                        strokeWidth="6"
-                        strokeDasharray={`${
-                          (weeklyStreak.cardsStudied.completed /
-                            weeklyStreak.cardsStudied.total) *
-                          138.2
-                        } 138.2`}
-                        strokeLinecap="round"
-                        fill="transparent"
-                      />
-                    </svg>
+                  <div className="items-center flex">
+                    <div className="items-center align-center">
+                      <div className="items-center mb-1">
+                        <span className="text-xs border-b-2 py-1">
+                          Minimal study plan
+                        </span>
+                      </div>
+                      <div className="items-center">
+                        <span className="text-xs">
+                          {weeklyStreak.courseMinutes.completed} / 30 course minutes
+                        </span>
+                      </div>
+                      <div className="items-center">
+                        <span className="text-xs">
+                          {weeklyStreak.cardsStudied.completed} / 5 cards studied
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+                  <div>
+                    <div className="relative w-16 h-16 flex m-auto">
+                      <svg className="w-16 h-16 transform -rotate-90 m-auto">
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          stroke="#f0f0f0"
+                          strokeWidth="6"
+                          fill="transparent"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="28"
+                          stroke="#ff9b87"
+                          strokeWidth="6"
+                          strokeDasharray={`${
+                            (weeklyStreak.courseMinutes.completed /
+                              30) *
+                            175.9
+                          } 175.9`}
+                          strokeLinecap="round"
+                          fill="transparent"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="22"
+                          stroke="#e6ede6"
+                          strokeWidth="6"
+                          fill="transparent"
+                        />
+                        <circle
+                          cx="32"
+                          cy="32"
+                          r="22"
+                          stroke="#b0c5b0"
+                          strokeWidth="6"
+                          strokeDasharray={`${
+                            (weeklyStreak.cardsStudied.completed /
+                              5) *
+                            138.2
+                          } 138.2`}
+                          strokeLinecap="round"
+                          fill="transparent"
+                        />
+                      </svg>
+                    </div>                  
+                    <span className="text-xs">{weeklyStreak.dateRange}</span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-xs">
-                    {weeklyStreak.cardsStudied.completed}/
-                    {weeklyStreak.cardsStudied.total} cards studied
-                  </span>
-                  <span className="text-xs">{weeklyStreak.dateRange}</span>
-                </div>
-              </div>
             </div>
           </div>
         </CardContent>
@@ -222,9 +222,8 @@ export default function HomePage({
                     className="flex items-center gap-4"
                   >
                     <div
-                      // style={course.color ? ({ backgroundColor: course.color }) : ({ backgroundColor: course.color })}
                       style={{ backgroundColor: course.color || "#dbeafe" }}
-                      className={`w-10 h-10 rounded-lg flex-shrink-0`}
+                      className="w-10 h-10 rounded-lg flex-shrink-0"
                     ></div>
                     <div className="flex-grow">
                       <div className="flex justify-between">
@@ -303,8 +302,7 @@ export default function HomePage({
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className={`w-10 h-10 rounded-lg flex-shrink-0`}
-                      // style={course.color ? ({ backgroundColor: course.color }) : ({ backgroundColor: course.color })}
+                      className="w-10 h-10 rounded-lg flex-shrink-0"
                       style={{ backgroundColor: course.color || "#dbeafe" }}
                     ></div>
                     <div>
