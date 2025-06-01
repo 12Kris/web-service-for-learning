@@ -175,17 +175,6 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
                         : undefined
                     }
                   />
-                  // <Star
-                  //   key={star}
-                  //   className={`h-6 w-6 ${isSubscribed ? "cursor-pointer" : "cursor-not-allowed"} ${
-                  //     star <= (hoverRating || userRating || rating)
-                  //       ? "fill-current text-primary"
-                  //       : "text-muted"
-                  //   }`}
-                  //   onClick={() => handleRatingClick(star)}
-                  //   onMouseEnter={() => isSubscribed && setHoverRating(star)}
-                  //   onMouseLeave={() => isSubscribed && setHoverRating(0)}
-                  // />
                 ))}
               </div>
               <span className="text-2xl font-bold">{rating.toFixed(1)}</span>

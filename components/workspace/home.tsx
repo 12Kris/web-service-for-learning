@@ -90,7 +90,7 @@ export default function HomePage({
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-medium">Weekly streak</h2>
                 <span className="text-[#ff9b87] font-medium">
-                  +{weeklyStreak.points} points
+                  +{weeklyStreak.weeks > 0 ? 20 : 0} points
                 </span>
               </div>
               <p className="text-sm">{`You've made productivity experts proud!`}</p>
@@ -115,7 +115,7 @@ export default function HomePage({
                     <div className="items-center align-center">
                       <div className="items-center mb-1">
                         <span className="text-xs border-b-2 py-1">
-                          Minimal study plan
+                          Daily study plan
                         </span>
                       </div>
                       <div className="items-center">
@@ -125,7 +125,7 @@ export default function HomePage({
                       </div>
                       <div className="items-center">
                         <span className="text-xs">
-                          {weeklyStreak.cardsStudied.completed} / 5 cards studied
+                          {weeklyStreak.cardsStudied.completed} / 5 card sets studied
                         </span>
                       </div>
                     </div>
