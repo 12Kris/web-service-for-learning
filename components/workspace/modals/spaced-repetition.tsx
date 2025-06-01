@@ -104,7 +104,7 @@ export const SpacedRepetitionModal = ({
       <AlertDialog open={true}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Edit Spaced Repetition</AlertDialogTitle>
+            <AlertDialogTitle>Loading Spaced Repetition plan</AlertDialogTitle>
           </AlertDialogHeader>
           <LoadingSpinner />
         </AlertDialogContent>
@@ -116,9 +116,9 @@ export const SpacedRepetitionModal = ({
     <AlertDialog open={true} onOpenChange={(open) => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Edit Spaced Repetition</AlertDialogTitle>
+          <AlertDialogTitle>Your Spaced Repetition plan</AlertDialogTitle>
           <AlertDialogDescription>
-            Edit the next review dates for spaced repetition.
+            Review dates for Spaced Repetition.
           </AlertDialogDescription>
         </AlertDialogHeader>
 

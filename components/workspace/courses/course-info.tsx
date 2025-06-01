@@ -7,6 +7,7 @@ import { CourseDetails, WhatWillLearn } from "@/lib/types/course";
 import { getCourseRating, getUserRating, hasUserRatedCourse, rateCourse } from "@/lib/courses/rating-actions";
 import { isCourseAddedToUser } from "@/lib/courses/actions";
 import { toast } from "sonner";
+import { getUser } from "@/utils/supabase/server";
 
 const hexToRgba = (hex: string, alpha: number = 0.5): string => {
   const cleanHex = hex.replace("#", "");
@@ -23,6 +24,8 @@ interface CourseInfoProps {
   reviews: number;
   courseId: number;
   color?: string;
+  creatorId?: string;
+  userId?: string;
 }
 
 const CourseInfo: React.FC<CourseInfoProps> = ({
@@ -32,6 +35,8 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   reviews: initialReviews,
   courseId,
   color,
+  creatorId,
+  userId,
 }) => {
   const [rating, setRating] = useState<number>(initialRating);
   const [reviews, setReviews] = useState<number>(initialReviews);
@@ -155,15 +160,36 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
-                    className={`h-6 w-6 ${isSubscribed ? "cursor-pointer" : "cursor-not-allowed"} ${
+                    className={`h-6 w-6 ${
+                      (isSubscribed && !(userId && creatorId && userId === creatorId.toString()))
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed"
+                    } ${
                       star <= (hoverRating || userRating || rating)
                         ? "fill-current text-primary"
                         : "text-muted"
                     }`}
                     onClick={() => handleRatingClick(star)}
-                    onMouseEnter={() => isSubscribed && setHoverRating(star)}
-                    onMouseLeave={() => isSubscribed && setHoverRating(0)}
+                    onMouseEnter={() =>
+                      (isSubscribed && !(userId && creatorId && userId === creatorId.toString())) &&
+                      setHoverRating(star)
+                    }
+                    onMouseLeave={() =>
+                      (isSubscribed && !(userId && creatorId && userId === creatorId.toString())) &&
+                      setHoverRating(0)
+                    }
                   />
+                  // <Star
+                  //   key={star}
+                  //   className={`h-6 w-6 ${isSubscribed ? "cursor-pointer" : "cursor-not-allowed"} ${
+                  //     star <= (hoverRating || userRating || rating)
+                  //       ? "fill-current text-primary"
+                  //       : "text-muted"
+                  //   }`}
+                  //   onClick={() => handleRatingClick(star)}
+                  //   onMouseEnter={() => isSubscribed && setHoverRating(star)}
+                  //   onMouseLeave={() => isSubscribed && setHoverRating(0)}
+                  // />
                 ))}
               </div>
               <span className="text-2xl font-bold">{rating.toFixed(1)}</span>
@@ -174,6 +200,10 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
             {hasRated ? (
               <p className="text-sm text-muted-foreground">
                 Your rating: {userRating}
+              </p>
+            ) : userId && creatorId && userId === creatorId.toString() ? (
+              <p className="text-sm text-muted-foreground">
+                You cannot rate your own course.
               </p>
             ) : isSubscribed ? (
               <p className="text-sm text-muted-foreground">
