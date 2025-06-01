@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader } from "@/components/ui/card";
 import Skeleton from "react-loading-skeleton";
 import { Module } from "@/lib/types/modules";
 import Link from "next/link";
+import { isCourseAddedToUser } from "@/lib/courses/actions";
 
 const hexToRgba = (hex: string, alpha: number = 0.5): string => {
   const cleanHex = hex.replace("#", "");
@@ -25,8 +26,28 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
   courseId,
   color,
 }) => {
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchRatingData = async () => {
+      try {
+        const subscribed = await isCourseAddedToUser(courseId ? courseId : 0);
+        setIsSubscribed(subscribed);
+      } catch (error) {
+        console.error("Error fetching rating data:", error);
+      }
+    };
+
+    fetchRatingData();
+  }, [courseId]);
 
   const bgColor = color ? hexToRgba(color, 0.5) : "rgba(98, 255, 187, 0.5)";
+
+  const handleModuleClick = (moduleId: number) => {
+    if (isSubscribed && onModuleClick) {
+      onModuleClick(moduleId);
+    }
+  };
 
   return (
     <div className="container mx-auto py-6">
@@ -44,26 +65,38 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
             </Card>
           ))
         ) : modules.length > 0 ? (
-            modules.map((module) => (
-                <Card
-                    key={module.id}
-                    className="transition-colors hover:bg-gray-50 cursor-pointer"
-                    onClick={() => onModuleClick?.(module.id)}
-                    style={{backgroundColor: bgColor}}
-                >
-                    <CardHeader>
-                        <Link href={`${courseId}/modules/${module.id}`}>
-                            <div className="space-y-1">
-                                <h2 className="text-xl font-semibold">{module.title}</h2>
-                                <p className="text-sm text-muted-foreground">
-                                    {module.description ?? "No description available."}
-                                </p>
-                            </div>
-                        </Link>
-
-                    </CardHeader>
-                </Card>
-            ))
+          modules.map((module) => (
+            <Card
+              key={module.id}
+              className="transition-colors hover:bg-gray-50"
+              style={{ backgroundColor: bgColor }}
+            >
+              <CardHeader
+                className={
+                  isSubscribed ? "cursor-pointer" : "cursor-not-allowed"
+                }
+                onClick={() => isSubscribed && handleModuleClick(module.id)}
+              >
+                {isSubscribed ? (
+                  <Link href={`${courseId}/modules/${module.id}`}>
+                    <div className="space-y-1">
+                      <h2 className="text-xl font-semibold">{module.title}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {module.description ?? "No description available."}
+                      </p>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-semibold">{module.title}</h2>
+                    <p className="text-sm text-muted-foreground">
+                      {module.description ?? "No description available."}
+                    </p>
+                  </div>
+                )}
+              </CardHeader>
+            </Card>
+          ))
         ) : (
           <div className="col-span-2 text-center text-gray-500">
             No modules available.
@@ -75,4 +108,3 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
 };
 
 export default CourseCurriculum;
-

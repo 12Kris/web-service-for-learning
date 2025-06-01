@@ -7,7 +7,6 @@ import { CourseDetails, WhatWillLearn } from "@/lib/types/course";
 import { getCourseRating, getUserRating, hasUserRatedCourse, rateCourse } from "@/lib/courses/rating-actions";
 import { isCourseAddedToUser } from "@/lib/courses/actions";
 import { toast } from "sonner";
-import { getUser } from "@/utils/supabase/server";
 
 const hexToRgba = (hex: string, alpha: number = 0.5): string => {
   const cleanHex = hex.replace("#", "");
@@ -71,13 +70,6 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   }, [courseId]);
 
   const handleRatingClick = async (selectedRating: number) => {
-    if (!isSubscribed) {
-      toast.error("Subscription Required", {
-        description: "You must be subscribed to this course to rate it.",
-      });
-      return;
-    }
-
     try {
       const result = await rateCourse(courseId, selectedRating);
       if (result.success) {
@@ -107,7 +99,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   return (
     <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="h-full" style={{backgroundColor: bgColor}}>
+        <Card className="h-full" style={{ backgroundColor: bgColor }}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
           </CardHeader>
@@ -127,11 +119,9 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full" style={{backgroundColor: bgColor}}>
+        <Card className="h-full" style={{ backgroundColor: bgColor }}>
           <CardHeader>
-            <CardTitle className="text-xl font-bold">
-              What you will learn
-            </CardTitle>
+            <CardTitle className="text-xl font-bold">What you will learn</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside space-y-3">
@@ -150,7 +140,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full" style={{backgroundColor: bgColor}}>
+        <Card className="h-full" style={{ backgroundColor: bgColor }}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
           </CardHeader>
@@ -161,7 +151,7 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
                   <Star
                     key={star}
                     className={`h-6 w-6 ${
-                      (isSubscribed && !(userId && creatorId && userId === creatorId.toString()))
+                      (isSubscribed && !(userId && creatorId && userId === creatorId))
                         ? "cursor-pointer"
                         : "cursor-not-allowed"
                     } ${
@@ -169,14 +159,20 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
                         ? "fill-current text-primary"
                         : "text-muted"
                     }`}
-                    onClick={() => handleRatingClick(star)}
-                    onMouseEnter={() =>
-                      (isSubscribed && !(userId && creatorId && userId === creatorId.toString())) &&
-                      setHoverRating(star)
+                    onClick={
+                      isSubscribed && !(userId && creatorId && userId === creatorId)
+                        ? () => handleRatingClick(star)
+                        : undefined
                     }
-                    onMouseLeave={() =>
-                      (isSubscribed && !(userId && creatorId && userId === creatorId.toString())) &&
-                      setHoverRating(0)
+                    onMouseEnter={
+                      isSubscribed && !(userId && creatorId && userId === creatorId)
+                        ? () => setHoverRating(star)
+                        : undefined
+                    }
+                    onMouseLeave={
+                      isSubscribed && !(userId && creatorId && userId === creatorId)
+                        ? () => setHoverRating(0)
+                        : undefined
                     }
                   />
                   // <Star
@@ -201,8 +197,8 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
               <p className="text-sm text-muted-foreground">
                 Your rating: {userRating}
               </p>
-            ) : userId && creatorId && userId === creatorId.toString() ? (
-              <p className="text-sm text-muted-foreground">
+            ) : userId && creatorId && userId === creatorId ? (
+              <p className="text-sm text-muted-foreground text-red-700">
                 You cannot rate your own course.
               </p>
             ) : isSubscribed ? (
