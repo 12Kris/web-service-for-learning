@@ -14,6 +14,8 @@ import { signOut } from "@/utils/supabase/actions"
 import type { Profile } from "@/lib/types/user"
 import type { Course } from "@/lib/types/course"
 import ProfileEdit from "@/app/workspace/profile/edit/page"
+import Certificates from "./certificates"
+import Settings from "./settings"
 
 export default function UserProfile({
   user,
@@ -174,9 +176,23 @@ export default function UserProfile({
             </ScrollArea>
           )}
 
+          {activeMenuItem === "certificates" && (
+            <ScrollArea className="h-[60vh]">
+              <Certificates />
+            </ScrollArea>
+          )}
+
+          {activeMenuItem === "settings" && (
+            <ScrollArea className="h-[60vh] p-6">
+              <Settings />
+            </ScrollArea>
+          )}
+
           {activeMenuItem !== "profile" &&
             activeMenuItem !== "courses-created" &&
-            activeMenuItem !== "courses-enrolled" && (
+            activeMenuItem !== "courses-enrolled" &&
+            activeMenuItem !== "certificates" &&
+            activeMenuItem !== "settings" && (
               <div className="flex items-center justify-center h-[60vh]">
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-[#5c7d73] mb-2">
