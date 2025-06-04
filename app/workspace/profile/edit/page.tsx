@@ -44,7 +44,8 @@ export default function ProfileEdit() {
 
   return (
     <div className="container mx-auto px-4 py-8 pt-0">
-      <PageHeader title="Edit profile" />
+      {/* <PageHeader title="Edit profile" /> */}
+      <h3 className="text-xl font-semibold text-[#5c7d73] mb-4">Edit profile</h3>
       <form onSubmit={handleSubmit} className="space-y-6 mt-5">
         {/* <AvatarUpload user={user} /> */}
 

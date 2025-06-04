@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "@/components/ui/chart"
@@ -19,8 +18,6 @@ interface AnalyticsProps {
 }
 
 export default function Analytics({ userData }: AnalyticsProps) {
-  const [timeView, setTimeView] = useState("daily")
-
   const defaultData = {
     totalStudyTime: 24.5,
     studyTimeChange: 12.5,
@@ -49,13 +46,13 @@ export default function Analytics({ userData }: AnalyticsProps) {
     <div className="p-6">
       <h3 className="text-lg font-medium text-[#5c7d73] mb-4">Track your learning progress and achievements.</h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
         {/* Total Study Time */}
-        <Card className="border-2 border-[#e0f2e9] shadow-sm">
+        <Card className="border-2 border-blue-200 shadow-sm rounded-3xl">
           <CardContent className="p-6">
             <div className="text-sm text-gray-500 mb-1">Total Study Time</div>
             <div className="text-3xl font-bold">{data.totalStudyTime ?? 0} Hours</div>
-            <div className={`text-sm mt-1 ${(data.studyTimeChange ?? 0) >= 0 ? "text-green-500" : "text-red-500"}`}>
+            <div className={`text-sm mt-1 ${(data.studyTimeChange ?? 0) >= 0 ? "text-[#5c7d73]" : "text-red-500"}`}>
               {(data.studyTimeChange ?? 0) >= 0 ? "+" : ""}
               {data.studyTimeChange ?? 0}% from last month
             </div>
@@ -63,7 +60,7 @@ export default function Analytics({ userData }: AnalyticsProps) {
         </Card>
 
         {/* Courses Completed */}
-        <Card className="border-2 border-[#e0f2e9] shadow-sm">
+        <Card className="border-2 border-green-200 shadow-sm rounded-3xl">
           <CardContent className="p-6">
             <div className="text-sm text-gray-500 mb-1">Courses Completed</div>
             <div className="text-3xl font-bold">{data.coursesCompleted ?? 0}</div>
@@ -72,17 +69,17 @@ export default function Analytics({ userData }: AnalyticsProps) {
         </Card>
 
         {/* Points Earned */}
-        <Card className="border-2 border-[#e0f2e9] shadow-sm">
+        <Card className="border-2 border-purple-200 shadow-sm rounded-3xl">
           <CardContent className="p-6">
             <div className="text-sm text-gray-500 mb-1">Points Earned</div>
             <div className="text-3xl font-bold">{(data.pointsEarned ?? 0).toLocaleString()}</div>
-            <div className="text-sm mt-1 text-green-500">+{data.pointsChange ?? 0} this month</div>
+            <div className="text-sm mt-1 text-[#5c7d73]">+{data.pointsChange ?? 0} this month</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Time View Tabs */}
-      <Tabs defaultValue="daily" className="mb-4" onValueChange={setTimeView}>
+      <Tabs defaultValue="daily" className="mb-3">
         <TabsList className="mb-6">
           <TabsTrigger value="daily" className="px-8">
             Daily
@@ -93,7 +90,7 @@ export default function Analytics({ userData }: AnalyticsProps) {
         </TabsList>
 
         <TabsContent value="daily" className="mt-0">
-          <Card className="border-2 border-[#e0f2e9] shadow-sm">
+          <Card className="border-2 border-[#e0f2e9] shadow-sm rounded-3xl">
             <CardContent className="p-6">
               <div className="mb-4">
                 <h4 className="text-xl font-bold">Daily Study Time</h4>
@@ -133,7 +130,7 @@ export default function Analytics({ userData }: AnalyticsProps) {
         </TabsContent>
 
         <TabsContent value="weekly" className="mt-0">
-          <Card className="border-2 border-[#e0f2e9] shadow-sm">
+          <Card className="border-2 border-[#e0f2e9] shadow-sm rounded-3xl">
             <CardContent className="p-6">
               <div className="mb-4">
                 <h4 className="text-xl font-bold">Weekly Study Time</h4>

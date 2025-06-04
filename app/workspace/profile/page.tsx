@@ -1,4 +1,4 @@
-import { getCompletedCoursesCount, getUserAnalytics, getUserCertificates, getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
+import { getUserAnalytics, getUserCertificates, getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
 import UserProfile from "@/components/workspace/profile";
 import { getUser } from "@/utils/supabase/server";
 import { Suspense } from "react";

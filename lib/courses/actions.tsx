@@ -1348,13 +1348,13 @@ export async function getUserAnalytics(userId: string) {
   thisMonthStart.setDate(1);
   thisMonthStart.setHours(0, 0, 0, 0);
 
-  const { data: thisMonthCardResults, error: thisMonthError } = await supabase
+  const { data: thisMonthCardResults } = await supabase
     .from("card_results")
     .select("start_time, end_time")
     .eq("user_id", userId)
     .gte("start_time", thisMonthStart.getTime());
 
-  const { data: lastMonthCardResults, error: lastMonthError } = await supabase
+  const { data: lastMonthCardResults } = await supabase
     .from("card_results")
     .select("start_time, end_time")
     .eq("user_id", userId)
@@ -1398,7 +1398,7 @@ export async function getUserAnalytics(userId: string) {
     .eq("user_id", userId);
   const coursesInProgress = (userCourses?.length || 0) - coursesCompleted;
 
-  const { data: thisMonthPoints, error: pointsError } = await supabase
+  const { data: thisMonthPoints } = await supabase
     .from("streak_points_history")
     .select("points_added")
     .eq("user_id", userId)
@@ -1414,7 +1414,7 @@ export async function getUserAnalytics(userId: string) {
   const todayEnd = new Date(today);
   todayEnd.setHours(23, 59, 59, 999);
 
-  const { data: todayCardResults, error: todayError } = await supabase
+  const { data: todayCardResults } = await supabase
     .from("card_results")
     .select("start_time, end_time")
     .eq("user_id", userId)
@@ -1443,7 +1443,7 @@ export async function getUserAnalytics(userId: string) {
   const weekEnd = new Date(weekStart);
   weekEnd.setDate(weekStart.getDate() + 6);
 
-  const { data: weeklyCardResults, error: weeklyError } = await supabase
+  const { data: weeklyCardResults } = await supabase
     .from("card_results")
     .select("start_time, end_time")
     .eq("user_id", userId)

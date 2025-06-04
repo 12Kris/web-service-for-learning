@@ -87,7 +87,7 @@ export default function UserProfile({
       </div>
 
       {/* Horizontal Tabs */}
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border rounded-3xl overflow-hidden">
         <div className="border-b">
           <nav className="flex overflow-x-auto">
             {menuItems.map((item) => (

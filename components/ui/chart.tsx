@@ -4,7 +4,6 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 import { cn } from "@/lib/utils"
 
-// Re-export Recharts components
 const BarChart = RechartsPrimitive.BarChart
 const LineChart = RechartsPrimitive.LineChart
 const AreaChart = RechartsPrimitive.AreaChart
@@ -30,14 +29,25 @@ const ReferenceLine = RechartsPrimitive.ReferenceLine
 const ReferenceArea = RechartsPrimitive.ReferenceArea
 const ReferenceDot = RechartsPrimitive.ReferenceDot
 
-// Chart Container
+interface ChartConfig {
+  [key: string]: {
+    color?: string
+    theme?: {
+      light?: string
+      dark?: string
+    }
+  }
+}
+
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
-    config?: Record<string, any>
+    config?: ChartConfig
     children: React.ComponentProps<typeof ResponsiveContainer>["children"]
   }
->(({ className, config, children, ...props }, ref) => {
+>(({ className, config: _config, children, ...props }, ref) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for future styling/theming
+  const _config_unused = _config
   return (
     <div ref={ref} className={cn("flex aspect-video justify-center text-xs", className)} {...props}>
       <ResponsiveContainer width="100%" height="100%">
@@ -48,25 +58,26 @@ const ChartContainer = React.forwardRef<
 })
 ChartContainer.displayName = "ChartContainer"
 
-// Chart Tooltip Content Component
+interface ChartTooltipPayload {
+  color?: string
+  dataKey?: string
+  name?: string
+  value?: number | string
+  payload?: Record<string, unknown>
+  formatter?: (value: number | string, name: string, props: ChartTooltipPayload, index: number, payload: ChartTooltipPayload[]) => React.ReactNode
+}
+
 interface ChartTooltipContentProps {
   active?: boolean
-  payload?: Array<{
-    color?: string
-    dataKey?: string
-    name?: string
-    value?: any
-    payload?: any
-    formatter?: (value: any, name: any, props: any, index: any, payload: any) => any
-  }>
+  payload?: ChartTooltipPayload[]
   label?: string
   hideLabel?: boolean
   hideIndicator?: boolean
   indicator?: "line" | "dot" | "dashed"
   nameKey?: string
   labelKey?: string
-  labelFormatter?: (label: any, payload: any) => any
-  formatter?: (value: any, name: any, props: any, index: any, payload: any) => any
+  labelFormatter?: (label: string, payload: ChartTooltipPayload[]) => React.ReactNode
+  formatter?: (value: number | string, name: string, props: ChartTooltipPayload, index: number, payload: ChartTooltipPayload[]) => React.ReactNode
   className?: string
   labelClassName?: string
 }
@@ -82,22 +93,20 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContent
       hideIndicator = false,
       label,
       labelFormatter,
-      labelClassName,
       formatter,
       nameKey,
-      labelKey,
+      labelKey: _labelKey,
+      labelClassName,
       ...props
     },
     ref,
   ) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for future use
+    const _labelKey_unused = _labelKey
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !payload?.length) {
         return null
       }
-
-      const [item] = payload
-      const key = labelKey || item.dataKey || item.name
-      const itemConfig = item.payload
 
       if (labelFormatter && typeof label !== "undefined") {
         return labelFormatter(label, payload)
@@ -108,7 +117,7 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContent
       }
 
       return ""
-    }, [label, labelFormatter, payload, hideLabel, labelKey])
+    }, [label, labelFormatter, payload, hideLabel])
 
     if (!active || !payload?.length) {
       return null
@@ -158,7 +167,7 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContent
                 </div>
                 <span className="font-mono font-medium tabular-nums text-foreground">
                   {itemFormatter && item.value !== undefined
-                    ? itemFormatter(item.value, item.name, item, index, payload)
+                    ? itemFormatter(item.value, item.name || "", item, index, payload)
                     : item.value}
                 </span>
               </div>
@@ -171,16 +180,20 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContent
 )
 ChartTooltipContent.displayName = "ChartTooltipContent"
 
-// Chart Tooltip wrapper for Recharts
-const ChartTooltip = ({ content, ...props }: any) => {
+const ChartTooltip = ({ content, ...props }: RechartsPrimitive.TooltipProps<number | string, string>) => {
   return <Tooltip {...props} content={content} />
 }
 
-// Chart Legend
+interface ChartLegendPayload {
+  color?: string
+  value?: string
+  dataKey?: string
+}
+
 const ChartLegend = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
-    payload?: Array<any>
+    payload?: ChartLegendPayload[]
     verticalAlign?: "top" | "bottom"
     nameKey?: string
   }
@@ -189,8 +202,10 @@ const ChartLegend = React.forwardRef<
     return null
   }
 
+  const containerStyle = verticalAlign === "top" ? "mb-4" : "mt-4"
+
   return (
-    <div ref={ref} className={cn("flex items-center justify-center gap-4", className)} {...props}>
+    <div ref={ref} className={cn("flex items-center justify-center gap-4", containerStyle, className)} {...props}>
       {payload.map((item, index) => {
         const key = nameKey || item.value || item.dataKey || "value"
 
@@ -214,11 +229,10 @@ const ChartLegend = React.forwardRef<
 })
 ChartLegend.displayName = "ChartLegend"
 
-// Chart Style utilities
 const THEMES = { light: "", dark: ".dark" } as const
 
-export const ChartStyle = ({ id, config }: { id: string; config: Record<string, any> }) => {
-  const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color)
+export const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  const colorConfig = Object.entries(config).filter(([_, value]) => value.theme || value.color)
 
   if (!colorConfig.length) {
     return null
@@ -235,6 +249,7 @@ export const ChartStyle = ({ id, config }: { id: string; config: Record<string, 
                   const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color
                   return color ? `  --color-${key}: ${color};` : null
                 })
+                .filter(Boolean)
                 .join("\n")}}`,
           )
           .join("\n"),
