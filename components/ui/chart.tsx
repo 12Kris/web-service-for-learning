@@ -4,7 +4,6 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 import { cn } from "@/lib/utils"
 
-// Re-export Recharts components
 const BarChart = RechartsPrimitive.BarChart
 const LineChart = RechartsPrimitive.LineChart
 const AreaChart = RechartsPrimitive.AreaChart
@@ -30,7 +29,6 @@ const ReferenceLine = RechartsPrimitive.ReferenceLine
 const ReferenceArea = RechartsPrimitive.ReferenceArea
 const ReferenceDot = RechartsPrimitive.ReferenceDot
 
-// Define types for ChartContainer config
 interface ChartConfig {
   [key: string]: {
     color?: string
@@ -41,16 +39,13 @@ interface ChartConfig {
   }
 }
 
-// Chart Container
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
     config?: ChartConfig
     children: React.ComponentProps<typeof ResponsiveContainer>["children"]
   }
->(({ className, config: _config, children, ...props }, ref) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for future styling/theming
-  const _config_unused = _config
+>(({ className, children, ...props }, ref) => {
   return (
     <div ref={ref} className={cn("flex aspect-video justify-center text-xs", className)} {...props}>
       <ResponsiveContainer width="100%" height="100%">
@@ -98,14 +93,12 @@ const ChartTooltipContent = React.forwardRef<HTMLDivElement, ChartTooltipContent
       labelFormatter,
       formatter,
       nameKey,
-      labelKey: _labelKey,
       labelClassName,
       ...props
     },
     ref,
   ) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Reserved for future use
-    const _labelKey_unused = _labelKey
+
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !payload?.length) {
         return null

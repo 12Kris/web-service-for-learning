@@ -51,7 +51,7 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
 
   return (
     <div className="container mx-auto py-6">
-      <h1 className="text-3xl font-bold mb-8">Course Curriculum</h1>
+      <h1 className="text-3xl font-bold mb-8 text-[--neutral]">Course Curriculum</h1>
       <div className="grid gap-6 md:grid-cols-2">
         {modules === undefined ? (
           Array.from({ length: 4 }).map((_, index) => (

@@ -38,7 +38,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
   }, []);
 
   return (
-    <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b  lg:hidden">
+    <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b lg:hidden">
       <div className="container mx-auto">
         <div className="flex h-16 items-center justify-between">
           <Sheet>
@@ -74,7 +74,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
                       <Button
                         variant="link"
                         className={cn(
-                          "w-full font-bold text-lg justify-start "
+                          "w-full font-bold text-lg justify-start"
                           // isActive &&
                           //   "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-md"
                         )}

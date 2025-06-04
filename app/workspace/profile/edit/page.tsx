@@ -4,7 +4,6 @@ import { useState, useEffect, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-// import { PageHeader } from "@/components/ui/page-header";
 import { User } from "@/lib/types/user";
 
 import { getUser } from "@/utils/supabase/client";
@@ -44,7 +43,6 @@ export default function ProfileEdit() {
 
   return (
     <div className="container mx-auto px-4 py-8 pt-0">
-      {/* <PageHeader title="Edit profile" /> */}
       <h3 className="text-xl font-semibold text-[#5c7d73] mb-4">Edit profile</h3>
       <form onSubmit={handleSubmit} className="space-y-6 mt-5">
         {/* <AvatarUpload user={user} /> */}
