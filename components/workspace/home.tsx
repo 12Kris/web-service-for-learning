@@ -115,17 +115,17 @@ export default function HomePage({
                     <div className="items-center align-center">
                       <div className="items-center mb-1">
                         <span className="text-xs border-b-2 py-1">
-                          Daily study plan
+                          Weekly study plan
                         </span>
                       </div>
                       <div className="items-center">
                         <span className="text-xs">
-                          {weeklyStreak.courseMinutes.completed} / 30 course minutes
+                          {weeklyStreak.courseMinutes.completed} / 210 course minutes
                         </span>
                       </div>
                       <div className="items-center">
                         <span className="text-xs">
-                          {weeklyStreak.cardsStudied.completed} / 5 card sets studied
+                          {weeklyStreak.cardsStudied.completed} / 35 card sets studied
                         </span>
                       </div>
                     </div>
@@ -151,7 +151,7 @@ export default function HomePage({
                           strokeWidth="6"
                           strokeDasharray={`${
                             (weeklyStreak.courseMinutes.completed /
-                              30) *
+                              210) *
                             175.9
                           } 175.9`}
                           strokeLinecap="round"
@@ -173,7 +173,7 @@ export default function HomePage({
                           strokeWidth="6"
                           strokeDasharray={`${
                             (weeklyStreak.cardsStudied.completed /
-                              5) *
+                              35) *
                             138.2
                           } 138.2`}
                           strokeLinecap="round"
