@@ -45,9 +45,6 @@ export default function BrowsePage({
   const [coursesByType, setCoursesByType] = useState(initialCoursesByType);
   const [courseTypes, setCourseTypes] = useState(initialCourseTypes);
   const [searchText, setSearchText] = useState("");
-  // const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-  // const [isBeginning, setIsBeginning] = useState(true);
-  // const [isEnd, setIsEnd] = useState(false);
 
   const groupCoursesByType = (coursesToGroup: Course[]) => {
     const groupedCourses = coursesToGroup.reduce((acc, course) => {
@@ -127,7 +124,7 @@ export default function BrowsePage({
     <div>
       <div className="container mx-auto space-y-12">
         <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
-          <PageHeader className="mt-0 mb-3 md:mb-0" title="Browse courses" />
+          <PageHeader className="mt-0 mb-3 md:mb-0 text-[--neutral]" title="Browse courses" />
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
@@ -140,13 +137,6 @@ export default function BrowsePage({
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-            {/* <Input
-              type="text"
-              placeholder="Search courses..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5c7d73]"
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            /> */}
           </div>
           <Button
             variant="default"
@@ -172,19 +162,14 @@ export default function BrowsePage({
             autoplay={
               autoplay ? { delay: 5000, disableOnInteraction: false } : false
             }
-            // onSwiper={(swiper) => setSwiperInstance(swiper)}
-            // onSlideChange={(swiper) => {
-            //   setIsBeginning(swiper.isBeginning);
-            //   setIsEnd(swiper.isEnd);
-            // }}
             className="w-full"
           >
             {courseTypes.map((type) => (
-              <SwiperSlide key={coursesByType[type].displayName} className="hover:shadow-lg transition-shadow cursor-pointer">
+              <SwiperSlide key={coursesByType[type].displayName} className="mb-5">
                 <Card
                   onClick={() => handleCategoryClick(type)}
                   className={cn(
-                    "transition-colors",
+                    "transition-colors shadow hover:shadow-lg transition-shadow cursor-pointer",
                     selectedTypes.includes(type.toLowerCase())
                       ? "border-green-500 bg-green-50"
                       : "border-gray-200"
@@ -193,7 +178,7 @@ export default function BrowsePage({
                   <CardContent className="p-3 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-base sm:text-lg">{coursesByType[type].displayName}</h3>
+                        <h3 className="font-semibold text-base sm:text-lg text-[--neutral]">{coursesByType[type].displayName}</h3>
                         <p className="text-xs sm:text-sm text-gray-500">{coursesByType[type].courses.length} courses</p>
                       </div>
                     </div>
@@ -203,8 +188,6 @@ export default function BrowsePage({
             ))}
           </Swiper>
         </div>
-
-        {/* <div className=" border-b border-b-[--border] "></div> */}
 
         {filteredCourses.length === 0 ? (
           <div className="text-center text-lg">No courses available!</div>

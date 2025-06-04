@@ -85,7 +85,6 @@ export default function FlashcardPage({
         onSubscriptionChange={handleSubscriptionChange}
       />
       {course?.isCourseCompleted && <CompletedInfo courseId={course.id} />}
-      {/* <CompletedInfo /> */}
 
       <CourseInfo
         course_details={course?.course_details || []}

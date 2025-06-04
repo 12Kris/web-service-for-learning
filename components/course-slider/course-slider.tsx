@@ -45,7 +45,7 @@ export function CourseCarousel({
 
   return (
     <section className={cn("w-full", className)}>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 text-[--neutral]">
         <h2 className="text-2xl font-bold">{title}</h2>
         <div className="flex gap-2">
           <Button

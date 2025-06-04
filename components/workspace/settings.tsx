@@ -14,7 +14,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="max-w-2xl bg-white">
+    <div className="bg-white px-4">
       <h1 className="text-xl font-semibold text-[#5c7d73] mb-4">Settings</h1>
       <div className="mb-8">
         <label htmlFor="language-select" className="block text-lg font-semibold text-[#5c7d73] mb-2">Language</label>

@@ -14,7 +14,7 @@ const MeetTutor: React.FC<MeetTutorProps> = ({
   imageUrl = "",
 }) => {
   return (
-    <section className="container mx-auto px-4 py-12">
+    <section className="container mx-auto px-4 py-12 text-[--neutral]">
       <div className="grid md:grid-cols-2 gap-8 items-center">
         <div className="space-y-4">
           <h2 className="text-4xl font-bold">{name ? name : <Skeleton />}</h2>

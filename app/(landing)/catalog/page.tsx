@@ -63,14 +63,14 @@ export default function Catalog() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-[#5c7d73] mb-4">Course Catalog</h1>
+        <h1 className="text-4xl font-bold text-[--neutral] mb-4">Course Catalog</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
           Explore our comprehensive collection of courses designed to help you achieve your learning goals.
         </p>
       </div>
 
       {/* Search and Filter Section */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
+      <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
@@ -80,22 +80,26 @@ export default function Catalog() {
           />
         </div>
         <Button variant="outline" className="flex items-center gap-2">
-          <Filter className="w-4 h-4" />
-          Filter
+          <Search className="w-4 h-4" />
+          <Link href={`/workspace/courses/browse`}>
+            Search
+          </Link>
         </Button>
       </div>
 
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-12">
         {categories.map((category) => (
-          <Card key={category.name} className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Card key={category.name} className="hover:shadow-lg transition-shadow cursor-pointer text-[--neutral]">
             <CardContent className="p-3 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="font-semibold text-base sm:text-lg">{category.name}</h3>
-                  <p className="text-xs sm:text-sm text-gray-500">{category.count} courses</p>
+              <Link href={`/workspace/courses/browse`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-base sm:text-lg">{category.name}</h3>
+                    <p className="text-xs sm:text-sm text-gray-500">{category.count} courses</p>
+                  </div>
+                  <category.icon className="w-6 h-6 sm:w-8 sm:h-8 text-[--neutral]" />
                 </div>
-                <category.icon className="w-6 h-6 sm:w-8 sm:h-8 text-[#5c7d73]" />
-              </div>
+              </Link>
             </CardContent>
           </Card>
         ))}
@@ -103,7 +107,7 @@ export default function Catalog() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course, index) => (
-          <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+          <Card key={course.id} className="overflow-hidden hover:shadow-lg transition-shadow text-[--neutral]">
             <div className="aspect-video relative">
               <Image
                 src={course.image}
@@ -146,7 +150,7 @@ export default function Catalog() {
                 </div>
               </div>
               <Button asChild className="w-full">
-                <Link href={`/workspace/courses/${course.id}`} className="flex items-center justify-center gap-2">
+                <Link href={`/workspace/courses/browse`} className="flex items-center justify-center gap-2">
                   View Course
                   <ArrowRight className="w-4 h-4" />
                 </Link>

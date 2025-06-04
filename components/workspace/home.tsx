@@ -59,7 +59,7 @@ export default function HomePage({
   return (
     <div className="space-y-6 pb-8">
       <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
-        <PageHeader className="mt-0 mb-3 md:mb-0" title="Home" />
+        <PageHeader className="mt-0 mb-3 md:mb-0 text-[--neutral]" title="Home" />
         <div className="grid grid-cols-3 md:gap-0 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:items-center sm:space-x-4 sm:mt-0">
           <Link href="/workspace/courses/create" className="col-span-1">
             <Button
@@ -83,7 +83,7 @@ export default function HomePage({
         </div>
       </div>
 
-      <Card className="border border-gray-200 rounded-3xl shadow-sm">
+      <Card className="border border-gray-200 rounded-xl shadow-sm">
         <CardContent className="p-6 text-[#5c7d73]">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
@@ -193,7 +193,7 @@ export default function HomePage({
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={`border-2 ${stat.color} rounded-3xl shadow-sm text-[#5c7d73]`}
+            className={`border-2 ${stat.color} rounded-xl shadow-sm text-[#5c7d73]`}
           >
             <CardContent className="p-6 flex flex-col items-center justify-center text-center">
               <span className="text-4xl font-bold">{stat.value}</span>
@@ -205,7 +205,7 @@ export default function HomePage({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card
-          className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]"
+          className="border border-gray-200 rounded-xl shadow-sm text-[#5c7d73]"
           style={{ maxHeight: containerHeight }}
         >
           <CardContent className="p-6 h-full">
@@ -248,7 +248,7 @@ export default function HomePage({
         </Card>
 
         <Card
-          className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]"
+          className="border border-gray-200 rounded-xl shadow-sm text-[#5c7d73]"
           style={{ minHeight: containerHeight }}
         >
           <CardContent className="p-6">
@@ -289,7 +289,7 @@ export default function HomePage({
         </Card>
       </div>
 
-      <Card className="border border-gray-200 rounded-3xl shadow-sm text-[#5c7d73]">
+      <Card className="border border-gray-200 rounded-xl shadow-sm text-[#5c7d73]">
         <CardContent className="p-6">
           <h2 className="text-lg font-medium mb-4">Upcoming Events</h2>
           <div className="space-y-4">

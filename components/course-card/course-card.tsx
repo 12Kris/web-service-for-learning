@@ -36,7 +36,7 @@ export function CourseCard({
 
   return (
     <Card
-      className="flex flex-col overflow-hidden transition-all duration-300 h-full"
+      className="flex flex-col overflow-hidden transition-all duration-300 h-full rounded-xl text-[--neutral]"
     >
       <Link href={`/workspace/courses/${id}`}>
         <div className="relative overflow-hidden bg-slate-300">

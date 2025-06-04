@@ -38,7 +38,6 @@ export default function BookmarksPage({
   autoplay = false,
   showPagination = false,
 }: ClientComponentProps) {
-  // const [courses] = useState<Course[]>(initialCourses);
   const [enrolledCourses] = useState<Course[]>(initialEnrolledCourses);
   const [filteredEnrolledCourses, setFilteredEnrolledCourses] = useState<Course[]>(initialEnrolledCourses);
   const [repeatCourses] = useState<Course[]>(initialCoursesToRepeat);
@@ -48,9 +47,6 @@ export default function BookmarksPage({
   const [enrolledCoursesByType, setEnrolledCoursesByType] = useState(initialCoursesByType);
   const [courseTypes, setCourseTypes] = useState(initialCourseTypes);
   const [searchText, setSearchText] = useState("");
-  // const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
-  // const [isBeginning, setIsBeginning] = useState(true);
-  // const [isEnd, setIsEnd] = useState(false);
 
   const groupEnrolledCoursesByType = (coursesToGroup: Course[]) => {
     const groupedCourses = coursesToGroup.reduce((acc, course) => {
@@ -138,7 +134,7 @@ export default function BookmarksPage({
     <div>
       <div className="container mx-auto space-y-12">
         <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
-          <PageHeader className="mt-0 mb-3 md:mb-0" title="Bookmarks" />
+          <PageHeader className="mt-0 mb-3 md:mb-0 text-[--neutral]" title="Bookmarks" />
           <div className="grid grid-cols-3 md:gap-0 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:items-center sm:space-x-4 sm:mt-0">
             <Button
               variant="default"
@@ -178,19 +174,14 @@ export default function BookmarksPage({
             autoplay={
               autoplay ? { delay: 5000, disableOnInteraction: false } : false
             }
-            // onSwiper={(swiper) => setSwiperInstance(swiper)}
-            // onSlideChange={(swiper) => {
-            //   setIsBeginning(swiper.isBeginning);
-            //   setIsEnd(swiper.isEnd);
-            // }}
             className="w-full"
           >
             {courseTypes.map((type) => (
-              <SwiperSlide key={enrolledCoursesByType[type].displayName} className="hover:shadow-lg transition-shadow cursor-pointer">
+              <SwiperSlide key={enrolledCoursesByType[type].displayName} className="mb-5">
                 <Card
                   onClick={() => handleCategoryClick(type)}
                   className={cn(
-                    "transition-colors",
+                    "transition-colors shadow hover:shadow-lg transition-shadow cursor-pointer",
                     selectedTypes.includes(type.toLowerCase())
                       ? "border-green-500 bg-green-50"
                       : "border-gray-200"
@@ -199,7 +190,7 @@ export default function BookmarksPage({
                   <CardContent className="p-3 sm:p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold text-base sm:text-lg">{enrolledCoursesByType[type].displayName}</h3>
+                        <h3 className="font-semibold text-base sm:text-lg text-[--neutral]">{enrolledCoursesByType[type].displayName}</h3>
                         <p className="text-xs sm:text-sm text-gray-500">{enrolledCoursesByType[type].courses.length} courses</p>
                       </div>
                     </div>

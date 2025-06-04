@@ -54,18 +54,18 @@ export default function UserProfile({
   }
 
   const menuItems = [
-    { id: "profile", label: "Profile" },
+    { id: "settings", label: "Settings" },
     { id: "analytics", label: "Analytics" },
     { id: "courses-created", label: "Courses Created" },
     { id: "courses-enrolled", label: "Courses Enrolled" },
     { id: "certificates", label: "Certificates" },
-    { id: "settings", label: "Settings" },
+    // { id: "settings", label: "Settings" },
   ]
 
   return (
     <div className="w-full max-w-6xl mx-auto">
       {/* User Profile Header */}
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-white border rounded-3xl mb-6">
+      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-white border rounded-xl mb-6">
         <Avatar className="w-20 h-20 md:w-24 md:h-24">
           <AvatarImage src={user?.avatar_url || "/placeholder.svg"} alt={user?.username || "User"} />
           <AvatarFallback className="bg-[#e0f2e9] text-[#5c7d73] text-4xl">
@@ -87,7 +87,7 @@ export default function UserProfile({
       </div>
 
       {/* Horizontal Tabs */}
-      <div className="bg-white border rounded-3xl overflow-hidden">
+      <div className="bg-white border rounded-xl overflow-hidden">
         <div className="border-b">
           <nav className="flex overflow-x-auto">
             {menuItems.map((item) => (
@@ -107,11 +107,11 @@ export default function UserProfile({
         </div>
 
         {/* Tab Content */}
-        <div className="min-h-[60vh]">
-          {activeMenuItem === "profile" && (
-            <div className="p-6">
+        <div className="h-[60vh]">
+          {activeMenuItem === "settings" && (
+            <ScrollArea className="h-[60vh] p-6">
               <ProfileEdit />
-            </div>
+            </ScrollArea>
           )}
 
           {activeMenuItem === "courses-created" && (
@@ -203,11 +203,13 @@ export default function UserProfile({
             </ScrollArea>
           )}
 
-          {activeMenuItem === "settings" && (
-            <ScrollArea className="h-[60vh] p-6">
-              <Settings />
+          {/* {activeMenuItem === "settings" && (
+            <ScrollArea className="h-[60vh]">
+              <div className="p-6">
+                <Settings />
+              </div>
             </ScrollArea>
-          )}
+          )} */}
 
           {activeMenuItem !== "profile" &&
             activeMenuItem !== "courses-created" &&

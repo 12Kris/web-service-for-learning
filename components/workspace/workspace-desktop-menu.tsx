@@ -58,7 +58,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
               className={cn(
                 "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-bold",
                 "hover:bg-black/10 ",
-                "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-ring",
+                "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-ring text-[--neutral]",
                 isActive && "bg-[--neutral] text-white hover:bg-[--neutral]/90"
               )}
             >
@@ -81,7 +81,7 @@ export function DesktopMenu({ menuItems }: { menuItems: MenuItems[] }) {
 
         <div
           style={{ marginLeft: 6 }}
-          className="ml-0 whitespace-nowrap overflow-hidden text-ellipsis font-bold "
+          className="ml-0 whitespace-nowrap overflow-hidden text-ellipsis font-bold"
         >
           {user?.user_metadata.full_name || "Loading..."}
         </div>
