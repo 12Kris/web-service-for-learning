@@ -11,7 +11,6 @@ import {
   Users, 
   Star,
   Search,
-  Filter,
   ArrowRight
 } from "lucide-react";
 import Link from "next/link";

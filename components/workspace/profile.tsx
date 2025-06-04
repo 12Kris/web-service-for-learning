@@ -15,7 +15,7 @@ import type { Profile } from "@/lib/types/user"
 import type { Course } from "@/lib/types/course"
 import ProfileEdit from "@/app/workspace/profile/edit/page"
 import Certificates from "./certificates"
-import Settings from "./settings"
+// import Settings from "./settings"
 import Analytics from "./analytics"
 import { Certificate } from "@/lib/types/certificate"
 
