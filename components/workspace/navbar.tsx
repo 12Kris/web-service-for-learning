@@ -43,14 +43,11 @@ export function Navbar({ menuItems, data }: NavbarProps) {
         <div className="flex h-16 items-center justify-between">
           <Sheet>
             <SheetTrigger asChild>
-              {/* <Button size="icon" variant="ghost" className="lg:hidden"> */}
               <div className="bg-white rounded-full p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-center">
-                {/* <Menu style={{ height: "25px", width: "25px" }} /> */}
                 <MenuIcon fontSize={"medium"} className="text-[--neutral]" />
                 <span className="sr-only">Toggle menu</span>
               </div>
 
-              {/* </Button> */}
             </SheetTrigger>
             <SheetContent
               side="left"
@@ -67,16 +64,12 @@ export function Navbar({ menuItems, data }: NavbarProps) {
                       key={item.name}
                       className={cn(
                         "w-full font-semibold text-lg justify-start"
-                        // isActive &&
-                        //   "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-2xl"
                       )}
                     >
                       <Button
                         variant="link"
                         className={cn(
                           "w-full font-bold text-lg justify-start"
-                          // isActive &&
-                          //   "bg-[--neutral] text-white hover:bg-[--neutral]/90 rounded-md"
                         )}
                       >
                         {item.name}
@@ -94,7 +87,6 @@ export function Navbar({ menuItems, data }: NavbarProps) {
               </span>
             </Link>
           </div>
-          {/* </div> */}
 
           <div className="flex items-center space-x-4">
             {data && data}

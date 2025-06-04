@@ -84,7 +84,7 @@ export default function HomePage({
       </div>
 
       <Card className="border border-gray-200 rounded-xl shadow-sm">
-        <CardContent className="p-6 text-[#5c7d73]">
+        <CardContent className="p-6 text-[--neutral]">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div>
               <div className="flex items-center gap-2">
@@ -193,7 +193,7 @@ export default function HomePage({
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={`border-2 ${stat.color} rounded-xl shadow-sm text-[#5c7d73]`}
+            className={`border-2 ${stat.color} rounded-xl shadow-sm text-[--neutral]`}
           >
             <CardContent className="p-6 flex flex-col items-center justify-center text-center">
               <span className="text-4xl font-bold">{stat.value}</span>
@@ -205,7 +205,7 @@ export default function HomePage({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card
-          className="border border-gray-200 rounded-xl shadow-sm text-[#5c7d73]"
+          className="border border-gray-200 rounded-xl shadow-sm text-[--neutral]"
           style={{ maxHeight: containerHeight }}
         >
           <CardContent className="p-6 h-full">
@@ -231,9 +231,6 @@ export default function HomePage({
                           <h3 className="font-medium">{course.name}</h3>
                           <p className="text-xs">{course.description}</p>
                         </div>
-                        {/* <span className="font-medium text-lg flex items-center">
-                          {course.progress}%
-                        </span> */}
                       </div>
                     </div>
                   </Link>
@@ -248,7 +245,7 @@ export default function HomePage({
         </Card>
 
         <Card
-          className="border border-gray-200 rounded-xl shadow-sm text-[#5c7d73]"
+          className="border border-gray-200 rounded-xl shadow-sm text-[--neutral]"
           style={{ minHeight: containerHeight }}
         >
           <CardContent className="p-6">
@@ -289,7 +286,7 @@ export default function HomePage({
         </Card>
       </div>
 
-      <Card className="border border-gray-200 rounded-xl shadow-sm text-[#5c7d73]">
+      <Card className="border border-gray-200 rounded-xl shadow-sm text-[--neutral]">
         <CardContent className="p-6">
           <h2 className="text-lg font-medium mb-4">Upcoming Events</h2>
           <div className="space-y-4">

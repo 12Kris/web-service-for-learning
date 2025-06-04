@@ -1,4 +1,3 @@
-// import { getCourses, getCoursesWithUserProgress, getUserCourses } from "@/lib/courses/actions";
 import { getCoursesWithUserProgress, getUserCourses } from "@/lib/courses/actions";
 import BookmarksPage from "@/components/workspace/bookmarks";
 import type { Course } from "@/lib/types/course";
@@ -28,7 +27,6 @@ function groupCoursesByType(coursesToGroup: Course[]) {
 }
 
 export default async function Page() {
-  // const fetchedCourses = await getCourses(0, 30);
   const fetchedCoursesWithProgress = await getCoursesWithUserProgress(0, 30);
   const fetchedEnrolledCourses = await getUserCourses(0, 30);
 
@@ -47,7 +45,6 @@ export default async function Page() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
       <BookmarksPage
-        // initialCourses={fetchedCourses}
         initialEnrolledCourses={fetchedEnrolledCourses}
         initialCoursesToRepeat={coursesToRepeat}
         initialCoursesByType={coursesByType}

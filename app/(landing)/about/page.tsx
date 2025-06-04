@@ -62,7 +62,7 @@ export default function AboutUs() {
   ]
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl text-[#5c7d73]">
+    <div className="container mx-auto px-4 py-8 max-w-7xl text-[--neutral]">
       <div className="space-y-4 text-center mb-16">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">About Us</h1>
         <p className="text-xl max-w-3xl mx-auto mt-4">

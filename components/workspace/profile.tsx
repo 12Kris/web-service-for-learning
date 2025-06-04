@@ -64,11 +64,10 @@ export default function UserProfile({
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* User Profile Header */}
       <div className="flex flex-col sm:flex-row items-center gap-6 p-6 bg-white border rounded-xl mb-6">
         <Avatar className="w-20 h-20 md:w-24 md:h-24">
           <AvatarImage src={user?.avatar_url || "/placeholder.svg"} alt={user?.username || "User"} />
-          <AvatarFallback className="bg-[#e0f2e9] text-[#5c7d73] text-4xl">
+          <AvatarFallback className="bg-[#e0f2e9] text-[--neutral] text-4xl">
             {user?.username
               ?.split(" ")
               .map((n) => n[0])
@@ -77,16 +76,15 @@ export default function UserProfile({
         </Avatar>
 
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl md:text-3xl font-medium text-[#5c7d73] mb-1">{user?.username}</h2>
+          <h2 className="text-2xl md:text-3xl font-medium text-[--neutral] mb-1">{user?.username}</h2>
           <p className="text-sm md:text-base text-gray-500 mb-4">{user?.email || "Unknown Email"}</p>
         </div>
 
-        <Button variant="outline" size="wide" className="border-[#5c7d73] text-[#5c7d73] rounded-full w-full sm:w-auto" onClick={handleLogout}>
+        <Button variant="outline" size="wide" className="border-[--neutral] text-[--neutral] rounded-full w-full sm:w-auto" onClick={handleLogout}>
           Log out
         </Button>
       </div>
 
-      {/* Horizontal Tabs */}
       <div className="bg-white border rounded-xl overflow-hidden">
         <div className="border-b">
           <nav className="flex overflow-x-auto">
@@ -95,8 +93,8 @@ export default function UserProfile({
                 key={item.id}
                 className={`flex-shrink-0 px-4 md:px-6 py-4 text-sm md:text-base font-medium border-b-2 transition-colors ${
                   activeMenuItem === item.id
-                    ? "border-[#5c7d73] text-[#5c7d73] bg-[#f8faf9]"
-                    : "border-transparent text-gray-500 hover:text-[#5c7d73] hover:border-gray-300"
+                    ? "border-[--neutral] text-[--neutral] bg-[#f8faf9]"
+                    : "border-transparent text-gray-500 hover:text-[--neutral] hover:border-gray-300"
                 }`}
                 onClick={() => setActiveMenuItem(item.id)}
               >
@@ -106,7 +104,6 @@ export default function UserProfile({
           </nav>
         </div>
 
-        {/* Tab Content */}
         <div className="h-[60vh]">
           {activeMenuItem === "profile" && (
             <ScrollArea className="h-[60vh] p-6">
@@ -117,21 +114,21 @@ export default function UserProfile({
           {activeMenuItem === "courses-created" && (
             <ScrollArea className="h-[60vh]">
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-[#5c7d73] mb-4">Courses You Created</h3>
+                <h3 className="text-xl font-semibold text-[--neutral] mb-4">Courses You Created</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {createdCourses?.map((course) => (
                     <Link key={course.id} href={`/workspace/courses/${course.id}`}>
-                      <Card className="shadow-md hover:shadow-lg transition-shadow">
+                      <Card className="shadow-md hover:shadow-lg transition-shadow" style={{backgroundColor: course.color, opacity: 0.8}}>
                         <CardHeader>
                           <CardTitle className="text-xl truncate">{course.name}</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="flex justify-between mb-2">
-                            <Badge variant="secondary">
+                            <Badge variant="secondary" className="bg-white">
                               <Book className="w-4 h-4 mr-1" />
                               {course.type}
                             </Badge>
-                            <Badge variant="secondary">
+                            <Badge variant="secondary" className="bg-white">
                               <Users className="w-4 h-4 mr-1" />
                               {course.student_count || 0} Students
                             </Badge>
@@ -153,11 +150,11 @@ export default function UserProfile({
           {activeMenuItem === "courses-enrolled" && (
             <ScrollArea className="h-[60vh]">
               <div className="p-6">
-                <h3 className="text-xl font-semibold text-[#5c7d73] mb-4">Courses you are Enrolled In</h3>
+                <h3 className="text-xl font-semibold text-[--neutral] mb-4">Courses you are Enrolled In</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {studyingCourses?.map((course) => (
                     <Link key={course.id} href={`/workspace/courses/${course.id}`}>
-                      <Card className="shadow-md hover:shadow-lg transition-shadow">
+                      <Card className="shadow-md hover:shadow-lg transition-shadow h-full" style={{backgroundColor: course.color, opacity: 0.8}}>
                         <CardHeader>
                           <CardTitle className="text-xl">{course.name}</CardTitle>
                           <CardDescription>{course.description}</CardDescription>
@@ -165,20 +162,16 @@ export default function UserProfile({
                         <CardContent>
                           <div className="mb-2">
                             <div className="flex justify-between mb-2">
-                              <Badge variant="secondary">
+                              <Badge variant="secondary" className="bg-white">
                                 <Book className="h-4 mr-1" />
                                 {course.type}
                               </Badge>
-                              <Badge variant="secondary">
+                              <Badge variant="secondary" className="bg-white">
                                 <Users className="h-4 mr-1" />
                                 {course.creator?.full_name}
                               </Badge>
                             </div>
                             <div className="space-y-1">
-                              {/* <div className="flex justify-between text-sm">
-                                <span>Progress</span>
-                                <span>{course.progress}%</span>
-                              </div> */}
                               <Progress value={course.progress} className="w-full" />
                             </div>
                           </div>
@@ -219,7 +212,7 @@ export default function UserProfile({
             activeMenuItem !== "analytics" && (
               <div className="flex items-center justify-center h-[60vh]">
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold text-[#5c7d73] mb-2">
+                  <h3 className="text-xl font-semibold text-[--neutral] mb-2">
                     {activeMenuItem.charAt(0).toUpperCase() + activeMenuItem.slice(1).replace("-", " ")}
                   </h3>
                   <p className="text-gray-500">This section is coming soon</p>

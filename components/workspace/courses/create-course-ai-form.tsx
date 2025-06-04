@@ -66,7 +66,6 @@ export default function CreateCourseAIForm() {
 
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-6">
-          {/* Course Description */}
           <div className="space-y-2">
             <Label htmlFor="prompt" className="text-base font-medium">
               Course Description
@@ -85,12 +84,10 @@ export default function CreateCourseAIForm() {
             </p>
           </div>
 
-          {/* Course Settings */}
           <div className="space-y-4">
             <h3 className="text-base font-medium">Course Settings</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Courses Amount */}
               <div className="space-y-2">
                 <Label htmlFor="coursesAmount">Courses Amount</Label>
                 <Input
@@ -103,7 +100,6 @@ export default function CreateCourseAIForm() {
                 />
               </div>
 
-              {/* Difficulty Level */}
               <div className="space-y-2">
                 <Label htmlFor="difficultyLevel">Difficulty Level</Label>
                 <Select value={difficultyLevel} onValueChange={setDifficultyLevel} disabled={isLoading}>
@@ -120,7 +116,6 @@ export default function CreateCourseAIForm() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Tests Amount */}
               <div className="space-y-2">
                 <Label htmlFor="testsAmount">Tests Per Module</Label>
                 <Input
@@ -133,7 +128,6 @@ export default function CreateCourseAIForm() {
                 />
               </div>
 
-              {/* Learning Materials Amount */}
               <div className="space-y-2">
                 <Label htmlFor="learningMaterialsAmount">Learning Materials Per Module</Label>
                 <Input
@@ -148,7 +142,6 @@ export default function CreateCourseAIForm() {
             </div>
           </div>
 
-          {/* PDF Upload */}
           <div className="space-y-2">
             <Label htmlFor="pdfFile" className="text-base font-medium">
               Supplementary Materials
@@ -182,7 +175,6 @@ export default function CreateCourseAIForm() {
             </div>
           </div>
 
-          {/* Error Display */}
           {error && (
             <Alert variant="destructive" className="mt-2">
               <AlertCircle className="h-4 w-4" />

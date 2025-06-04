@@ -65,7 +65,6 @@ export default function Flashcard({
           isFlipped ? "showing back" : "showing front"
         }. Press to flip.`}
       >
-        {/* Front Side */}
         <motion.div
           className="absolute inset-0"
           style={{
@@ -79,9 +78,6 @@ export default function Flashcard({
         >
           <Card className="w-full h-full bg-gradient-to-br bg-white border border-blue-200 shadow-xl rounded-3xl overflow-hidden">
             <CardContent className="flex flex-col items-center justify-center h-full p-8 relative">
- 
-
-              {/* Content */}
               <div className="text-center space-y-4">
                 <p className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
                   {frontContent}
@@ -94,7 +90,6 @@ export default function Flashcard({
           </Card>
         </motion.div>
 
-        {/* Back Side */}
         <motion.div
           className="absolute inset-0"
           style={{
@@ -109,9 +104,6 @@ export default function Flashcard({
         >
           <Card className="w-full h-full bg-gradient-to-br bg-white border border-emerald-200 shadow-xl rounded-3xl overflow-hidden">
             <CardContent className="flex flex-col items-center justify-center h-full p-8 relative">
-
-
-              {/* Content */}
               <div className="text-center space-y-4">
                 <p className="text-2xl md:text-3xl font-medium text-gray-800 leading-relaxed">
                   {backContent}
@@ -124,7 +116,6 @@ export default function Flashcard({
           </Card>
         </motion.div>
 
-        {/* Floating shadow */}
         <motion.div
           className="absolute inset-0 bg-black opacity-1 rounded-3xl -z-10"
           style={{

@@ -38,7 +38,6 @@ export default function FlashcardPage({
       setModules(modulesData);
 
       const courseData = await getCourseById(courseId);
-      // console.log("Is course finished:", await isCourseCompleted(courseId));
 
       setCourse(courseData);
 

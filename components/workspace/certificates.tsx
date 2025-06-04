@@ -20,11 +20,11 @@ export default function Certificates({ certificates }: CertificatesProps) {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-semibold text-[#5c7d73] mb-4">Your Certificates</h1>
+        <h1 className="text-xl font-semibold text-[--neutral] mb-4">Your Certificates</h1>
         <Button
           variant="outline"
-          className="text-[#5c7d73] border border-2 border-[#5c7d73] rounded-full px-8 py-3 text-lg font-semibold hover:bg-[#5c7d73] hover:text-white transition-colors"
-          disabled={certificates.length === 0} // Disable if no certificates
+          className="text-[--neutral] border border-2 border-[--neutral] rounded-full px-8 py-3 text-lg font-semibold hover:bg-[--neutral] hover:text-white transition-colors"
+          disabled={certificates.length === 0}
         >
           <Download className="w-4 h-4 mr-2" />
           Download All
@@ -43,7 +43,7 @@ export default function Certificates({ certificates }: CertificatesProps) {
                 <CardTitle className="text-lg truncate">{certificate.courseName}</CardTitle>
               </CardHeader>
               <CardContent className="pt-2">
-                <div className="mb-2 text-sm font-semibold text-[#5c7d73]">
+                <div className="mb-2 text-sm font-semibold text-[--neutral]">
                   {certificate.status === "completed" ? "Completed" : "In Progress"}
                 </div>
                 <div className="flex items-center gap-2 text-gray-600 mb-2 text-sm">
@@ -58,14 +58,14 @@ export default function Certificates({ certificates }: CertificatesProps) {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-500 mb-4 text-sm">
-                  <Award className="w-4 h-4 text-[#5c7d73]" />
+                  <Award className="w-4 h-4 text-[--neutral]" />
                   <span>Certificate ID: {certificate.certificateId}</span>
                 </div>
                 <div className="flex justify-end mt-auto">
                   <Button
                     variant="outline"
                     size="sm"
-                    className="text-[#5c7d73] border border-2 border-[#5c7d73] rounded-full px-4 py-2 text-sm font-semibold hover:bg-[#5c7d73] hover:text-white transition-colors"
+                    className="text-[--neutral] border border-2 border-[--neutral] rounded-full px-4 py-2 text-sm font-semibold hover:bg-[--neutral] hover:text-white transition-colors"
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Download

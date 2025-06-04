@@ -41,7 +41,7 @@ export default function TermsOfService() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[#5c7d73] mb-4">Terms of Service</h1>
+          <h1 className="text-4xl font-bold text-[--neutral] mb-4">Terms of Service</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             These terms govern your use of our platform. By using our services, you agree to these terms.
           </p>
@@ -55,7 +55,7 @@ export default function TermsOfService() {
               } items-center`}>
                 <div className="md:w-1/2 p-8">
                   <CardHeader className="p-0">
-                    <CardTitle className="text-2xl font-semibold text-[#5c7d73] mb-4">
+                    <CardTitle className="text-2xl font-semibold text-[--neutral] mb-4">
                       {section.title}
                     </CardTitle>
                   </CardHeader>
@@ -66,7 +66,7 @@ export default function TermsOfService() {
                 <div className="md:w-1/2 p-8">
                   <div className="flex items-center justify-center">
                     <div className="w-32 h-32 rounded-full bg-[#e0f2e9] flex items-center justify-center">
-                      <section.icon className="w-16 h-16 text-[#5c7d73]" />
+                      <section.icon className="w-16 h-16 text-[--neutral]" />
                     </div>
                   </div>
                 </div>

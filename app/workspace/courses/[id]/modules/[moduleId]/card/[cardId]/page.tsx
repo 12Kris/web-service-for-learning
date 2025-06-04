@@ -227,10 +227,8 @@ export default function CardPage() {
                     </div>
 
                     <div className="text-center mt-4 text-sm text-gray-600">
-                      {/* Swipe left for incorrect, swipe right for correct */}
                       Swipe left to mark as unclear, swipe right to mark as clear
                     </div>
-                    {/* Swipe indicators */}
                     {isDragging && (
                       <>
                         <div
@@ -256,40 +254,6 @@ export default function CardPage() {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="hidden md:flex justify-center mt-5 space-x-5 items-center">
-                <button
-                  onClick={() => handleSelection(currentFlashcard?.id, false)}
-                  className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
-                ${
-                  currentFlashcard?.id !== undefined &&
-                  selectedAnswers[currentFlashcard?.id] === false
-                    ? "text-white bg-[--accent]"
-                    : "hover:bg-[--accent] hover:text-white"
-                }`}
-                  aria-label="Incorrect"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-
-                <div className="text-center text-lg font-medium text-gray-700">
-                  {currentCard + 1} / {flashcards.length}
-                </div>
-
-                <button
-                  onClick={() => handleSelection(currentFlashcard?.id, true)}
-                  className={`flex items-center justify-center h-10 w-24 border rounded-full transition-colors
-                ${
-                  currentFlashcard?.id !== undefined &&
-                  selectedAnswers[currentFlashcard?.id] === true
-                    ? "text-white bg-[--neutral]"
-                    : "hover:bg-[--neutral] hover:text-white"
-                }`}
-                  aria-label="Correct"
-                >
-                  <Check className="w-6 h-6" />
-                </button>
-              </div> */}
 
               <div className="flex justify-center mt-5 space-x-5 items-center md:hidden">
                 <div className="text-center text-lg font-medium text-gray-700">
@@ -344,9 +308,6 @@ export default function CardPage() {
           {allAnswered && (
             <div className="mt-6 flex flex-col items-center gap-4">
               <div className="mt-4">
-                {/* <label className="block text-center mb-2">
-                  How easy were the cards?
-                </label> */}
                 <PageHeader
                   className="mb-10 text-center"
                   title={"How difficult were the cards?"}
@@ -369,12 +330,6 @@ export default function CardPage() {
                   >
                     Save Results
                   </Button>
-                  {/* <button
-                    onClick={saveCardResultsHandler}
-                    className="px-6 py-2 hover:text-white hover:bg-[--neutral] rounded-lg border transition-colors"
-                  >
-                    Save Results
-                  </button> */}
                 </div>
               </div>
               <div></div>

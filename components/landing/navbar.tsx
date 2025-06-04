@@ -36,29 +36,9 @@ export function Navbar() {
       if (user !== null) {
         setUser(user);
       }
-      //   if (user) {
-      //     const { user } = user;
-      //   }
-
-      // setUser(user);
     }
     featchUser();
   }, []);
-
-  // useEffect(() => {
-  //   // setuser(null);
-
-  //   async function fetchuser() {
-  //     const user = await getUser();
-  //     console.log("user, ", user);
-  //     // if (user) {
-  //     //   const { user } = user;
-  //     // }
-  //     // setuser(user);
-  //   }
-  //   fetchuser();
-
-  // });
 
   const handleLogout = async () => {
     try {
@@ -108,7 +88,6 @@ export function Navbar() {
                 <Link href="/login">Log In</Link>
               </Button>
               <Button className="rounded-3xl" size={"wide"} variant={"secondary"} asChild>
-              {/* <Button className="rounded-3xl text-[#517971] bg-[#ACEAC7]" size={"wide"} variant={"secondary"} asChild> */}
                 <Link href="/signup">Sign Up</Link>
               </Button>
             </>

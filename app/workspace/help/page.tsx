@@ -44,7 +44,7 @@ export default function HelpPage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-[#5c7d73] mb-4">Help & User Guide</h1>
+          <h1 className="text-4xl font-bold text-[--neutral] mb-4">Help & User Guide</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Welcome to our help center. Here you&apos;ll find everything you need to know about using our platform effectively.
           </p>
@@ -58,7 +58,7 @@ export default function HelpPage() {
               } items-center`}>
                 <div className="md:w-1/2 p-8">
                   <CardHeader className="p-0">
-                    <CardTitle className="text-2xl font-semibold text-[#5c7d73] mb-4">
+                    <CardTitle className="text-2xl font-semibold text-[--neutral] mb-4">
                       {section.title}
                     </CardTitle>
                   </CardHeader>
@@ -69,7 +69,7 @@ export default function HelpPage() {
                 <div className="md:w-1/2 p-8">
                   <div className="flex items-center justify-center">
                     <div className="w-32 h-32 rounded-full bg-[#e0f2e9] flex items-center justify-center">
-                      <section.icon className="w-16 h-16 text-[#5c7d73]" />
+                      <section.icon className="w-16 h-16 text-[--neutral]" />
                     </div>
                   </div>
                 </div>

@@ -32,7 +32,6 @@ export function AccountDropdown() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="bg-[#ededed] rounded-full p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-center">
-          {/* <User strokeWidth={3} className="h-5 w-5 " /> */}
           <PersonOutlineOutlinedIcon
             fontSize={"medium"}
             className="text-[--neutral]"

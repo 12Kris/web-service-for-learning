@@ -108,7 +108,6 @@ export default function CreateCourseForm() {
         <Button className="mb-2">
           <Link href={`/workspace/courses/browse`}>
             <ChevronLeft className="w-6 h-6" />
-            {/* Back to courses */}
           </Link>
         </Button>
 
@@ -178,7 +177,6 @@ export default function CreateCourseForm() {
                     type="button"
                     onClick={() => deleteItem("course_details", detail.id)}
                     variant="destructive"
-                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.course_details.length === 1}
@@ -214,7 +212,6 @@ export default function CreateCourseForm() {
                     type="button"
                     onClick={() => deleteItem("what_w_learn", item.id)}
                     variant="destructive"
-                    // className="bg-red-100 text-red-600 hover:bg-red-200"
                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                     size="sm"
                     disabled={formState.what_w_learn.length === 1}
@@ -256,7 +253,6 @@ export default function CreateCourseForm() {
                       type="button"
                       onClick={() => deleteItem("curriculum", module.id)}
                       variant="destructive"
-                      // className="bg-red-100 text-red-600 hover:bg-red-200 self-end"
                       className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent] self-end"
                       size="sm"
                       disabled={formState.curriculum.length === 1}

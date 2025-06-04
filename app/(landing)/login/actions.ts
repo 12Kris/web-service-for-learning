@@ -21,9 +21,7 @@ export async function login(formData: FormData) {
     };
   }
 
-  // revalidatePath("/workspace", "layout");
   redirect("/workspace");
-  
 }
 
 export async function signup(formData: FormData) {
