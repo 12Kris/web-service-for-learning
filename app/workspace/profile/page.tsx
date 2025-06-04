@@ -1,4 +1,4 @@
-import { getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
+import { getUserAnalytics, getUserCertificates, getUserCourses, getUserCreatedCourses } from "@/lib/courses/actions";
 import UserProfile from "@/components/workspace/profile";
 import { getUser } from "@/utils/supabase/server";
 import { Suspense } from "react";
@@ -19,8 +19,10 @@ export default async function Page() {
     total_points: 0,
   };
 
-  const createdCourses = await getUserCreatedCourses(0, 50);
-  const studyingCourses = await getUserCourses(0, 50);
+  const createdCourses = await getUserCreatedCourses(0, 10000);
+  const studyingCourses = await getUserCourses(0, 10000);
+  const analyticsData = await getUserAnalytics(currentUser.id);
+  const certificates = await getUserCertificates(currentUser.id);
 
   return (
     <Suspense fallback={<LoadingSpinner className="mx-auto" />}>
@@ -28,6 +30,8 @@ export default async function Page() {
         user={user}
         createdCourses={createdCourses}
         studyingCourses={studyingCourses}
+        analyticsData={analyticsData}
+        certificates={certificates}
       />
     </Suspense>
   );

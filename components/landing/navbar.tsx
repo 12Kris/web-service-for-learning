@@ -93,7 +93,8 @@ export function Navbar() {
           {user ? (
             <Button
               onClick={handleLogout}
-              className="text-[--neutral] bg-[--primary] px-6 py-2 hover:bg-[--primary]/80 shadow-none rounded-full"
+              className="text-[--neutral] px-6 py-2 border-[--neutral] hover:bg-[--neutral] shadow-none rounded-full"
+              // className="rounded-full inline-flex font-bold items-center justify-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[--neutral] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 text-[--neutral] bg-transparent border-2 border-[--neutral] hover:bg-[--neutral] hover:text-white h-9 px-4 py-2"
             >
               Logout
             </Button>

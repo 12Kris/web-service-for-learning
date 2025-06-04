@@ -16,15 +16,30 @@ import type { Course } from "@/lib/types/course"
 import ProfileEdit from "@/app/workspace/profile/edit/page"
 import Certificates from "./certificates"
 import Settings from "./settings"
+import Analytics from "./analytics"
+import { Certificate } from "@/lib/types/certificate"
 
 export default function UserProfile({
   user,
   createdCourses,
   studyingCourses,
+  analyticsData,
+  certificates,
 }: {
   user: Profile | null
   createdCourses: Course[] | null
   studyingCourses: Course[] | null
+  analyticsData?: {
+    totalStudyTime: number;
+    studyTimeChange: number;
+    coursesCompleted: number;
+    coursesInProgress: number;
+    pointsEarned: number;
+    pointsChange: number;
+    dailyStudyData: Array<{ hour: string; minutes: number }>;
+    weeklyStudyData: Array<{ day: string; hours: number }>;
+  };
+  certificates: Certificate[] | null;
 }) {
   const [activeMenuItem, setActiveMenuItem] = useState("profile")
   const router = useRouter()
@@ -72,7 +87,7 @@ export default function UserProfile({
       </div>
 
       {/* Horizontal Tabs */}
-      <div className="bg-white border rounded-xl overflow-hidden">
+      <div className="bg-white border rounded-3xl overflow-hidden">
         <div className="border-b">
           <nav className="flex overflow-x-auto">
             {menuItems.map((item) => (
@@ -178,7 +193,13 @@ export default function UserProfile({
 
           {activeMenuItem === "certificates" && (
             <ScrollArea className="h-[60vh]">
-              <Certificates />
+              <Certificates certificates={certificates || []} />
+            </ScrollArea>
+          )}
+
+          {activeMenuItem === "analytics" && (
+            <ScrollArea className="h-[60vh]">
+              <Analytics userData={analyticsData}/>
             </ScrollArea>
           )}
 
@@ -192,7 +213,8 @@ export default function UserProfile({
             activeMenuItem !== "courses-created" &&
             activeMenuItem !== "courses-enrolled" &&
             activeMenuItem !== "certificates" &&
-            activeMenuItem !== "settings" && (
+            activeMenuItem !== "settings" &&
+            activeMenuItem !== "analytics" && (
               <div className="flex items-center justify-center h-[60vh]">
                 <div className="text-center">
                   <h3 className="text-xl font-semibold text-[#5c7d73] mb-2">

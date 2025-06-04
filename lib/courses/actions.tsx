@@ -6,6 +6,7 @@ import { TestData, TestQuestionForCourse } from "@/lib/types/test";
 import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
+import { Certificate } from "../types/certificate";
 
 export async function getCourseById(courseId: number) {
   const supabase = await createClient();
@@ -1192,10 +1193,13 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
   const supabase = await createClient();
 
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // 01.06.2025 00:00:00
+  today.setHours(0, 0, 0, 0);
 
   const currentWeekStart = new Date(today);
-  currentWeekStart.setDate(today.getDate() - today.getDay()); // 01.06.2025 (неділя)
+  currentWeekStart.setDate(today.getDate() - today.getDay());
+  currentWeekStart.setHours(0, 0, 0, 0);
+
+  const currentWeekStartStr = currentWeekStart.toISOString().split("T")[0];
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
@@ -1239,7 +1243,7 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
   }
 
   const eightWeeksAgo = new Date(today);
-  eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56); // 04.04.2025
+  eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56);
 
   const recentActivities = cardResults.filter((result) => {
     const start = new Date(Number(result.start_time));
@@ -1261,18 +1265,21 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
 
   const streakWeeks = weeks.size;
 
-  // Перевірка для оновлення балів
   if (lastUpdate && lastUpdate >= today) {
-    return { weeks: streakWeeks, pointsToAddForWeek: 0 }; // Повертаємо актуальний стрік, але бали не додаємо
+    return { weeks: streakWeeks, pointsToAddForWeek: 0 };
   }
 
-  // Отримуємо історію нарахувань
-  const weekStartDates = Array.from(weeks);
+  const hasActivityThisWeek = weeks.has(currentWeekStartStr);
+
+  if (!hasActivityThisWeek) {
+    return { weeks: streakWeeks, pointsToAddForWeek };
+  }
+
   const { data: pointsHistory, error: historyError } = await supabase
     .from("streak_points_history")
     .select("week_start")
     .eq("user_id", userId)
-    .in("week_start", weekStartDates);
+    .eq("week_start", currentWeekStartStr);
 
   if (historyError) {
     console.error("Error fetching streak points history:", historyError);
@@ -1281,22 +1288,19 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
 
   const awardedWeeks = new Set(pointsHistory.map((entry) => entry.week_start));
 
-  // Нараховуємо бали лише за тижні, які ще не були нагороджені
   let pointsToAdd = 0;
-  for (const weekStart of weeks) {
-    if (!awardedWeeks.has(weekStart)) {
-      pointsToAdd += 20;
-      const { error: insertError } = await supabase
-        .from("streak_points_history")
-        .insert({
-          user_id: userId,
-          week_start: weekStart,
-          points_added: 20,
-        });
+  if (!awardedWeeks.has(currentWeekStartStr)) {
+    pointsToAdd = 20;
+    const { error: insertError } = await supabase
+      .from("streak_points_history")
+      .insert({
+        user_id: userId,
+        week_start: currentWeekStartStr,
+        points_added: 20,
+      });
 
-      if (insertError) {
-        console.error("Error inserting streak points history:", insertError);
-      }
+    if (insertError) {
+      console.error("Error inserting streak points history:", insertError);
     }
   }
 
@@ -1316,6 +1320,207 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
   }
 
   return { weeks: streakWeeks, pointsToAddForWeek };
+}
+
+export async function getUserAnalytics(userId: string) {
+  const supabase = await createClient();
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("total_points")
+    .eq("id", userId)
+    .single();
+
+  if (profileError || !profile) {
+    console.error("Error fetching profile:", profileError);
+    throw new Error("Failed to fetch user profile");
+  }
+
+  const totalPoints = profile.total_points || 0;
+
+  const today = new Date();
+  const lastMonthStart = new Date(today);
+  lastMonthStart.setMonth(today.getMonth() - 1);
+  lastMonthStart.setDate(1);
+  lastMonthStart.setHours(0, 0, 0, 0);
+
+  const thisMonthStart = new Date(today);
+  thisMonthStart.setDate(1);
+  thisMonthStart.setHours(0, 0, 0, 0);
+
+  const { data: thisMonthCardResults } = await supabase
+    .from("card_results")
+    .select("start_time, end_time")
+    .eq("user_id", userId)
+    .gte("start_time", thisMonthStart.getTime());
+
+  const { data: lastMonthCardResults } = await supabase
+    .from("card_results")
+    .select("start_time, end_time")
+    .eq("user_id", userId)
+    .gte("start_time", lastMonthStart.getTime())
+    .lt("start_time", thisMonthStart.getTime());
+
+  let totalStudyTime = 0;
+  let lastMonthStudyTime = 0;
+
+  if (thisMonthCardResults) {
+    for (const session of thisMonthCardResults) {
+      const start = new Date(Number(session.start_time));
+      const end = new Date(Number(session.end_time));
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+        totalStudyTime += durationHours;
+      }
+    }
+  }
+
+  if (lastMonthCardResults) {
+    for (const session of lastMonthCardResults) {
+      const start = new Date(Number(session.start_time));
+      const end = new Date(Number(session.end_time));
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+        lastMonthStudyTime += durationHours;
+      }
+    }
+  }
+
+  totalStudyTime = parseFloat(totalStudyTime.toFixed(1));
+  const studyTimeChange = lastMonthStudyTime
+    ? parseFloat(((totalStudyTime - lastMonthStudyTime) / lastMonthStudyTime * 100).toFixed(1))
+    : 0;
+
+  const coursesCompleted = await getCompletedCoursesCount();
+  const { data: userCourses } = await supabase
+    .from("UserCourse")
+    .select("course_id")
+    .eq("user_id", userId);
+  const coursesInProgress = (userCourses?.length || 0) - coursesCompleted;
+
+  const { data: thisMonthPoints } = await supabase
+    .from("streak_points_history")
+    .select("points_added")
+    .eq("user_id", userId)
+    .gte("week_start", thisMonthStart.toISOString().split("T")[0]);
+
+  let pointsChange = 0;
+  if (thisMonthPoints) {
+    pointsChange = thisMonthPoints.reduce((sum, entry) => sum + (entry.points_added || 0), 0);
+  }
+
+  const todayStart = new Date(today);
+  todayStart.setHours(0, 0, 0, 0);
+  const todayEnd = new Date(today);
+  todayEnd.setHours(23, 59, 59, 999);
+
+  const { data: todayCardResults } = await supabase
+    .from("card_results")
+    .select("start_time, end_time")
+    .eq("user_id", userId)
+    .gte("start_time", todayStart.getTime())
+    .lte("start_time", todayEnd.getTime());
+
+  const dailyStudyData = Array.from({ length: 24 }, (_, i) => ({
+    hour: i.toString().padStart(2, "0"),
+    minutes: 0,
+  }));
+
+  if (todayCardResults) {
+    for (const session of todayCardResults) {
+      const start = new Date(Number(session.start_time));
+      const end = new Date(Number(session.end_time));
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const hour = start.getHours();
+        const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
+        dailyStudyData[hour].minutes += Math.floor(durationMinutes);
+      }
+    }
+  }
+
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+
+  const { data: weeklyCardResults } = await supabase
+    .from("card_results")
+    .select("start_time, end_time")
+    .eq("user_id", userId)
+    .gte("start_time", weekStart.getTime())
+    .lte("start_time", weekEnd.getTime());
+
+  const weeklyStudyData = [
+    { day: "Sun", hours: 0 },
+    { day: "Mon", hours: 0 },
+    { day: "Tue", hours: 0 },
+    { day: "Wed", hours: 0 },
+    { day: "Thu", hours: 0 },
+    { day: "Fri", hours: 0 },
+    { day: "Sat", hours: 0 },
+  ];
+
+  if (weeklyCardResults) {
+    for (const session of weeklyCardResults) {
+      const start = new Date(Number(session.start_time));
+      const end = new Date(Number(session.end_time));
+      if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+        const dayIndex = start.getDay();
+        const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+        weeklyStudyData[dayIndex].hours += parseFloat(durationHours.toFixed(1));
+      }
+    }
+  }
+
+  return {
+    totalStudyTime,
+    studyTimeChange,
+    coursesCompleted,
+    coursesInProgress,
+    pointsEarned: totalPoints,
+    pointsChange,
+    dailyStudyData,
+    weeklyStudyData,
+  };
+}
+
+export async function getUserCertificates(userId: string): Promise<Certificate[]> {
+  const supabase = await createClient();
+
+  const { data: completedCourses, error: completedError } = await supabase
+    .from("received_points_for_course")
+    .select("course_id, created_at")
+    .eq("user_id", userId);
+
+  if (completedError || !completedCourses || completedCourses.length === 0) {
+    console.error("Error fetching completed courses:", completedError);
+    return [];
+  }
+
+  const courseIds = completedCourses.map((entry) => entry.course_id);
+
+  const { data: courses, error: courseError } = await supabase
+    .from("Course")
+    .select("id, name, description")
+    .in("id", courseIds);
+
+  if (courseError || !courses) {
+    console.error("Error fetching course details:", courseError);
+    return [];
+  }
+
+  const certificates: Certificate[] = completedCourses.map((entry, idx) => {
+    const course = courses.find((c) => c.id === entry.course_id);
+    return {
+      id: entry.course_id,
+      courseName: course?.name || "Unknown Course",
+      issueDate: new Date(entry.created_at).toISOString().split("T")[0],
+      certificateId: `CERT-${String(idx + 1).padStart(3, "0")}`,
+      status: "completed",
+    };
+  });
+
+  return certificates;
 }
 
 // export async function calculateStreakAndPoints(userId: string): Promise<{
