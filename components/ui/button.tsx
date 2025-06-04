@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
   "rounded-full inline-flex font-bold items-center justify-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[--neutral] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4",
+  // "rounded-full inline-flex font-bold items-center justify-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[--neutral] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:w-4 [&_svg]:h-4 bg-[--primary] text-[--neutral] border-2 border-[--primary] hover:border-[--neutral] hover:bg-[--neutral] hover:text-white h-9 px-6",
   {
     variants: {
       variant: {

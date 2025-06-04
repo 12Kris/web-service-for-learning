@@ -4,7 +4,7 @@ import { useState, useEffect, type FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/ui/page-header";
+// import { PageHeader } from "@/components/ui/page-header";
 import { User } from "@/lib/types/user";
 
 import { getUser } from "@/utils/supabase/client";

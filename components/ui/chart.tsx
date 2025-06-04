@@ -4,6 +4,7 @@ import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 import { cn } from "@/lib/utils"
 
+// Re-export Recharts components
 const BarChart = RechartsPrimitive.BarChart
 const LineChart = RechartsPrimitive.LineChart
 const AreaChart = RechartsPrimitive.AreaChart
@@ -29,6 +30,7 @@ const ReferenceLine = RechartsPrimitive.ReferenceLine
 const ReferenceArea = RechartsPrimitive.ReferenceArea
 const ReferenceDot = RechartsPrimitive.ReferenceDot
 
+// Define types for ChartContainer config
 interface ChartConfig {
   [key: string]: {
     color?: string
@@ -39,6 +41,7 @@ interface ChartConfig {
   }
 }
 
+// Chart Container
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & {
@@ -232,6 +235,7 @@ ChartLegend.displayName = "ChartLegend"
 const THEMES = { light: "", dark: ".dark" } as const
 
 export const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Key is intentionally unused
   const colorConfig = Object.entries(config).filter(([_, value]) => value.theme || value.color)
 
   if (!colorConfig.length) {
