@@ -22,22 +22,20 @@ export default function Analytics({ userData }: AnalyticsProps) {
 
   return (
     <div className="p-6">
-      <h3 className="text-lg font-medium text-[#5c7d73] mb-4">Track your learning progress and achievements.</h3>
+      <h3 className="text-lg font-medium text-[--neutral] mb-4">Track your learning progress and achievements.</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-        {/* Total Study Time */}
         <Card className="border-2 border-blue-200 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="text-sm text-gray-500 mb-1">Total Study Time</div>
             <div className="text-3xl font-bold">{data?.totalStudyTime ?? 0} Hours</div>
-            <div className={`text-sm mt-1 ${(data?.studyTimeChange ?? 0) >= 0 ? "text-[#5c7d73]" : "text-red-500"}`}>
+            <div className={`text-sm mt-1 ${(data?.studyTimeChange ?? 0) >= 0 ? "text-[--neutral]" : "text-red-500"}`}>
               {(data?.studyTimeChange ?? 0) >= 0 ? "+" : ""}
               {data?.studyTimeChange ?? 0}% from last month
             </div>
           </CardContent>
         </Card>
 
-        {/* Courses Completed */}
         <Card className="border-2 border-green-200 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="text-sm text-gray-500 mb-1">Courses Completed</div>
@@ -46,17 +44,15 @@ export default function Analytics({ userData }: AnalyticsProps) {
           </CardContent>
         </Card>
 
-        {/* Points Earned */}
         <Card className="border-2 border-purple-200 shadow-sm rounded-xl">
           <CardContent className="p-6">
             <div className="text-sm text-gray-500 mb-1">Points Earned</div>
             <div className="text-3xl font-bold">{(data?.pointsEarned ?? 0).toLocaleString()}</div>
-            <div className="text-sm mt-1 text-[#5c7d73]">+{data?.pointsChange ?? 0} this month</div>
+            <div className="text-sm mt-1 text-[--neutral]">+{data?.pointsChange ?? 0} this month</div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Time View Tabs */}
       <Tabs defaultValue="daily" className="mb-3">
         <TabsList className="mb-6">
           <TabsTrigger value="daily" className="px-8">

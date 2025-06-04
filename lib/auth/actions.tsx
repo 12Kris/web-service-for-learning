@@ -1,6 +1,5 @@
 "use server";
 
-// import { supabase } from "@/utils/supabase/server";
 import {revalidatePath} from "next/cache";
 import {createClient} from "@/utils/supabase/server";
 import {validateForm, FormData} from "@/utils/login/validate";
@@ -67,11 +66,6 @@ export async function loginUser(email: string, password: string) {
 }
 
 export async function resendConfirmationEmail() {
-    // TODO: Implement the logic to resend the confirmation email
-    // This is where you would typically call your authentication service
-    // to resend the confirmation email
-
-    // Revalidate the current path to reflect any changes
     revalidatePath("/confirm-email");
 }
 

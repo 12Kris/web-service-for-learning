@@ -23,7 +23,6 @@ const buttonVariants = cva(
         link: "text-[--neutral] bg-transparent underline-offset-4 hover:underline",
         primary:
           "bg-[--primary] text-[--neutral] border-2 border-[--primary] hover:border-[--neutral] hover:bg-[--neutral] hover:text-white",
-          // "bg-[--primary] text-[--neutral] border-2 border-[--primary] hover:bg-[--primary-hover]",
         primaryOutline:
           "text-[--primary] bg-transparent border-2 border-[--primary] hover:bg-[--primary] hover:text-[--primary-foreground]",
         accent:

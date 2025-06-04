@@ -471,6 +471,22 @@ export async function createCourse(
   courseData: Omit<Course, "id" | "creator_id" | "creator">
 ): Promise<Course | null> {
   const supabase = await createClient();
+
+  const pastelColors = [
+    '#FFD1DC', // Light Pink
+    '#FFECB3', // Light Yellow
+    '#B3E5FC', // Light Blue
+    '#C8E6C9', // Light Green
+    '#F3E5F5', // Light Purple
+    '#FFE0B2', // Light Orange
+    '#B2EBF2', // Light Cyan
+    '#FFCCBC', // Light Coral
+    '#D7CCC8', // Light Brown
+    '#F0F4C3', // Light Lime
+  ];
+
+  const randomColor = pastelColors[Math.floor(Math.random() * pastelColors.length)];
+
   try {
     const user = await getUser();
 
@@ -483,6 +499,7 @@ export async function createCourse(
       .insert({
         ...courseData,
         creator_id: user.id,
+        color: randomColor,
       })
       .select()
       .single();

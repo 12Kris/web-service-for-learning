@@ -146,7 +146,6 @@ export interface AnswerData {
 export interface TestQuestion {
   id: number;
   question: string;
-  //   correct_answer?: number;
   correct_id?: number;
   answers: TestAnswer[];
 }

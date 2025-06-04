@@ -9,14 +9,12 @@ import { Filter, Search } from "lucide-react";
 import { FilterModal } from "@/components/workspace/modals/filter-modal";
 import type { Course } from "@/lib/types/course";
 import { Card, CardContent } from "../ui/card";
-// import { Input } from "../ui/input";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y, Autoplay } from "swiper/modules";
 import { cn } from "@/lib/utils";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-// import type { Swiper as SwiperType } from "swiper";
 
 interface ClientComponentProps {
   initialCourses: Course[];
@@ -133,7 +131,7 @@ export default function BrowsePage({
             <input
               type="text"
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5c7d73]"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[--neutral]"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />

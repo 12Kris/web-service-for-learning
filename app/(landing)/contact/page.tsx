@@ -35,7 +35,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sage-50 to-sage-100 dark:from-gray-950 dark:to-gray-900 px-4 text-[#5c7d73]">
+    <div className="min-h-screen bg-gradient-to-b from-sage-50 to-sage-100 dark:from-gray-950 dark:to-gray-900 px-4 text-[--neutral]">
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-12">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold dark:text-white mb-4">
