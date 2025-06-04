@@ -54,7 +54,7 @@ export default function UserProfile({
   }
 
   const menuItems = [
-    { id: "settings", label: "Settings" },
+    { id: "profile", label: "Settings" },
     { id: "analytics", label: "Analytics" },
     { id: "courses-created", label: "Courses Created" },
     { id: "courses-enrolled", label: "Courses Enrolled" },
@@ -108,7 +108,7 @@ export default function UserProfile({
 
         {/* Tab Content */}
         <div className="h-[60vh]">
-          {activeMenuItem === "settings" && (
+          {activeMenuItem === "profile" && (
             <ScrollArea className="h-[60vh] p-6">
               <ProfileEdit />
             </ScrollArea>
@@ -175,10 +175,10 @@ export default function UserProfile({
                               </Badge>
                             </div>
                             <div className="space-y-1">
-                              <div className="flex justify-between text-sm">
+                              {/* <div className="flex justify-between text-sm">
                                 <span>Progress</span>
                                 <span>{course.progress}%</span>
-                              </div>
+                              </div> */}
                               <Progress value={course.progress} className="w-full" />
                             </div>
                           </div>

@@ -231,9 +231,9 @@ export default function HomePage({
                           <h3 className="font-medium">{course.name}</h3>
                           <p className="text-xs">{course.description}</p>
                         </div>
-                        <span className="font-medium text-lg flex items-center">
+                        {/* <span className="font-medium text-lg flex items-center">
                           {course.progress}%
-                        </span>
+                        </span> */}
                       </div>
                     </div>
                   </Link>
