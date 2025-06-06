@@ -228,8 +228,7 @@ ChartLegend.displayName = "ChartLegend"
 const THEMES = { light: "", dark: ".dark" } as const
 
 export const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Key is intentionally unused
-  const colorConfig = Object.entries(config).filter(([_, value]) => value.theme || value.color)
+  const colorConfig = Object.entries(config).filter(([, value]) => value.theme || value.color)
 
   if (!colorConfig.length) {
     return null

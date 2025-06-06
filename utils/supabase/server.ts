@@ -3,8 +3,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
-// export const supabase = await createClient()
-
 export async function createClient() {
   const cookieStore = await cookies();
 
@@ -21,11 +19,7 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
+          } catch {}
         },
       },
     }
@@ -41,10 +35,3 @@ export async function getUser() {
   }
   return data.user;
 }
-
-// New editUser function to update user details.
-// export async function editUser(changes: { email?: string; data?: {displayName: string} }) {
-//   const supabase = await createClient();
-//   const { data, error } = await supabase.auth.updateUser(changes);
-//   return { user: data.user, error };
-// }
