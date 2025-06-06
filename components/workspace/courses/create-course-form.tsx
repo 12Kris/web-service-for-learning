@@ -105,11 +105,11 @@ export default function CreateCourseForm() {
   return (
     <div className="bg-[--background] min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
-        <Button className="mb-2">
-          <Link href={`/workspace/courses/browse`}>
+        <Link href={`/workspace/courses/browse`}>
+          <Button className="mb-2">
             <ChevronLeft className="w-6 h-6" />
-          </Link>
-        </Button>
+          </Button>
+        </Link>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div className="bg-[#faf8f1] rounded-lg p-6 shadow-sm border">

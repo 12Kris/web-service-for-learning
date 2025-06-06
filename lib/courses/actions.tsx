@@ -1518,7 +1518,7 @@ export async function getUserCertificates(userId: string): Promise<Certificate[]
 
   const { data: courses, error: courseError } = await supabase
     .from("Course")
-    .select("id, name, description")
+    .select("id, name, description, color")
     .in("id", courseIds);
 
   if (courseError || !courses) {
@@ -1534,6 +1534,7 @@ export async function getUserCertificates(userId: string): Promise<Certificate[]
       issueDate: new Date(entry.created_at).toISOString().split("T")[0],
       certificateId: `CERT-${String(idx + 1).padStart(3, "0")}`,
       status: "completed",
+      color: course?.color
     };
   });
 

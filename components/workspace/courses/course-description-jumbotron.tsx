@@ -76,7 +76,8 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
   const bgColor = color ? hexToRgba(color, 0.5) : "rgba(98, 255, 187, 0.5)";
 
   return (
-    <section className="w-full border mb-2 rounded-xl min-h-[40vh] flex flex-col justify-center items-center gap-7 p-4 py-10" style={{backgroundColor: bgColor}}>
+    // <section className="w-full border mb-2 rounded-xl min-h-[40vh] flex flex-col justify-center items-center gap-7 p-4 py-10" style={{backgroundColor: bgColor}}>
+        <section className="w-full border mb-2 rounded-xl min-h-[40vh] flex flex-col justify-center items-center gap-7 p-4 py-10 border-2 bg-white" style={{borderColor: bgColor}}>
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-5xl font-bold text-center">
           {title || (

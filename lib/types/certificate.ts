@@ -4,4 +4,5 @@ export interface Certificate {
   issueDate: string;
   certificateId: string;
   status: "completed" | "in-progress";
+  color?: string;
 }

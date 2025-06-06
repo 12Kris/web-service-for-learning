@@ -194,7 +194,7 @@ export default function CardPage() {
   const currentFlashcard = flashcards[currentCard];
 
   return (
-    <div className="flex flex-col items-center justify-center md:p-8 select-none">
+    <div className="flex flex-col items-center justify-center md:p-8 select-none text-[--neutral]">
       <div className="w-full max-w-4xl rounded-3xl md:p-8">
         <div className="items-center gap-4">
           {!allAnswered && (

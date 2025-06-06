@@ -80,12 +80,12 @@ export default function EnroledModulePage({
   }
 
   return (
-    <div>
-      <Button>
-        <Link href={`/workspace/courses/${id}`}>
+    <div className="text-[--neutral]">
+      <Link href={`/workspace/courses/${id}`}>
+        <Button>
           <ChevronLeft className="w-6 h-6" />
-        </Link>
-      </Button>
+        </Button>
+      </Link>
       <PageHeader className="mb-10" title={"Modules of " + pageData.title} />
       <ModuleProgression
         modules={pageData.modules}

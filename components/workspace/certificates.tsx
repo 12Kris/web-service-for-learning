@@ -9,13 +9,6 @@ interface CertificatesProps {
   certificates: Certificate[];
 }
 
-const topBarColors = [
-  "bg-yellow-200",
-  "bg-blue-200",
-  "bg-purple-200",
-  "bg-pink-100",
-];
-
 export default function Certificates({ certificates }: CertificatesProps) {
   return (
     <div className="p-6">
@@ -36,9 +29,9 @@ export default function Certificates({ certificates }: CertificatesProps) {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {certificates.slice(0, 4).map((certificate, idx) => (
+          {certificates.slice(0, 4).map((certificate) => (
             <Card key={certificate.id} className="shadow-md hover:shadow-lg transition-shadow">
-              <div className={`h-8 w-full rounded-t-xl ${topBarColors[idx % topBarColors.length]}`}></div>
+              <div className={`h-8 w-full rounded-t-xl `} style={{backgroundColor: certificate.color ? certificate.color : '#FFB6C1'}}></div>
               <CardHeader className="pt-4 pb-2">
                 <CardTitle className="text-lg truncate">{certificate.courseName}</CardTitle>
               </CardHeader>

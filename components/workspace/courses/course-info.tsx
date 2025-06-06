@@ -99,7 +99,8 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
   return (
     <div className="container mx-auto pt-0 py-6">
       <div className="grid gap-6 md:grid-cols-3">
-        <Card className="h-full" style={{ backgroundColor: bgColor }}>
+        {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
+        <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course details</CardTitle>
           </CardHeader>
@@ -119,7 +120,8 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full" style={{ backgroundColor: bgColor }}>
+        {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
+        <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">What you will learn</CardTitle>
           </CardHeader>
@@ -140,7 +142,8 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
           </CardContent>
         </Card>
 
-        <Card className="h-full" style={{ backgroundColor: bgColor }}>
+        {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
+        <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
           <CardHeader>
             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
           </CardHeader>
