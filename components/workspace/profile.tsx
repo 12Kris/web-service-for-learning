@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Book, Users, Award } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
 import { useRouter } from "next/navigation"
 import { signOut } from "@/utils/supabase/actions"
 import type { Profile } from "@/lib/types/user"
