@@ -39,7 +39,7 @@ export default function ModulePage() {
     }, [moduleId])
 
     return (
-        <div className="container   mx-auto">
+        <div className="container mx-auto">
             <div className="space-y-8">
                 <section>
                     <div className="flex items-center gap-2 mb-4">
@@ -52,7 +52,7 @@ export default function ModulePage() {
                         ) : materials.length > 0 ? (
                             materials.map((material) => (
                                 <Link key={material.id} href={`${moduleId}/card/${material.id}`}>
-                                    <Card className={`p-4 hover:bg-accent transition-colors ${material.is_completed ? 'opacity-50 ' : ''}`}>
+                                    <Card className={`text-[--neutral] p-4 hover:bg-accent transition-colors ${material.is_completed ? 'opacity-50 ' : ''}`}>
                                         <div className="text-left">
                                             <h3 className="font-medium">{material.title}</h3>
                                         </div>
@@ -75,7 +75,7 @@ export default function ModulePage() {
                         ) : tests.length > 0 ? (
                             tests.map((test) => (
                                 <Link key={test.id} href={`${moduleId}/test/${test.id}`}>
-                                    <Card className={`p-4 hover:bg-accent transition-colors ${test.is_completed ? 'opacity-50 ' : ''}`}>
+                                    <Card className={`text-[--neutral] p-4 hover:bg-accent transition-colors ${test.is_completed ? 'opacity-50 ' : ''}`}>
                                         <div className="text-left">
                                             <p>{test.question}</p>
                                         </div>

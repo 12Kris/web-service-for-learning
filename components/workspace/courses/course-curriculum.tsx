@@ -66,10 +66,15 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
           ))
         ) : modules.length > 0 ? (
           modules.map((module) => (
+            // <Card
+            //   key={module.id}
+            //   className="transition-colors hover:bg-gray-50"
+            //   style={{ backgroundColor: bgColor }}
+            // >
             <Card
               key={module.id}
-              className="transition-colors hover:bg-gray-50"
-              style={{ backgroundColor: bgColor }}
+              className="transition-colors hover:bg-gray-50 border-2 bg-white" 
+              style={{borderColor: bgColor}}
             >
               <CardHeader
                 className={

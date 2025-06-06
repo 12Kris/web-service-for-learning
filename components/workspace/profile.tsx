@@ -118,7 +118,8 @@ export default function UserProfile({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {createdCourses?.map((course) => (
                     <Link key={course.id} href={`/workspace/courses/${course.id}`}>
-                      <Card className="shadow-md hover:shadow-lg transition-shadow" style={{backgroundColor: course.color, opacity: 0.8}}>
+                      {/* <Card className="shadow-md hover:shadow-lg transition-shadow" style={{backgroundColor: course.color, opacity: 0.8}}> */}
+                      <Card className="shadow-md hover:shadow-lg transition-shadow border-2" style={{borderColor: course.color}}>
                         <CardHeader>
                           <CardTitle className="text-xl truncate">{course.name}</CardTitle>
                         </CardHeader>
@@ -154,7 +155,8 @@ export default function UserProfile({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {studyingCourses?.map((course) => (
                     <Link key={course.id} href={`/workspace/courses/${course.id}`}>
-                      <Card className="shadow-md hover:shadow-lg transition-shadow h-full" style={{backgroundColor: course.color, opacity: 0.8}}>
+                      {/* <Card className="shadow-md hover:shadow-lg transition-shadow h-full" style={{backgroundColor: course.color, opacity: 0.8}}> */}
+                      <Card className="shadow-md hover:shadow-lg transition-shadow h-full border-2" style={{borderColor: course.color}}>
                         <CardHeader>
                           <CardTitle className="text-xl">{course.name}</CardTitle>
                           <CardDescription>{course.description}</CardDescription>
@@ -170,9 +172,6 @@ export default function UserProfile({
                                 <Users className="h-4 mr-1" />
                                 {course.creator?.full_name}
                               </Badge>
-                            </div>
-                            <div className="space-y-1">
-                              <Progress value={course.progress} className="w-full" />
                             </div>
                           </div>
                         </CardContent>
