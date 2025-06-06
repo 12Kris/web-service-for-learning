@@ -1,17 +1,9 @@
 import { createClient } from "@/utils/supabase/client";
-import type { Profile, User, UserMetadata } from "@/lib/types/user";
-
-// export const supabase = await createClient()
-
-// export async function s(email: string, password: string) {
-//     const supabase = await createClient()
-// }
-
-// export const supabase = await createClient()
+import type { Profile } from "@/lib/types/user";
 
 export async function signOut() {
   const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
+  await supabase.auth.signOut();
 }
 
 export async function editUser(changes: {
@@ -37,16 +29,9 @@ export async function editUser(changes: {
   return { user: data?.user, error };
 }
 
-// get user by id
-// export async function getUserById(userId: string) {
-//   const supabase = await createClient();
-//   const { data, error } = await supabase.from("profiles").select().eq("id", userId);
-//   return data;
-// }
-
 export async function getProfileById(userId: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("profiles")
     .select()
     .eq("id", userId)

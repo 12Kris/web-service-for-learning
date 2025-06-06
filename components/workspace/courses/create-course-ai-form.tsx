@@ -89,7 +89,7 @@ export default function CreateCourseAIForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="coursesAmount">Courses Amount</Label>
+                <Label htmlFor="coursesAmount">Modules Amount</Label>
                 <Input
                   id="coursesAmount"
                   type="number"

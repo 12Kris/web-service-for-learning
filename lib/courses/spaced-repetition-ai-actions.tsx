@@ -21,7 +21,6 @@ export async function updateSpacedRepetitionWithAi(
   cardId: number,
 ) {
   try {
-    console.log("Request to AI", courseId);
 
     const supabase = await createClient();
     const user = await getUser();
@@ -41,7 +40,6 @@ export async function updateSpacedRepetitionWithAi(
 
 
 
-    console.log("Card results:", cardResults);
 
     if (!cardResults) {
       return {
@@ -88,7 +86,6 @@ async function generateCourseContent(
 ): Promise<SpacedRepetition | Error> {
   try {
     const timeSpentInSeconds = Math.round((endTime - startTime) / 1000);
-    console.log("Time spent in seconds:", timeSpentInSeconds);
   
     const prompt = `
   Today is ${new Date().toISOString().split("T")[0]}.

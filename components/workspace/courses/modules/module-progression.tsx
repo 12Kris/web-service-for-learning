@@ -13,14 +13,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-// interface CourseCarouselProps {
-//   title: string;
-//   courses: Course[];
-//   className?: string;
-//   autoplay?: boolean;
-//   showPagination?: boolean;
-// }
-
 interface ModuleProgressionProps {
   modules: Module[];
   currentModuleId: number;
@@ -47,7 +39,6 @@ export function ModuleProgression({
 
   return (
     <div className="relative flex justify-between items-center mb-16">
-
       <section className={cn("w-full", className)}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex gap-2">
@@ -96,8 +87,6 @@ export function ModuleProgression({
             className="w-full"
           >
             {modules.map((module, index) => {
-              // Convert module.id to an integer for comparison.               ${module.isCompleted ? 'text-white bg-[--accent] border-[--accent]' : 'bg-[--background]'}
-
               const moduleIdInt = Math.floor(module.id);
               const isActive = moduleIdInt === currentModuleIdInt;
               return (
@@ -122,48 +111,9 @@ export function ModuleProgression({
                 </SwiperSlide>
               );
             })}
-
-            {/* {courses.map((course, index) => (
-            <SwiperSlide key={course.id || index} className="h-auto all">
-              <CourseCard
-                id={course.id}
-                title={course.name}
-                topic={course.type}
-                color={course.color}
-                studentsCount={course.student_count}
-                description={course.description}
-                instructor={course.creator?.full_name || "Unknown Instructor"}
-                duration={course.last_completion_date || "Self-paced"}
-                price="Free"
-              />
-            </SwiperSlide>
-          ))} */}
           </Swiper>
         </div>
       </section>
-
-      {/* {modules.map((module) => {
-        // Convert module.id to an integer for comparison.               ${module.isCompleted ? 'text-white bg-[--accent] border-[--accent]' : 'bg-[--background]'}
-
-        const moduleIdInt = Math.floor(module.id);
-        const isActive = moduleIdInt === currentModuleIdInt;
-        return (
-          <Link key={module.id} href={`/workspace/courses/${courseId}/modules/${module.id}`}>
-            <div className="relative z-10 cursor-pointer">
-              <div 
-                className={`px-4 py-2 rounded-2xl font-bold border-2 hover:bg-[--accent] hover:text-white ${
-                  isActive
-                    ? 'text-[--accent] border-[--accent] bg-[--accent] text-white '
-                    : 'text-[--accent] border-[--accent] bg-[--background]'
-                }
-                `}
-              >
-                {module.title}
-              </div>
-            </div> 
-          </Link>
-        );
-      })} */}
     </div>
   );
 }
