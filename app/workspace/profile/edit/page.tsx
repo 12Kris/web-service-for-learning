@@ -31,13 +31,9 @@ export default function ProfileEdit() {
         location: formData.get("location") as string,
       },
     };
-    const { error, user: updated } = await editUser(updatedUser);
+    await editUser(updatedUser);
     window.location.href = `/workspace/profile`;
-    if (error) {
-      console.error("Error updating user:", error);
-    } else {
-      console.log("User updated successfully:", updated);
-    }
+
     router.push("/workspace/profile");
   };
 

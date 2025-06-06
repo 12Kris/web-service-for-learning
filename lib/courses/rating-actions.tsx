@@ -76,7 +76,6 @@ export async function hasUserRatedCourse(courseId: number): Promise<boolean> {
 }
 
 export async function rateCourse(courseId: number, rating: number): Promise<{ success: boolean; message: string }> {
-  console.log(`Attempting to rate course ${courseId} with rating ${rating}`);
 
   const supabase = await createClient();
   const user = await getUser();
@@ -86,7 +85,6 @@ export async function rateCourse(courseId: number, rating: number): Promise<{ su
     return { success: false, message: "You must be logged in to rate a course" };
   }
 
-  console.log(`User ID: ${user.id}`);
 
   try {
     const { data: enrollment, error: enrollmentError } = await supabase
@@ -178,7 +176,6 @@ async function updateCourseRating(
     updatedCount += 1;
   }
 
-  console.log(`Updating course rating_count to ${updatedCount}`);
 
   const { error: updateCourseError } = await supabase
     .from("Course")

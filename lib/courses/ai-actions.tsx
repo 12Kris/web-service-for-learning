@@ -76,8 +76,6 @@ export async function recordAiUsage(): Promise<void> {
     .eq("user_id", user.id)
     .gte("used_at", eightHoursAgo);
 
-  console.log("Count of AI uses in last 8 hours:", count);
-  console.log("User ID:", user.id);
   if (countError) {
     console.error("Error counting AI usage:", countError);
   }
@@ -397,12 +395,9 @@ export async function createCourseWithAI(
       return { success: false, message: "Difficulty level is required." };
     }
 
-    console.log("PDF file:", pdfFile);
     let pdfText = "";
     if (pdfFile) {
       pdfText = await extractTextFromPdfFile(pdfFile);
-
-      console.log("PDF text extracted successfully.", pdfText);
     }
 
     await recordAiUsage();
