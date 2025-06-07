@@ -29,15 +29,15 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
               <ul className="space-y-2">
                 {what_you_learn.length > 0 ? (
                   what_you_learn.map((item, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-sm">{item.description}</span>
+                    <li key={index} className="flex items-center gap-2 align-center">
+                      <div className="w-2 h-2 bg-[--neutral] rounded-full flex-shrink-0" />
+                      <span className="text-sm w-full">{item.description}</span>
                     </li>
                   ))
                 ) : (
-                  <li className="flex items-start gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-sm">No information...</span>
+                  <li className="flex items-start gap-2 align-center">
+                    <div className="w-2 h-2 bg-[--neutral] rounded-full flex-shrink-0" />
+                    <span className="text-sm w-full">No information...</span>
                   </li>
                 )}
               </ul>
@@ -55,14 +55,14 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
               <div className="space-y-3">
                 {course_details.length > 0 ? (
                   course_details.map((detail, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-sm">{detail.course_detail}</span>
+                    <div key={index} className="flex items-center gap-2 align-center">
+                      <Clock className="w-4 h-4 text-[--neutral]" />
+                      <span className="text-sm w-full">{detail.course_detail}</span>
                     </div>
                   ))
                 ) : (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">No information...</span>
+                    <span className="text-sm w-full">No information...</span>
                   </div>
                 )}
               </div>

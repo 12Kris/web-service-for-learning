@@ -13,7 +13,7 @@ export async function getCourseById(courseId: number) {
   const { data, error } = await supabase
     .from("Course")
     .select(
-      "*, creator:profiles!Course_creator_id_fkey1 (id, email, full_name, bio), student_count:UserCourse(count)"
+      "*, creator:profiles!Course_creator_id_fkey (id, email, full_name, bio), student_count:UserCourse(count)"
     )
     .eq("id", courseId)
     .single();
@@ -95,7 +95,7 @@ export const getUserCourses = cache(
         .select(
           `
         *,
-          creator:profiles!Course_creator_id_fkey1 (
+          creator:profiles!Course_creator_id_fkey (
             id,
             full_name
           ),
@@ -282,7 +282,7 @@ export const getUserCreatedCourses = cache(
         .select(
           `
           *,
-          creator:profiles!Course_creator_id_fkey1 (
+          creator:profiles!Course_creator_id_fkey (
             id,
             email,
             full_name,
@@ -349,7 +349,7 @@ export const getCourses = cache(
       .select(
         `
       *,
-      creator:profiles!Course_creator_id_fkey1 (
+      creator:profiles!Course_creator_id_fkey (
         id,
         full_name
       ),
@@ -409,7 +409,7 @@ export const getCoursesWithUserProgress = cache(
       .select(
         `
       *,
-    creator:profiles!Course_creator_id_fkey1 (
+    creator:profiles!Course_creator_id_fkey (
       id,
       full_name
     ),
@@ -1509,7 +1509,7 @@ export async function getUserCertificates(userId: string): Promise<Certificate[]
     .select("course_id, created_at")
     .eq("user_id", userId);
 
-  if (completedError || !completedCourses || completedCourses.length === 0) {
+  if (completedError || !completedCourses) {
     console.error("Error fetching completed courses:", completedError);
     return [];
   }
@@ -1585,7 +1585,7 @@ export const getCreatorCreatedCourses = cache(
         .select(
           `
           *,
-          creator:profiles!Course_creator_id_fkey1 (
+          creator:profiles!Course_creator_id_fkey (
             id,
             email,
             full_name,
