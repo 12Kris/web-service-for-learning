@@ -103,7 +103,7 @@ export default function CreateCourseForm() {
   }
 
   return (
-    <div className="bg-[--background] min-h-screen p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         <Link href={`/workspace/courses/browse`}>
           <Button className="mb-2">
@@ -112,7 +112,7 @@ export default function CreateCourseForm() {
         </Link>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-[#faf8f1] rounded-lg p-6 shadow-sm border">
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
             <h2 className="text-xl font-medium text-[#5c8d89] mb-6">Create New Course</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -232,7 +232,7 @@ export default function CreateCourseForm() {
             </div>
           </div>
 
-          <div className="bg-[#faf8f1] rounded-lg p-6 shadow-sm border">
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
             <h2 className="text-xl font-medium text-[#5c8d89] mb-6">Course Curriculum</h2>
 
             {formState.curriculum.map((module, index) => (

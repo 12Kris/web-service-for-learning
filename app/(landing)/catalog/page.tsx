@@ -58,6 +58,16 @@ const categories = [
   { name: "Web Development", icon: Globe, count: 10 }
 ];
 
+const topBarColors = [
+  "border-yellow-200",
+  "border-blue-200",
+  "border-purple-200",
+  "border-pink-200",
+  "border-oragne-200",
+  "border-green-200",
+  "border-cyan-200",
+]
+
 export default function Catalog() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -74,7 +84,7 @@ export default function Catalog() {
           <input
             type="text"
             placeholder="Search courses..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5c7d73]"
+            className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c7d73]"
           />
         </div>
         <Button variant="outline" className="flex items-center gap-2">
@@ -86,8 +96,8 @@ export default function Catalog() {
       </div>
 
       <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-12">
-        {categories.map((category) => (
-          <Card key={category.name} className="hover:shadow-lg transition-shadow cursor-pointer text-[--neutral]">
+        {categories.map((category, idx) => (
+          <Card key={category.name} className={`hover:shadow-lg transition-shadow cursor-pointer text-[--neutral] border-2 ${topBarColors[idx % topBarColors.length]}`}>
             <CardContent className="p-3 sm:p-6">
               <Link href={`/workspace/courses/browse`}>
                 <div className="flex items-center justify-between">
