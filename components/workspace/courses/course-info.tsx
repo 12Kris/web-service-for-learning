@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Check, Star } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Award, BookOpen, Check, Clock, Star } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { CourseDetails, WhatWillLearn } from "@/lib/types/course";
 import { getCourseRating, getUserRating, hasUserRatedCourse, rateCourse } from "@/lib/courses/rating-actions";
@@ -94,119 +94,280 @@ const CourseInfo: React.FC<CourseInfoProps> = ({
     }
   };
 
-  const bgColor = color ? hexToRgba(color, 0.5) : "rgba(98, 255, 187, 0.5)";
+  const bgColor = color ? hexToRgba(color) : "#a8e6cf";
 
   return (
-    <div className="container mx-auto pt-0 py-6">
-      <div className="grid gap-6 md:grid-cols-3">
-        {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
-        <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Course details</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {course_details.length > 0 ? (
-              course_details.map((detail, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <Check className="h-5 w-5 flex-shrink-0" />
-                  <span>{detail.course_detail}</span>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-2 text-center text-gray-500">
-                No information available.
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
-        <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">What you will learn</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="list-inside space-y-3">
-              {what_you_learn.length > 0 ? (
-                what_you_learn.map((item, index) => (
-                  <li key={index} className="text-sm">
-                    • {item.description}
+    <div className="mx-auto space-y-12 text-[--neutral]">
+      <div>
+        <h2 className="text-2xl font-bold mb-6">Description</h2>
+        <div className="grid md:grid-cols-2 gap-8">
+          <Card className="border bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5" />
+                What you'll learn
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {what_you_learn.length > 0 ? (
+                  what_you_learn.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                      <span className="text-sm">{item.description}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="flex items-start gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0" />
+                    <span className="text-sm">No information...</span>
                   </li>
-                ))
-              ) : (
-                <div className="col-span-2 text-center text-gray-500">
-                  No information available.
-                </div>
-              )}
-            </ul>
-          </CardContent>
-        </Card>
+                )}
+              </ul>
+            </CardContent>
+          </Card>
 
-        {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
-        <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-6 w-6 ${
-                      (isSubscribed && !(userId && creatorId && userId === creatorId))
-                        ? "cursor-pointer"
-                        : "cursor-not-allowed"
-                    } ${
-                      star <= (hoverRating || userRating || rating)
-                        ? "fill-current text-primary"
-                        : "text-muted"
-                    }`}
-                    onClick={
-                      isSubscribed && !(userId && creatorId && userId === creatorId)
-                        ? () => handleRatingClick(star)
-                        : undefined
-                    }
-                    onMouseEnter={
-                      isSubscribed && !(userId && creatorId && userId === creatorId)
-                        ? () => setHoverRating(star)
-                        : undefined
-                    }
-                    onMouseLeave={
-                      isSubscribed && !(userId && creatorId && userId === creatorId)
-                        ? () => setHoverRating(0)
-                        : undefined
-                    }
-                  />
-                ))}
+          <Card className="border bg-white">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="w-5 h-5" />
+                Course details
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {course_details.length > 0 ? (
+                  course_details.map((detail, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm">{detail.course_detail}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">No information...</span>
+                  </div>
+                )}
               </div>
-              <span className="text-2xl font-bold">{rating.toFixed(1)}</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Based on {reviews} reviews
-            </p>
-            {hasRated ? (
-              <p className="text-sm text-muted-foreground">
-                Your rating: {userRating}
-              </p>
-            ) : userId && creatorId && userId === creatorId ? (
-              <p className="text-sm text-muted-foreground text-red-700">
-                You cannot rate your own course.
-              </p>
-            ) : isSubscribed ? (
-              <p className="text-sm text-muted-foreground">
-                You can rate this course by clicking on a star
-              </p>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                Subscribe to this course to rate it
-              </p>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
 };
 
 export default CourseInfo;
+
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { Check, Star } from "lucide-react";
+// import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+// import { CourseDetails, WhatWillLearn } from "@/lib/types/course";
+// import { getCourseRating, getUserRating, hasUserRatedCourse, rateCourse } from "@/lib/courses/rating-actions";
+// import { isCourseAddedToUser } from "@/lib/courses/actions";
+// import { toast } from "sonner";
+
+// const hexToRgba = (hex: string, alpha: number = 0.5): string => {
+//   const cleanHex = hex.replace("#", "");
+//   const r = parseInt(cleanHex.substring(0, 2), 16);
+//   const g = parseInt(cleanHex.substring(2, 4), 16);
+//   const b = parseInt(cleanHex.substring(4, 6), 16);
+//   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+// };
+
+// interface CourseInfoProps {
+//   course_details: CourseDetails[];
+//   what_you_learn: WhatWillLearn[];
+//   course_rating: number;
+//   reviews: number;
+//   courseId: number;
+//   color?: string;
+//   creatorId?: string;
+//   userId?: string;
+// }
+
+// const CourseInfo: React.FC<CourseInfoProps> = ({
+//   course_details,
+//   what_you_learn,
+//   course_rating: initialRating,
+//   reviews: initialReviews,
+//   courseId,
+//   color,
+//   creatorId,
+//   userId,
+// }) => {
+//   const [rating, setRating] = useState<number>(initialRating);
+//   const [reviews, setReviews] = useState<number>(initialReviews);
+//   const [userRating, setUserRating] = useState<number>(0);
+//   const [hasRated, setHasRated] = useState<boolean>(false);
+//   const [hoverRating, setHoverRating] = useState<number>(0);
+//   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+
+//   useEffect(() => {
+//     const fetchRatingData = async () => {
+//       try {
+//         const courseRatingData = await getCourseRating(courseId);
+//         setRating(courseRatingData.rating);
+//         setReviews(courseRatingData.count);
+
+//         const hasRatedResult = await hasUserRatedCourse(courseId);
+//         setHasRated(hasRatedResult);
+
+//         if (hasRatedResult) {
+//           const userRatingData = await getUserRating(courseId);
+//           setUserRating(userRatingData);
+//         }
+
+//         const subscribed = await isCourseAddedToUser(courseId);
+//         setIsSubscribed(subscribed);
+//       } catch (error) {
+//         console.error("Error fetching rating data:", error);
+//       }
+//     };
+
+//     fetchRatingData();
+//   }, [courseId]);
+
+//   const handleRatingClick = async (selectedRating: number) => {
+//     try {
+//       const result = await rateCourse(courseId, selectedRating);
+//       if (result.success) {
+//         const updatedRating = await getCourseRating(courseId);
+//         setRating(updatedRating.rating);
+//         setReviews(updatedRating.count);
+//         setUserRating(selectedRating);
+//         setHasRated(true);
+//         toast.success("Rating Submitted", {
+//           description: "Thank you for rating this course!",
+//         });
+//       } else {
+//         toast.error("Error", {
+//           description: result.message || "Failed to rate the course.",
+//         });
+//       }
+//     } catch (error) {
+//       console.error("Error submitting rating:", error);
+//       toast.error("Error", {
+//         description: "An error occurred while rating the course.",
+//       });
+//     }
+//   };
+
+//   const bgColor = color ? hexToRgba(color, 0.5) : "rgba(98, 255, 187, 0.5)";
+
+//   return (
+//     <div className="container mx-auto pt-0 py-6">
+//       <div className="grid gap-6 md:grid-cols-3">
+//         {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
+//         <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
+//           <CardHeader>
+//             <CardTitle className="text-xl font-bold">Course details</CardTitle>
+//           </CardHeader>
+//           <CardContent className="space-y-4">
+//             {course_details.length > 0 ? (
+//               course_details.map((detail, index) => (
+//                 <div key={index} className="flex items-center gap-2">
+//                   <Check className="h-5 w-5 flex-shrink-0" />
+//                   <span>{detail.course_detail}</span>
+//                 </div>
+//               ))
+//             ) : (
+//               <div className="col-span-2 text-center text-gray-500">
+//                 No information available.
+//               </div>
+//             )}
+//           </CardContent>
+//         </Card>
+
+//         {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
+//         <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
+//           <CardHeader>
+//             <CardTitle className="text-xl font-bold">What you will learn</CardTitle>
+//           </CardHeader>
+//           <CardContent>
+//             <ul className="list-inside space-y-3">
+//               {what_you_learn.length > 0 ? (
+//                 what_you_learn.map((item, index) => (
+//                   <li key={index} className="text-sm">
+//                     • {item.description}
+//                   </li>
+//                 ))
+//               ) : (
+//                 <div className="col-span-2 text-center text-gray-500">
+//                   No information available.
+//                 </div>
+//               )}
+//             </ul>
+//           </CardContent>
+//         </Card>
+
+//         {/* <Card className="h-full" style={{ backgroundColor: bgColor }}> */}
+//         <Card className="h-full border-2 bg-white" style={{borderColor: bgColor}}>
+//           <CardHeader>
+//             <CardTitle className="text-xl font-bold">Course Rating</CardTitle>
+//           </CardHeader>
+//           <CardContent className="space-y-4">
+//             <div className="flex items-center gap-2">
+//               <div className="flex">
+//                 {[1, 2, 3, 4, 5].map((star) => (
+//                   <Star
+//                     key={star}
+//                     className={`h-6 w-6 ${
+//                       (isSubscribed && !(userId && creatorId && userId === creatorId))
+//                         ? "cursor-pointer"
+//                         : "cursor-not-allowed"
+//                     } ${
+//                       star <= (hoverRating || userRating || rating)
+//                         ? "fill-current text-primary"
+//                         : "text-muted"
+//                     }`}
+//                     onClick={
+//                       isSubscribed && !(userId && creatorId && userId === creatorId)
+//                         ? () => handleRatingClick(star)
+//                         : undefined
+//                     }
+//                     onMouseEnter={
+//                       isSubscribed && !(userId && creatorId && userId === creatorId)
+//                         ? () => setHoverRating(star)
+//                         : undefined
+//                     }
+//                     onMouseLeave={
+//                       isSubscribed && !(userId && creatorId && userId === creatorId)
+//                         ? () => setHoverRating(0)
+//                         : undefined
+//                     }
+//                   />
+//                 ))}
+//               </div>
+//               <span className="text-2xl font-bold">{rating.toFixed(1)}</span>
+//             </div>
+//             <p className="text-sm text-muted-foreground">
+//               Based on {reviews} reviews
+//             </p>
+//             {hasRated ? (
+//               <p className="text-sm text-muted-foreground">
+//                 Your rating: {userRating}
+//               </p>
+//             ) : userId && creatorId && userId === creatorId ? (
+//               <p className="text-sm text-muted-foreground text-red-700">
+//                 You cannot rate your own course.
+//               </p>
+//             ) : isSubscribed ? (
+//               <p className="text-sm text-muted-foreground">
+//                 You can rate this course by clicking on a star
+//               </p>
+//             ) : (
+//               <p className="text-sm text-muted-foreground">
+//                 Subscribe to this course to rate it
+//               </p>
+//             )}
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CourseInfo;

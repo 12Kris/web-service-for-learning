@@ -13,7 +13,7 @@ export async function getCourseById(courseId: number) {
   const { data, error } = await supabase
     .from("Course")
     .select(
-      "*, creator:profiles!Course_creator_id_fkey1 (id, email, full_name, bio)"
+      "*, creator:profiles!Course_creator_id_fkey1 (id, email, full_name, bio), student_count:UserCourse(count)"
     )
     .eq("id", courseId)
     .single();
@@ -24,7 +24,7 @@ export async function getCourseById(courseId: number) {
   }
 
   const completed = await isCourseCompleted(courseId);
-  return { ...data, isCourseCompleted: completed };
+  return { ...data, isCourseCompleted: completed, student_count: data.student_count?.[0]?.count || 0, };
 }
 
 export async function getCardsByBlock(blockId: number) {
@@ -1541,265 +1541,105 @@ export async function getUserCertificates(userId: string): Promise<Certificate[]
   return certificates;
 }
 
-// export async function calculateStreakAndPoints(userId: string): Promise<{
-//   weeks: number;
-//   pointsToAddForWeek: number;
-// }> {
-//   const supabase = await createClient();
+export async function getCreatorTotalPoints(creatorId: String) {
+  const supabase = await createClient();
 
-//   const today = new Date();
-//   today.setHours(0, 0, 0, 0);
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("total_points")
+    .eq("id", creatorId)
+    .single();
 
-//   const currentWeekStart = new Date(today);
-//   const dayOfWeek = (currentWeekStart.getDay() + 6) % 7;
-//   currentWeekStart.setDate(currentWeekStart.getDate() - dayOfWeek);
-//   currentWeekStart.setHours(0, 0, 0, 0);
+  if (profileError || !profile) {
+    console.error("Error fetching profile:", profileError);
+    throw new Error("Failed to fetch user profile");
+  }
+  
+  const totalPoints = profile.total_points || 0;
 
-//   const { data: profile, error: profileError } = await supabase
-//     .from("profiles")
-//     .select("total_points, last_streak_points_update")
-//     .eq("id", userId)
-//     .single();
+  return totalPoints
+}
 
-//   if (profileError) {
-//     console.error("Error fetching profile for points update:", profileError);
-//     return { weeks: 0, pointsToAddForWeek: 0 };
-//   }
+export async function getCreatorCompletedCoursesCount(creatorId: String): Promise<number> {
+  const supabase = await createClient();
 
-//   const lastUpdate = profile.last_streak_points_update ? new Date(profile.last_streak_points_update) : null;
-//   let pointsToAddForWeek = 0;
+  const { data, error } = await supabase
+    .from("received_points_for_course")
+    .select("course_id")
+    .eq("user_id", creatorId);
 
-//   if (lastUpdate) {
-//     const timeDiff = today.getTime() - lastUpdate.getTime();
-//     const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-//     if (daysDiff >= 7) {
-//       pointsToAddForWeek = 20;
-//     } else {
-//       pointsToAddForWeek = 0;
-//     }
-//   } else {
-//     pointsToAddForWeek = 20;
-//   }
+  if (error) {
+    console.error("Error fetching completed courses:", error);
+    return 0;
+  }
 
-//   if (lastUpdate && lastUpdate >= today) {
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
+  return data.length;
+}
 
-//   const { data: cardResults, error: cardError } = await supabase
-//     .from("card_results")
-//     .select("start_time")
-//     .eq("user_id", userId)
-//     .order("start_time", { ascending: true });
+export const getCreatorCreatedCourses = cache(
+  async (offset = 0, limit = 10, creatorId: String): Promise<Course[]> => {
+    const supabase = await createClient();
+    try {
+      const { data, error } = await supabase
+        .from("Course")
+        .select(
+          `
+          *,
+          creator:profiles!Course_creator_id_fkey1 (
+            id,
+            email,
+            full_name,
+            avatar_url,
+            bio,
+            username
+          ),
+          rating_count
+      `
+        )
+        .eq("creator_id", creatorId)
+        .range(offset, offset + limit - 1);
 
-//   if (cardError) {
-//     console.error("Error fetching card results for streak:", cardError);
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
+      if (error) {
+        console.error("Error fetching courses from Supabase:", error);
+        return [];
+      }
 
-//   if (!cardResults || cardResults.length === 0) {
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
+      if (!data) return [];
 
-//   const eightWeeksAgo = new Date(today);
-//   eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56);
+      const courseIds = data.map((course) => course.id);
+      const { data: ratingsData, error: ratingsError } = await supabase
+        .from("CourseRating")
+        .select("course_id, rating")
+        .in("course_id", courseIds);
 
-//   const recentActivities = cardResults.filter((result) => {
-//     const start = new Date(Number(result.start_time));
-//     return start >= eightWeeksAgo && !isNaN(start.getTime());
-//   });
+      if (ratingsError) {
+        console.error("Error fetching ratings:", ratingsError);
+      }
 
-//   if (recentActivities.length === 0) {
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
+      const ratingsMap = ratingsData?.reduce((acc, { course_id, rating }) => {
+        if (!acc[course_id]) acc[course_id] = [];
+        acc[course_id].push(rating);
+        return acc;
+      }, {} as Record<number, number[]>);
 
-//   const weeks = new Set<string>();
-//   recentActivities.forEach((result) => {
-//     const start = new Date(Number(result.start_time));
-//     const weekStart = new Date(start);
-//     const dayOfWeek = (weekStart.getDay() + 6) % 7;
-//     weekStart.setDate(weekStart.getDate() - dayOfWeek);
-//     weekStart.setHours(0, 0, 0, 0);
-//     weeks.add(weekStart.toISOString().split("T")[0]);
-//   });
+      const coursesWithRating = data.map((course) => {
+        const ratings = ratingsMap?.[course.id] || [];
+        const averageRating =
+          ratings.length > 0
+            ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+            : 0;
+        return {
+          ...course,
+          rating: Number.parseFloat(averageRating.toFixed(1)),
+          student_count: course.rating_count || 0,
+          creator: course.creator?.[0] || { id: "", full_name: "Unknown" },
+        };
+      });
 
-//   const streakWeeks = weeks.size;
-
-//   const weekStartDates = Array.from(weeks);
-//   const { data: pointsHistory, error: historyError } = await supabase
-//     .from("streak_points_history")
-//     .select("week_start")
-//     .eq("user_id", userId)
-//     .in("week_start", weekStartDates);
-
-//   if (historyError) {
-//     console.error("Error fetching streak points history:", historyError);
-//     return { weeks: streakWeeks, pointsToAddForWeek };
-//   }
-
-//   const awardedWeeks = new Set(pointsHistory.map((entry) => entry.week_start));
-
-//   let pointsToAdd = 0;
-//   for (const weekStart of weeks) {
-//     if (!awardedWeeks.has(weekStart)) {
-//       pointsToAdd += 20;
-//       const { error: insertError } = await supabase
-//         .from("streak_points_history")
-//         .insert({
-//           user_id: userId,
-//           week_start: weekStart,
-//           points_added: 20,
-//         });
-
-//       if (insertError) {
-//         console.error("Error inserting streak points history:", insertError);
-//       }
-//     }
-//   }
-
-//   const currentTotalPoints = profile.total_points || 0;
-//   const newTotalPoints = currentTotalPoints + pointsToAdd;
-
-//   if (pointsToAdd > 0) {
-//     const { error: updateError } = await supabase
-//       .from("profiles")
-//       .update({ total_points: newTotalPoints, last_streak_points_update: today.toISOString() })
-//       .eq("id", userId);
-
-//     if (updateError) {
-//       console.error("Error updating total_points:", updateError);
-//       return { weeks: streakWeeks, pointsToAddForWeek };
-//     }
-//   }
-
-//   return { weeks: streakWeeks, pointsToAddForWeek };
-// }
-
-// export async function calculateStreakAndPoints(userId: string): Promise<{
-//   weeks: number;
-//   pointsToAddForWeek: number;
-// }> {
-//   const supabase = await createClient();
-
-//   const today = new Date();
-//   today.setHours(0, 0, 0, 0);
-
-//   const currentWeekStart = new Date(today);
-//   currentWeekStart.setDate(today.getDate() - today.getDay());
-
-//   const { data: profile, error: profileError } = await supabase
-//     .from("profiles")
-//     .select("total_points, last_streak_points_update")
-//     .eq("id", userId)
-//     .single();
-
-//   if (profileError) {
-//     console.error("Error fetching profile for points update:", profileError);
-//     return { weeks: 0, pointsToAddForWeek: 0 };
-//   }
-
-//   const lastUpdate = profile.last_streak_points_update ? new Date(profile.last_streak_points_update) : null;
-//   let pointsToAddForWeek = 0;
-
-//   if (lastUpdate) {
-//     const timeDiff = today.getTime() - lastUpdate.getTime();
-//     const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
-//     if (daysDiff >= 7) {
-//       pointsToAddForWeek = 20;
-//     } else {
-//       pointsToAddForWeek = 0;
-//     }
-//   } else {
-//     pointsToAddForWeek = 20;
-//   }
-
-//   if (lastUpdate && lastUpdate >= today) {
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
-
-//   const { data: cardResults, error: cardError } = await supabase
-//     .from("card_results")
-//     .select("start_time")
-//     .eq("user_id", userId)
-//     .order("start_time", { ascending: true });
-
-//   if (cardError) {
-//     console.error("Error fetching card results for streak:", cardError);
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
-
-//   if (!cardResults || cardResults.length === 0) {
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
-
-//   const eightWeeksAgo = new Date(today);
-//   eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56);
-
-//   const recentActivities = cardResults.filter((result) => {
-//     const start = new Date(Number(result.start_time));
-//     return start >= eightWeeksAgo && !isNaN(start.getTime());
-//   });
-
-//   if (recentActivities.length === 0) {
-//     return { weeks: 0, pointsToAddForWeek };
-//   }
-
-//   const weeks = new Set<string>();
-//   recentActivities.forEach((result) => {
-//     const start = new Date(Number(result.start_time));
-//     const weekStart = new Date(start);
-//     weekStart.setDate(start.getDate() - start.getDay());
-//     weekStart.setHours(0, 0, 0, 0);
-//     weeks.add(weekStart.toISOString().split("T")[0]);
-//   });
-
-//   const streakWeeks = weeks.size;
-
-//   const weekStartDates = Array.from(weeks);
-//   const { data: pointsHistory, error: historyError } = await supabase
-//     .from("streak_points_history")
-//     .select("week_start")
-//     .eq("user_id", userId)
-//     .in("week_start", weekStartDates);
-
-//   if (historyError) {
-//     console.error("Error fetching streak points history:", historyError);
-//     return { weeks: streakWeeks, pointsToAddForWeek };
-//   }
-
-//   const awardedWeeks = new Set(pointsHistory.map((entry) => entry.week_start));
-
-//   let pointsToAdd = 0;
-//   for (const weekStart of weeks) {
-//     if (!awardedWeeks.has(weekStart)) {
-//       pointsToAdd += 20;
-//       const { error: insertError } = await supabase
-//         .from("streak_points_history")
-//         .insert({
-//           user_id: userId,
-//           week_start: weekStart,
-//           points_added: 20,
-//         });
-
-//       if (insertError) {
-//         console.error("Error inserting streak points history:", insertError);
-//       }
-//     }
-//   }
-
-//   const currentTotalPoints = profile.total_points || 0;
-//   const newTotalPoints = currentTotalPoints + pointsToAdd;
-
-//   if (pointsToAdd > 0) {
-//     const { error: updateError } = await supabase
-//       .from("profiles")
-//       .update({ total_points: newTotalPoints, last_streak_points_update: today.toISOString() })
-//       .eq("id", userId);
-
-//     if (updateError) {
-//       console.error("Error updating total_points:", updateError);
-//       return { weeks: streakWeeks, pointsToAddForWeek };
-//     }
-//   }
-
-//   return { weeks: streakWeeks, pointsToAddForWeek };
-// }
+      return coursesWithRating;
+    } catch (error) {
+      console.error("Error fetching user created courses:", error);
+      return [];
+    }
+  }
+);

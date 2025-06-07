@@ -16,7 +16,7 @@ const buttonVariants = cva(
         secondary:
           "text-[--neutral] bg-[--primary] border-2 border-[--primary] hover:bg-[--primary-light]",
         solid:
-          "text-white bg-[--neutral-dark] border-2 border-[--neutral-dark]",
+          "text-white bg-[--neutral] border-2 border-[--neutral]",
         outline:
           "text-[--neutral] bg-transparent border-2 border-[--neutral] hover:bg-[--neutral] hover:text-white",
         ghost: "text-[--neutral] bg-transparent",
