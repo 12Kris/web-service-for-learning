@@ -181,6 +181,7 @@ async function generateCourseContent(
               what_w_learn: {
                 type: "array",
                 description: "Learning outcomes of the course.",
+
                 items: {
                   type: "object",
                   properties: {
@@ -230,6 +231,8 @@ async function generateCourseContent(
                           },
                           cards: {
                             type: "array",
+                            minItems: 5,
+                            maxItems: 5,
                             description:
                               "Cards related to the learning materials.",
                             items: {

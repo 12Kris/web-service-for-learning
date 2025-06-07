@@ -45,8 +45,8 @@ export default function UserProfile({
 
   const handleLogout = async () => {
     try {
-      await signOut()
-      router.push("/")
+      await signOut();
+      router.push("/");
     } catch (error) {
       console.error("Logout failed:", error)
     }
