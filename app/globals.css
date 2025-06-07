@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --background: #fdf9f3;
+    /* --background: #fdf9f3; */
+    --background: #fcfcfc;
     --workspace-background: rgb(244, 244, 244);
     --primary: #a2d5c6;
     --accent: #ff8a80;

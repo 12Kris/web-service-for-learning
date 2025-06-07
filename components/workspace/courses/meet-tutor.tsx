@@ -1,43 +1,50 @@
 import React from "react";
-import Image from "next/image";
-import Skeleton from "react-loading-skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Course } from "@/lib/types/course";
 
 interface MeetTutorProps {
-  name?: string;
-  description?: string;
-  imageUrl?: string;
+  course?: Course;
+  coursesCreated?: Course[];
+  completedCoursesCount?: number;
+  userTotalPoints?: number;
 }
 
 const MeetTutor: React.FC<MeetTutorProps> = ({
-  name = "No name available",
-  description = "No description available",
-  imageUrl = "",
+  course,
+  coursesCreated,
+  completedCoursesCount,
+  userTotalPoints
 }) => {
   return (
-    <section className="container mx-auto px-4 py-12 text-[--neutral]">
-      <div className="grid md:grid-cols-2 gap-8 items-center">
-        <div className="space-y-4">
-          <h2 className="text-4xl font-bold">{name ? name : <Skeleton />}</h2>
-          <p className="text-lg leading-relaxed max-w-xl">
-            {description ? description : <Skeleton count={3} />}
-          </p>
+    <section className="container text-[--neutral]">
+        <div>
+          <h2 className="text-2xl font-bold mb-6">Instructor</h2>
+          <Card className="border bg-white">
+            <CardHeader>
+              <CardTitle className="text-2xl">{course?.creator?.full_name}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-6">
+                {course?.creator?.bio || "No information..."}
+              </p>
+
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="text-center p-4 border-2 border-green-200 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">{coursesCreated?.length || 0}</div>
+                  <div className="text-sm text-gray-600">Courses created</div>
+                </div>
+                <div className="text-center p-4 border-2 border-blue-200 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{completedCoursesCount || 0}</div>
+                  <div className="text-sm text-gray-600">Courses completed</div>
+                </div>
+                <div className="text-center p-4 border-2 border-purple-200 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600">{userTotalPoints || 0}</div>
+                  <div className="text-sm text-gray-600">Total points</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-        <div className="flex justify-center md:justify-end">
-          <div className="relative w-72 h-72">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={`Portrait of ${name}`}
-                fill
-                className="rounded-full object-cover "
-                priority
-              />
-            ) : (
-              <div className="w-full h-full rounded-full bg-zinc-100" />
-            )}
-          </div>
-        </div>
-      </div>
     </section>
   );
 };

@@ -52,7 +52,7 @@ export default function ModulePage() {
                         ) : materials.length > 0 ? (
                             materials.map((material) => (
                                 <Link key={material.id} href={`${moduleId}/card/${material.id}`}>
-                                    <Card className={`text-[--neutral] p-4 hover:bg-accent transition-colors ${material.is_completed ? 'opacity-50 ' : ''}`}>
+                                    <Card className={`text-[--neutral] p-4 hover:bg-[--neutral] hover:text-white transition-colors ${material.is_completed ? 'opacity-50 ' : ''}`}>
                                         <div className="text-left">
                                             <h3 className="font-medium">{material.title}</h3>
                                         </div>
@@ -75,7 +75,7 @@ export default function ModulePage() {
                         ) : tests.length > 0 ? (
                             tests.map((test) => (
                                 <Link key={test.id} href={`${moduleId}/test/${test.id}`}>
-                                    <Card className={`text-[--neutral] p-4 hover:bg-accent transition-colors ${test.is_completed ? 'opacity-50 ' : ''}`}>
+                                    <Card className={`text-[--neutral] p-4 hover:bg-[--neutral] hover:text-white transition-colors ${test.is_completed ? 'opacity-50 ' : ''}`}>
                                         <div className="text-left">
                                             <p>{test.question}</p>
                                         </div>
