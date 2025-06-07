@@ -21,7 +21,13 @@ export async function login(formData: FormData) {
     };
   }
 
-  redirect("/workspace");
+  // return {
+  //   success: true,
+  //   message: "Login successful",
+  // };
+  
+
+  return { success: true };
 }
 
 export async function signup(formData: FormData) {

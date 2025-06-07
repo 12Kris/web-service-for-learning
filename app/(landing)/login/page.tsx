@@ -49,25 +49,22 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    startTransition(async () => {
-      try {
-        const formdata = new FormData();
-        formdata.append("email", formData.email);
-        formdata.append("password", formData.password);
+    // in LoginPage.tsx
+startTransition(async () => {
+  const formdata = new FormData();
+  formdata.append("email", formData.email);
+  formdata.append("password", formData.password);
 
-        const result = await login(formdata);
+  const result = await login(formdata);
 
-        if (result.success === false) {
-          setError(result.error);
-          return;
-        }
+  if (!result.success) {
+    setError(result.error ?? "An unknown error occurred. Please try again.");
+    return;
+  }
 
-        router.push("/workspace");
-      } catch (err) {
-        setError((err as Error).message);
-        console.error("Login failed:", err);
-      }
-    });
+  // this is the only redirect
+  router.push("/workspace");
+});
   };
 
   if (isLoggedIn === null) {
