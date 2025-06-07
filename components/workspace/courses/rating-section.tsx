@@ -3,7 +3,6 @@
 import React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
-import { toast } from "sonner";
 
 interface RatingSectionProps {
   courseRating: number;

@@ -7,26 +7,14 @@ import Link from "next/link";
 import { Module } from "@/lib/types/modules";
 import { isCourseAddedToUser } from "@/lib/courses/actions";
 
-const hexToRgba = (hex: string, alpha: number = 0.5): string => {
-  const cleanHex = hex.replace("#", "");
-  const r = parseInt(cleanHex.substring(0, 2), 16);
-  const g = parseInt(cleanHex.substring(2, 4), 16);
-  const b = parseInt(cleanHex.substring(4, 6), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
-
 interface CourseCurriculumProps {
   modules: Module[] | undefined;
-  onModuleClick?: (moduleId: number) => void;
   courseId?: number;
-  color?: string;
 }
 
 const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
   modules,
-  onModuleClick,
   courseId,
-  color,
 }) => {
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
 
@@ -42,14 +30,6 @@ const CourseCurriculum: React.FC<CourseCurriculumProps> = ({
 
     fetchRatingData();
   }, [courseId]);
-
-  const bgColor = color ? hexToRgba(color) : "#a8e6cf";
-
-  const handleModuleClick = (moduleId: number) => {
-    if (isSubscribed && onModuleClick) {
-      onModuleClick(moduleId);
-    }
-  };
 
   return (
     <div className="container">

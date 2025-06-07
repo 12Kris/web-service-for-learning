@@ -5,7 +5,6 @@ import { UserPlus, UserCheck, Users, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { SpacedRepetitionModal } from "@/components/workspace/modals/spaced-repetition";
-import Skeleton from "react-loading-skeleton";
 import { addCourseToUser, isCourseAddedToUser, removeCourseFromUser } from "@/lib/courses/actions";
 import { Course } from "@/lib/types/course";
 
@@ -106,7 +105,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
                 <Button
                   size="lg"
                   variant={isCourseAdded ? "destructive" : "solid"}
-                  className="bg-white"
+                  className={isCourseAdded ? "bg-white" : "hover:bg-white hover:text-[--neutral]"}
                   onClick={() => (isCourseAdded ? handleRemoveCourse(id) : handleAddCourse(id))}
                 >
                   {isCourseAdded ? (

@@ -1541,7 +1541,7 @@ export async function getUserCertificates(userId: string): Promise<Certificate[]
   return certificates;
 }
 
-export async function getCreatorTotalPoints(creatorId: String) {
+export async function getCreatorTotalPoints(creatorId: string) {
   const supabase = await createClient();
 
   const { data: profile, error: profileError } = await supabase
@@ -1560,7 +1560,7 @@ export async function getCreatorTotalPoints(creatorId: String) {
   return totalPoints
 }
 
-export async function getCreatorCompletedCoursesCount(creatorId: String): Promise<number> {
+export async function getCreatorCompletedCoursesCount(creatorId: string): Promise<number> {
   const supabase = await createClient();
 
   const { data, error } = await supabase
@@ -1577,7 +1577,7 @@ export async function getCreatorCompletedCoursesCount(creatorId: String): Promis
 }
 
 export const getCreatorCreatedCourses = cache(
-  async (offset = 0, limit = 10, creatorId: String): Promise<Course[]> => {
+  async (offset = 0, limit = 10, creatorId: string): Promise<Course[]> => {
     const supabase = await createClient();
     try {
       const { data, error } = await supabase
