@@ -6,7 +6,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, Flame, Plus, Sparkles } from "lucide-react";
 import type { Course } from "@/lib/types/course";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 interface HomePageProps {
   weeklyStreak: {
@@ -31,12 +30,6 @@ export default function HomePage({
   leaderboard,
   completedCoursesCount,
 }: HomePageProps) {
-  const [containerHeight, setContainerHeight] = useState("61vh");
-
-  useEffect(() => {
-    const initialHeight = window.innerHeight * 0.61 - 181;
-    setContainerHeight(`${initialHeight}px`);
-  }, []);
 
   const stats = [
     { 
@@ -206,9 +199,8 @@ export default function HomePage({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card
           className="border border-gray-200 rounded-xl shadow-sm text-[--neutral]"
-          style={{ maxHeight: containerHeight }}
         >
-          <CardContent className="p-6 h-full">
+          <CardContent className="p-6 h-[600px]">
             <h2 className="text-lg font-medium mb-4">Courses in progress</h2>
             <div
               className="space-y-5 overflow-y-scroll mb-6 px-5"
@@ -246,9 +238,8 @@ export default function HomePage({
 
         <Card
           className="border border-gray-200 rounded-xl shadow-sm text-[--neutral]"
-          style={{ minHeight: containerHeight }}
         >
-          <CardContent className="p-6">
+          <CardContent className="p-6 h-[600px]">
             <h2 className="text-lg font-medium mb-4">Leader board</h2>
             <div className="space-y-4">
               <div className="grid grid-cols-12 text-sm mb-2">
@@ -265,7 +256,7 @@ export default function HomePage({
                     <div className="col-span-1 font-medium">{user.rank}</div>
                     <div className="col-span-7 flex items-center gap-2">
                       <div
-                        className={`${user.color} w-8 h-8 rounded-full flex items-center justify-center text-xs`}
+                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs`}
                       >
                         {user.initials}
                       </div>
