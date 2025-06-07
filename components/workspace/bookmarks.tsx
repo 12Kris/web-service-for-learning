@@ -126,6 +126,16 @@ export default function BookmarksPage({
     groupEnrolledCoursesByType(newFilteredEnrolled);
   };
 
+  const topBarColors = [
+    "border-yellow-200",
+    "border-blue-200",
+    "border-purple-200",
+    "border-pink-200",
+    "border-oragne-200",
+    "border-green-200",
+    "border-cyan-200",
+  ]
+
   return (
     <div>
       <div className="container mx-auto space-y-12">
@@ -149,7 +159,7 @@ export default function BookmarksPage({
             <input
               type="text"
               placeholder="Search courses..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[--neutral]"
+              className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--neutral]"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
@@ -172,15 +182,15 @@ export default function BookmarksPage({
             }
             className="w-full"
           >
-            {courseTypes.map((type) => (
+            {courseTypes.map((type, idx) => (
               <SwiperSlide key={enrolledCoursesByType[type].displayName} className="mb-5">
                 <Card
                   onClick={() => handleCategoryClick(type)}
                   className={cn(
-                    "transition-colors shadow hover:shadow-lg transition-shadow cursor-pointer",
+                    "transition-colors shadow hover:shadow-lg transition-shadow cursor-pointer border-2",
                     selectedTypes.includes(type.toLowerCase())
                       ? "border-green-500 bg-green-50"
-                      : "border-gray-200"
+                      : `${topBarColors[idx % topBarColors.length]}`
                   )}
                 >
                   <CardContent className="p-3 sm:p-6">

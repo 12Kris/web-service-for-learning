@@ -359,19 +359,19 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
   return (
     <div className="bg-[--background] min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
-        <Button className="mb-2">
-          <Link href={`/workspace/courses/${course.id}`}>
-            <ChevronLeft className="w-6 h-6" />
-          </Link>
-        </Button>
+        <Link href={`/workspace/courses/${course.id}`}>
+          <Button className="mb-2">
+              <ChevronLeft className="w-6 h-6" />
+          </Button>
+        </Link>
 
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-[#faf8f1] rounded-lg p-6 shadow-sm border">
-            <h2 className="text-xl font-medium text-[#5c8d89] mb-6">Edit Course Information</h2>
+          <div className="bg-[--background] rounded-xl p-6 shadow-sm border">
+            <h2 className="text-xl font-medium text-[--neutral] mb-6">Edit Course Information</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-[#5c8d89] font-medium">
+                <Label htmlFor="name" className="text-[--neutral] font-medium">
                   Course Name
                 </Label>
                 <Input
@@ -386,7 +386,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
               </div>
 
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="description" className="text-[#5c8d89] font-medium">
+                <Label htmlFor="description" className="text-[--neutral] font-medium">
                   Description
                 </Label>
                 <Textarea
@@ -400,7 +400,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
             </div>
 
             <div className="space-y-2 mb-3">
-              <Label className="text-[#5c8d89] font-medium">Course Details</Label>
+              <Label className="text-[--neutral] font-medium">Course Details</Label>
               {formState.course_details.map((item, index) => (
                 <div key={item.id} className="flex items-center gap-2 mb-2">
                   <Textarea
@@ -425,7 +425,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 type="button"
                 onClick={() => addItem("course_details")}
                 variant="outline"
-                className="text-[#5c8d89] border-[#5c8d89]"
+                className="text-[--neutral] border-[--neutral]"
                 size="sm"
               >
                 Add Course Detail
@@ -433,7 +433,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
             </div>
 
             <div className="space-y-2">
-              <Label className="text-[#5c8d89] font-medium">What Students Will Learn</Label>
+              <Label className="text-[--neutral] font-medium">What Students Will Learn</Label>
               {formState.what_w_learn.map((item, index) => (
                 <div key={item.id} className="flex items-center gap-2 mb-2">
                   <Textarea
@@ -458,7 +458,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 type="button"
                 onClick={() => addItem("what_w_learn")}
                 variant="outline"
-                className="text-[#5c8d89] border-[#5c8d89]"
+                className="text-[--neutral] border-[--neutral]"
                 size="sm"
               >
                 Add Learning Outcome
@@ -466,14 +466,14 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
             </div>
           </div>
 
-          <div className="bg-[#faf8f1] rounded-lg p-6 shadow-sm border">
-            <h2 className="text-xl font-medium text-[#5c8d89] mb-6">Edit Course Curriculum</h2>
+          <div className="bg-[--background] rounded-xl p-6 shadow-sm border">
+            <h2 className="text-xl font-medium text-[--neutral] mb-6">Edit Course Curriculum</h2>
 
             {formState.curriculum.map((module) => (
               <div key={module.id} className="mb-6 border border-[#e6e1d5] rounded-lg p-4">
                 <div className="space-y-4 mb-4">
                   <div>
-                    <Label className="text-[#5c8d89] font-medium">Module Name</Label>
+                    <Label className="text-[--neutral] font-medium">Module Name</Label>
                     <Input
                       type="text"
                       value={module.title}
@@ -483,7 +483,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     />
                   </div>
                   <div>
-                    <Label className="text-[#5c8d89] font-medium">Module Description</Label>
+                    <Label className="text-[--neutral] font-medium">Module Description</Label>
                     <Textarea
                       value={module.description}
                       onChange={(e) => handleUpdateBlock(module.id, module.title, e.target.value)}
@@ -502,7 +502,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       setCurrentTest(null)
                       setCurrentBlockId(module.id)
                     }}
-                    className="text-[#5c8d89] border-[#5c8d89]"
+                    className="text-[--neutral] border-[--neutral]"
                     size="sm"
                   >
                     Add Tests
@@ -518,7 +518,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       setMaterialContents([])
                       setCurrentBlockId(module.id)
                     }}
-                    className="text-[#5c8d89] border-[#5c8d89]"
+                    className="text-[--neutral] border-[--neutral]"
                     size="sm"
                   >
                     Add Cards
@@ -533,7 +533,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                       setBlockName(module.title ?? "")
                       setBlockDescription(module.description ?? "")
                     }}
-                    className="text-[#5c8d89] border-[#5c8d89]"
+                    className="text-[--neutral] border-[--neutral]"
                     size="sm"
                   >
                     Edit Module
@@ -569,7 +569,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                 setCurrentBlockId(module.id)
                                 setMaterialModalOpen(true)
                               }}
-                              className="text-[#5c8d89] border-[#5c8d89]"
+                              className="text-[--neutral] border-[--neutral]"
                             >
                               Edit Cards
                             </Button>
@@ -599,7 +599,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                       e.preventDefault()
                                       openEditModal("card", flashcard)
                                     }}
-                                    className="text-[#5c8d89] border-[#5c8d89]"
+                                    className="text-[--neutral] border-[--neutral]"
                                   >
                                     Edit Card
                                   </Button>
@@ -621,7 +621,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                         )}
 
                         <Button
-                          className="mt-3 bg-[#5c8d89] text-white hover:bg-[#4a7a76]"
+                          className="mt-3 bg-[--neutral] text-white hover:bg-[#4a7a76]"
                           size="sm"
                           onClick={(e) => {
                             e.preventDefault()
@@ -659,7 +659,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                 setCurrentBlockId(module.id)
                                 setTestModalOpen(true)
                               }}
-                              className="text-[#5c8d89] border-[#5c8d89]"
+                              className="text-[--neutral] border-[--neutral]"
                             >
                               Edit Test
                             </Button>
@@ -689,7 +689,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                       e.preventDefault()
                                       openEditModal("question", question)
                                     }}
-                                    className="text-[#5c8d89] border-[#5c8d89]"
+                                    className="text-[--neutral] border-[--neutral]"
                                   >
                                     Edit Question
                                   </Button>
@@ -711,7 +711,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                         )}
 
                         <Button
-                          className="mt-3 bg-[#5c8d89] text-white hover:bg-[#4a7a76]"
+                          className="mt-3 bg-[--neutral] text-white hover:bg-[#4a7a76]"
                           size="sm"
                           onClick={(e) => {
                             e.preventDefault()
@@ -749,7 +749,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                 setBlockName("")
               }}
               variant="outline"
-              className="text-[#5c8d89] border-[#5c8d89] mb-6"
+              className="text-[--neutral] border-[--neutral] mb-6"
               size="sm"
             >
               Add New Module
@@ -758,7 +758,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
           <Button
             type="submit"
-            className="w-1/3 bg-[#5c8d89] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
+            className="w-1/3 bg-[--neutral] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
             size="sm"
           >
             Update Course

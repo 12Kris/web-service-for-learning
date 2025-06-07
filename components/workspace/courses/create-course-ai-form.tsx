@@ -94,6 +94,7 @@ export default function CreateCourseAIForm() {
                   id="coursesAmount"
                   type="number"
                   min="1"
+                  max="5"
                   value={coursesAmount}
                   onChange={(e) => setCoursesAmount(Number(e.target.value))}
                   disabled={isLoading}
@@ -122,6 +123,7 @@ export default function CreateCourseAIForm() {
                   id="testsAmount"
                   type="number"
                   min="1"
+                  max="10"
                   value={testsAmount}
                   onChange={(e) => setTestsAmount(Number(e.target.value))}
                   disabled={isLoading}
@@ -134,6 +136,7 @@ export default function CreateCourseAIForm() {
                   id="learningMaterialsAmount"
                   type="number"
                   min="1"
+                  max="10"
                   value={learningMaterialsAmount}
                   onChange={(e) => setLearningMaterialsAmount(Number(e.target.value))}
                   disabled={isLoading}
@@ -146,7 +149,7 @@ export default function CreateCourseAIForm() {
             <Label htmlFor="pdfFile" className="text-base font-medium">
               Supplementary Materials
             </Label>
-            <div className="border border-input rounded-md p-4 bg-muted/20">
+            <div className="border border-input rounded-lg p-4 bg-muted/20">
               <div className="flex items-center gap-3">
                 <Upload className="h-5 w-5 text-muted-foreground" />
                 <div className="flex-1">
