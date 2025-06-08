@@ -67,7 +67,7 @@ export default function UserProfile({
         <Avatar className="w-20 h-20 md:w-24 md:h-24">
           <AvatarImage src={user?.avatar_url || "/placeholder.svg"} alt={user?.username || "User"} />
           <AvatarFallback className="bg-[#e0f2e9] text-[--neutral] text-4xl">
-            {user?.username
+            {user?.full_name
               ?.split(" ")
               .map((n) => n[0])
               .join("") || "U"}
@@ -75,7 +75,7 @@ export default function UserProfile({
         </Avatar>
 
         <div className="flex-1 text-center sm:text-left">
-          <h2 className="text-2xl md:text-3xl font-medium text-[--neutral] mb-1">{user?.username}</h2>
+          <h2 className="text-2xl md:text-3xl font-medium text-[--neutral] mb-1">{user?.full_name}</h2>
           <p className="text-sm md:text-base text-gray-500 mb-4">{user?.email || "Unknown Email"}</p>
         </div>
 

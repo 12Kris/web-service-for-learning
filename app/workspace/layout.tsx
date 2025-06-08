@@ -4,9 +4,10 @@ import Footer from "@/components/landing/footer";
 import { DesktopMenu } from "@/components/workspace/workspace-desktop-menu";
 import { Jura } from "next/font/google";
 import "../globals.css";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import React, { createContext, ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 
 const jura = Jura({
   subsets: ["latin"],
@@ -55,8 +56,9 @@ export default function WorkspaceLayout({
           <Navbar data={data} menuItems={menuItems} />
 
           <main className="bg-[#fcfcfc] mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-8 flex-1">
-            {children}
+            <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
           </main>
+
           <Footer />
         </div>
       </div>
