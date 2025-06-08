@@ -1007,7 +1007,7 @@ export async function addReceivedPointsForCourse(
 
   const { error } = await supabase
     .from("received_points_for_course")
-    .insert({ user_id: user.id, course_id: courseId });
+    .insert({ user_id: user.id, course_id: courseId, created_at: new Date().toISOString() });
 
   if (error) {
     console.error("Error adding received points:", error);
