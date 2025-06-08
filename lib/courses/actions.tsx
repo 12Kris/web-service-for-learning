@@ -7,6 +7,7 @@ import { Module } from "@/lib/types/modules";
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 import { Certificate } from "../types/certificate";
+import { revalidatePath } from "next/cache";
 
 export async function getCourseById(courseId: number) {
   const supabase = await createClient();

@@ -348,14 +348,15 @@ export default function CardPage() {
                     based on the results of this card.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
+                <AlertDialogFooter className="flex flex-col sm:flex-row justify-center gap-1 p-4">
                   <Link
                     href={`/workspace/courses/${courseId}/modules/${moduleId}`}
+                    className="w-full sm:w-auto"
                   >
-                    <AlertDialogCancel>Do not update</AlertDialogCancel>
+                    <AlertDialogCancel className="w-full sm:w-auto">Do not update</AlertDialogCancel>
                   </Link>
                   <AlertDialogAction
-                    className="text-white bg-[--neutral] border-2 border-[--neutral] hover:text-white hover:bg-[--neutral]"
+                    className="w-full sm:w-auto text-white bg-[--neutral] border-2 border-[--neutral] hover:text-white hover:bg-[--neutral]"
                     onClick={handleupdateSpacedRepetitionWithAi}
                   >
                     Update Spaced Repetition

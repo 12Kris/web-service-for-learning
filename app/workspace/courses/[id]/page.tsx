@@ -137,9 +137,6 @@ export default function CoursePage({
     return <LoadingSpinner className="mx-auto" />;
   }
 
-  // const bgColor = hexToRgba(course.color || "#10B981");
-  // <Card className="border-2 bg-white" style={{ borderColor: bgColor }}></Card>
-
   return (
     <div className="min-h-screen">
       <CourseDescriptionJumpotron
