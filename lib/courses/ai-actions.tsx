@@ -1,4 +1,8 @@
+
 "use server";
+
+
+
 import { createCourse } from "@/lib/courses/actions";
 import { createBlock } from "@/lib/tests/actions";
 import { createMaterial } from "@/lib/tests/actions";
@@ -50,6 +54,7 @@ interface GeneratedCourse {
     }[];
   }[];
 }
+
 
 export interface AiUsed {
   id: number;
@@ -133,6 +138,7 @@ async function generateCourseContent(
 
     const response = await openai.responses.create({
       model: "gpt-4.1-nano-2025-04-14",
+      
       input: [{ role: "user", content: prompt }],
       text: {
         format: {
