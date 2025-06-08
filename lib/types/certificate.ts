@@ -3,6 +3,6 @@ export interface Certificate {
   courseName: string;
   issueDate: string;
   certificateId: string;
-  status: "completed" | "in-progress";
+  status?: "completed" | "in-progress";
   color?: string;
 }
