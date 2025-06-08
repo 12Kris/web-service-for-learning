@@ -1,3 +1,5 @@
+"use client";
+
 import { LogOut, User } from "lucide-react";
 import { signOut } from "@/utils/supabase/actions";
 import { useRouter } from "next/navigation";

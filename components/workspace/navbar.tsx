@@ -5,8 +5,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 
-import { useEffect } from "react";
-
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AccountDropdown } from "./account-dropdown";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -14,29 +12,11 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { cn } from "@/lib/utils";
 import { MenuItems } from "@/lib/types/ui";
 
-import { getUser } from "@/utils/supabase/client";
-
 interface NavbarProps {
   menuItems: MenuItems[];
-  data: React.ReactNode | null;
 }
 
-export function Navbar({ menuItems, data }: NavbarProps) {
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const currentUser = await getUser();
-        if (!currentUser) {
-          return;
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
+export function Navbar({ menuItems }: NavbarProps) {
   return (
     <nav className="sticky bg-white top-0 px-4 z-50 w-full border-b lg:hidden">
       <div className="container mx-auto">
@@ -47,7 +27,6 @@ export function Navbar({ menuItems, data }: NavbarProps) {
                 <MenuIcon fontSize={"medium"} className="text-[--neutral]" />
                 <span className="sr-only">Toggle menu</span>
               </div>
-
             </SheetTrigger>
             <SheetContent
               side="left"
@@ -68,9 +47,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
                     >
                       <Button
                         variant="link"
-                        className={cn(
-                          "w-full font-bold text-lg justify-start"
-                        )}
+                        className={cn("w-full font-bold text-lg justify-start")}
                       >
                         {item.name}
                       </Button>
@@ -89,7 +66,7 @@ export function Navbar({ menuItems, data }: NavbarProps) {
           </div>
 
           <div className="flex items-center space-x-4">
-            {data && data}
+            {/* {data && data} */}
 
             <AccountDropdown />
           </div>
