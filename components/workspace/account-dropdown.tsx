@@ -1,5 +1,3 @@
-"use client";
-
 import { LogOut, User } from "lucide-react";
 import { signOut } from "@/utils/supabase/actions";
 import { useRouter } from "next/navigation";
@@ -33,7 +31,7 @@ export function AccountDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="bg-[#ededed] rounded-full p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-center">
+        <div className="bg-[--background] rounded-full p-2 hover:bg-gray-100 cursor-pointer flex items-center justify-center">
           <PersonOutlineOutlinedIcon
             fontSize={"medium"}
             className="text-[--neutral]"

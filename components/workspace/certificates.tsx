@@ -58,14 +58,6 @@ export default function Certificates({ certificates }: CertificatesProps) {
         <h1 className="text-xl font-semibold text-[--neutral] mb-4">
           Your Certificates
         </h1>
-        <Button
-          variant="outline"
-          className="text-[--neutral] border border-2 border-[--neutral] rounded-full px-8 py-3 text-lg font-semibold hover:bg-[--neutral] hover:text-white transition-colors"
-          disabled={certificates.length === 0}
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Download All
-        </Button>
       </div>
       {certificates.length === 0 ? (
         <div className="text-center text-gray-500">
