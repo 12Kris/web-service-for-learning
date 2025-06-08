@@ -189,7 +189,7 @@ export default function CreateCourseAIForm() {
           {error && (
             <Alert variant="destructive" className="mt-2">
               <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="mt-1">{error}</AlertDescription>
             </Alert>
           )}
         </CardContent>

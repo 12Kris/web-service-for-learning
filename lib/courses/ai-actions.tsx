@@ -11,10 +11,10 @@ import { createClient } from "@/utils/supabase/server";
 
 import * as pdfParse from "pdf-parse";
 
-const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY || "";
+const apiKey = process.env.OPENAI_API_KEY;
 if (!apiKey) {
   throw new Error(
-    "Missing OpenAI API Key. Set NEXT_PUBLIC_OPENAI_API_KEY in your Vercel environment variables."
+    "Missing OpenAI API Key. Set OPENAI_API_KEY in your Vercel environment variables."
   );
 }
 const openai = new OpenAI({
