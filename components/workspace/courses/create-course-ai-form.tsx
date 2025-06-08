@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, Upload } from "lucide-react"
+import { AlertCircle, ChevronLeft, Upload } from "lucide-react"
 import { createCourseWithAI } from "@/lib/courses/ai-actions"
+import Link from "next/link"
 
 export default function CreateCourseAIForm() {
   const [prompt, setPrompt] = useState<string>("")
@@ -58,6 +59,13 @@ export default function CreateCourseAIForm() {
   }
 
   return (
+    <div className="w-full max-w-3xl mx-auto">
+      <Link href={`/workspace`}>
+          <Button className="mb-2">
+            <ChevronLeft className="w-6 h-6" />
+          </Button>
+        </Link>
+
     <Card className="w-full max-w-3xl mx-auto shadow-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Generate Course with AI</CardTitle>
@@ -193,5 +201,6 @@ export default function CreateCourseAIForm() {
         </CardFooter>
       </form>
     </Card>
+    </div>
   )
 }

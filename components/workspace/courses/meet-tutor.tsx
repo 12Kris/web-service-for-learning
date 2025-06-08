@@ -28,7 +28,7 @@ const MeetTutor: React.FC<MeetTutorProps> = ({
                 {course?.creator?.bio || "No information..."}
               </p>
 
-              <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                 <div className="text-center p-4 border-2 border-green-200 rounded-lg">
                   <div className="text-2xl font-bold text-green-600">{coursesCreated?.length || 0}</div>
                   <div className="text-sm text-gray-600">Courses created</div>

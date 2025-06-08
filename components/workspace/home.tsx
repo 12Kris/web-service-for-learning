@@ -90,11 +90,11 @@ export default function HomePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col md:flex-row items-center gap-3">
                 <div className="bg-[#fff9f5] p-3 rounded-full">
                   <Flame className="h-6 w-6 text-[#ff9b87]" />
                 </div>
-                <div>
+                <div className="text-center">
                   <div className="font-semibold">{weeklyStreak.weeks} week</div>
                   <div className="text-sm">Current streak</div>
                 </div>

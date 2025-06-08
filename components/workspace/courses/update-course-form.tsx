@@ -357,7 +357,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
   }
 
   return (
-    <div className="bg-[--background] min-h-screen p-6">
+    <div className="bg-[--background] min-h-screen p-6 w-full">
       <div className="max-w-4xl mx-auto">
         <Link href={`/workspace/courses/${course.id}`}>
           <Button className="mb-2">
@@ -399,10 +399,10 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
               </div>
             </div>
 
-            <div className="space-y-2 mb-3">
+            <div className="space-y-3 mb-3">
               <Label className="text-[--neutral] font-medium">Course Details</Label>
               {formState.course_details.map((item, index) => (
-                <div key={item.id} className="flex items-center gap-2 mb-2">
+                <div key={item.id} className="flex flex-col sm:flex-row items-start md:items-center gap-2 mb-2">
                   <Textarea
                     placeholder="Example"
                     value={item.course_detail}
@@ -432,10 +432,10 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
               </Button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Label className="text-[--neutral] font-medium">What Students Will Learn</Label>
               {formState.what_w_learn.map((item, index) => (
-                <div key={item.id} className="flex items-center gap-2 mb-2">
+                <div key={item.id} className="flex flex-col sm:flex-row items-start md:items-center gap-2 mb-2">
                   <Textarea
                     placeholder="Example"
                     value={item.description}
@@ -557,9 +557,9 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     .filter((material) => material.block_id == module.id)
                     .map((material) => (
                       <div key={material.id} className="border border-[#e6e1d5] rounded-lg p-4 bg-white">
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col sm:flex-row items-start justify-between gap-2 mb-4">
                           <h3 className="font-medium">{material.title}</h3>
-                          <div className="flex gap-2">
+                          <div className="flex flex-col sm:flex-row gap-2">
                             <Button
                               variant="outline"
                               size="sm"
@@ -589,9 +589,9 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                         {material.flashcards && material.flashcards.length > 0 && (
                           <ul className="space-y-3 my-3">
                             {material.flashcards.map((flashcard) => (
-                              <li key={flashcard.id} className="flex items-center justify-between">
+                              <li key={flashcard.id} className="flex flex-col sm:flex-row items-start justify-between gap-2">
                                 <span>- {flashcard.front}</span>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                                   <Button
                                     variant="outline"
                                     size="sm"
@@ -609,6 +609,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                     onClick={(e) => {
                                       e.preventDefault()
                                       deleteFlashcard(flashcard.id)
+                                      fetchBlockData()
                                     }}
                                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                                   >
@@ -647,9 +648,9 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                     .filter((test) => test.block_id === module.id)
                     .map((test) => (
                       <div key={test.id} className="border border-[#e6e1d5] rounded-lg p-4 bg-white">
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col sm:flex-row items-start justify-between gap-2 mb-4">
                           <h3 className="font-medium">{test.question}</h3>
-                          <div className="flex gap-2">
+                          <div className="flex flex-col sm:flex-row gap-2">
                             <Button
                               variant="outline"
                               size="sm"
@@ -666,7 +667,10 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() => deleteTestItem(test.id)}
+                              onClick={() => {
+                                deleteTestItem(test.id); 
+                                
+                              }}
                               className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                             >
                               Delete Test
@@ -679,9 +683,9 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                         {test.TestQuestions && test.TestQuestions.length > 0 && (
                           <ul className="space-y-3 my-3">
                             {test.TestQuestions.map((question) => (
-                              <li key={question.id} className="flex items-center justify-between">
+                              <li key={question.id} className="flex flex-col sm:flex-row items-start justify-between gap-2">
                                 <span>- {question.question}</span>
-                                <div className="flex gap-2">
+                                <div className="flex flex-col sm:flex-row gap-2">
                                   <Button
                                     variant="outline"
                                     size="sm"
@@ -699,6 +703,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
                                     onClick={(e) => {
                                       e.preventDefault()
                                       deleteQuestion(question.id)
+                                      fetchBlockData()
                                     }}
                                     className="text-[--accent] bg-transparent border-2 border-[--accent] hover:text-white hover:bg-[--accent]"
                                   >
@@ -758,7 +763,7 @@ export function CourseEditForm({ course, modules }: { course: Course; modules: M
 
           <Button
             type="submit"
-            className="w-1/3 bg-[--neutral] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
+            className="w-1/2 bg-[--neutral] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
             size="sm"
           >
             Update Course
