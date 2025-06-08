@@ -6,11 +6,16 @@ import FrontendDev from "./img/FrontendDev.jpg"
 import BackendDev from "./img/BackendDev.jpg"
 import FullStack from "./img/FullStack.jpg"
 import Designer from "./img/Designer.jpg"
-import QA from "./img/QA.jpg"
 import Mentor from "./img/Mentor.jpg"
 
 export default function AboutUs() {
   const teamMembers = [
+    {
+      name: "Koldovskyy Vyacheslav",
+      role: "Mentor",
+      image: Mentor,
+      initials: "VK",
+    },
     {
       name: "Isaienko Volodymyr",
       role: "Project Manager",
@@ -46,18 +51,6 @@ export default function AboutUs() {
       role: "Designer",
       image: Designer,
       initials: "NY",
-    },
-    {
-      name: "Dubas Roman",
-      role: "Quality assurance",
-      image: QA,
-      initials: "DR",
-    },
-    {
-      name: "Koldovskyy Vyacheslav",
-      role: "Mentor",
-      image: Mentor,
-      initials: "VK",
     }
   ]
 

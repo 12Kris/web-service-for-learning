@@ -10,7 +10,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ className, label, ...props }, ref) => {
     return (
       <div className="space-y-2 w-full">
-        {label && <Label htmlFor="name">{label}</Label>}
+        {label && <Label className="text-[--neutral]" htmlFor="name">{label}</Label>}
 
         <textarea
           className={cn(

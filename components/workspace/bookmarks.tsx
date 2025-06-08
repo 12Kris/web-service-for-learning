@@ -141,20 +141,10 @@ export default function BookmarksPage({
       <div className="container mx-auto space-y-12">
         <div className="flex flex-col sm:flex-row justify-between md:mt-6 md:sticky top-0 z-10 bg-[--background] backdrop-blur-sm border-b border-b-[--border] py-4 px-0 pt-0 md:pt-4">
           <PageHeader className="mt-0 mb-3 md:mb-0 text-[--neutral]" title="Bookmarks" />
-          <div className="grid grid-cols-3 md:gap-0 gap-2 w-full sm:w-auto sm:flex sm:flex-row sm:items-center sm:space-x-4 sm:mt-0">
-            <Button
-              variant="default"
-              className="col-span-1 w-full sm:w-auto sm:size-wide flex items-center justify-center"
-              onClick={() => setIsFilterModalOpen(true)}
-            >
-              <Filter strokeWidth={3} className="h-4 w-4" />
-              <span className="hidden sm:inline">Filter</span>
-            </Button>
-          </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
-          <div className="flex-1 relative">
+          <div className="flex-1 relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -164,6 +154,14 @@ export default function BookmarksPage({
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
+          <Button
+            variant="default"
+            className="w-full md:w-auto h-10 flex items-center justify-center px-4"
+            onClick={() => setIsFilterModalOpen(true)}
+          >
+            <Filter strokeWidth={3} className="h-4 w-4" />
+            <span className="hidden md:inline">Filter</span>
+          </Button>
         </div>
 
         <div className="relative">

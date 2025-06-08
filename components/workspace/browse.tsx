@@ -136,7 +136,7 @@ export default function BrowsePage({
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
-          <div className="flex-1 relative">
+          <div className="flex-1 relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -148,11 +148,11 @@ export default function BrowsePage({
           </div>
           <Button
             variant="default"
-            className="col-span-1 w-full sm:w-auto sm:size-wide flex items-center justify-center"
+            className="w-full md:w-auto h-10 flex items-center justify-center px-4"
             onClick={() => setIsFilterModalOpen(true)}
           >
             <Filter strokeWidth={3} className="h-4 w-4" />
-            <span className="hidden sm:inline">Filter</span>
+            <span className="hidden md:inline">Filter</span>
           </Button>
         </div>
 
@@ -187,7 +187,7 @@ export default function BrowsePage({
                     <div className="flex items-center justify-between">
                       <div>
                         <h3 className="font-semibold text-base sm:text-lg text-[--neutral]">{coursesByType[type].displayName}</h3>
-                        <p className="text-xs sm:text-sm text-gray-500">{coursesByType[type].courses.length} courses</p>
+                        <p className="text-xs sm:text-sm text-[--neutral]">{coursesByType[type].courses.length} courses</p>
                       </div>
                     </div>
                   </CardContent>

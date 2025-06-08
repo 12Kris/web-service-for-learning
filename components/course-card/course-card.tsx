@@ -46,7 +46,7 @@ export function CourseCard({
           </Badge>
         </div>
 
-        <div className="flex flex-col overflow-hidden ">
+        <div className="flex flex-col overflow-hidden">
           <CardHeader className="p-4 pb-2">
             <h3 className="text-xl font-semibold line-clamp-1">{title}</h3>
           </CardHeader>

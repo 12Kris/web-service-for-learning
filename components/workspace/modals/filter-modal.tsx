@@ -77,7 +77,7 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
 
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
-      <AlertDialogContent className="sm:max-w-[425px]">
+      <AlertDialogContent className="sm:max-w-[425px] text-[--neutral]">
         <AlertDialogHeader>
           <AlertDialogTitle>Filter Courses</AlertDialogTitle>
         </AlertDialogHeader>
@@ -104,7 +104,7 @@ export function FilterModal({ isOpen, onClose, courses, onFilter }: FilterModalP
 
         <AlertDialogFooter className="flex justify-between">
           <AlertDialogAction onClick={applyFilters}>Apply Filters</AlertDialogAction>
-          <Button className="bg-red-200 text-red-600 hover:bg-red-300 border-red-600" onClick={resetFilters}>
+          <Button className="rounded-full inline-flex font-bold items-center justify-center gap-2 whitespace-nowrap text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[--neutral] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none text-[--accent] border-2 border-[--accent] hover:text-white hover:bg-[--accent] w-full sm:w-auto bg-white" onClick={resetFilters}>
             Reset
           </Button>
           <AlertDialogCancel>Cancel</AlertDialogCancel>

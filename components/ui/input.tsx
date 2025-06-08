@@ -21,7 +21,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, label, icon, color = "primary", ...props }, ref) => {
     return (
       <div className={`${label ? "space-y-2" : ""} relative`}>
-        {label && <Label htmlFor={props.id}>{label}</Label>}
+        {label && <Label className="text-[--neutral]" htmlFor={props.id}>{label}</Label>}
         <div className="relative">
           {icon && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#517970] z-10">
