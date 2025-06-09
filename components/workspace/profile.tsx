@@ -184,7 +184,7 @@ export default function UserProfile({
 
           {activeMenuItem === "certificates" && (
             <ScrollArea className="h-[60vh]">
-              <Certificates certificates={certificates || []} />
+              <Certificates certificates={certificates || []} user_full_name={user?.full_name || "John Doe"} />
             </ScrollArea>
           )}
 

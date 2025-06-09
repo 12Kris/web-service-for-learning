@@ -9,31 +9,29 @@ import { pdf } from "@react-pdf/renderer";
 
 interface CertificatesProps {
   certificates: Certificate[];
+  user_full_name: string;
 }
 
-export default function Certificates({ certificates }: CertificatesProps) {
+export default function Certificates({ certificates, user_full_name }: CertificatesProps) {
   const handleDownloadCertificate = async (certificate: Certificate) => {
     const certificateData: CertificatePDFProps = {
       id: certificate.id,
       courseName: certificate.courseName,
       certificateId: certificate.certificateId,
       issueDate: certificate.issueDate,
-      participantName: "John Doe", // Replace with actual participant name
-      color: certificate.color || "#FFB6C1", // Default color if not provided
-      issuerName: "Memoria", // Replace with actual issuer name
-      issuerEmail: "contact@memoria-learning.com",
+      participantName: user_full_name,
+      color: "#52796f",
+      issuerName: "Memoria",
+      issuerEmail: "memoria.app@gmail.com",
     };
 
     try {
-      // Generate the PDF blob
       const pdfBlob = await pdf(
         <CertificatePDF {...certificateData} />
       ).toBlob();
 
-      // Create a temporary URL for the Blob
       const url = window.URL.createObjectURL(pdfBlob);
 
-      // Create a hidden <a> tag, set the download attribute, and click it
       const link = document.createElement("a");
       link.href = url;
       link.download = `${certificateData.participantName.replace(
@@ -43,19 +41,17 @@ export default function Certificates({ certificates }: CertificatesProps) {
       document.body.appendChild(link);
       link.click();
 
-      // Clean up
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error generating certificate PDF:", error);
-      // You might want to show an error message to the user here
     }
   };
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-semibold text-[--neutral] mb-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-semibold text-[--neutral]">
           Your Certificates
         </h1>
       </div>

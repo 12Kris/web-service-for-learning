@@ -45,7 +45,7 @@ export default function HelpPage() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[--neutral] mb-4">Help & User Guide</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[--neutral] max-w-2xl mx-auto">
             Welcome to our help center. Here you&apos;ll find everything you need to know about using our platform effectively.
           </p>
         </div>
@@ -63,7 +63,7 @@ export default function HelpPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <p className="text-gray-600 text-lg">{section.content}</p>
+                    <p className="text-[--neutral] text-lg">{section.content}</p>
                   </CardContent>
                 </div>
                 <div className="md:w-1/2 p-8">

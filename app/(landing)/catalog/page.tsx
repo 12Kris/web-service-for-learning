@@ -73,18 +73,18 @@ export default function Catalog() {
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold text-[--neutral] mb-4">Course Catalog</h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg text-[--neutral] max-w-2xl mx-auto">
           Explore our comprehensive collection of courses designed to help you achieve your learning goals.
         </p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-8 items-center">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[--neutral]" />
           <input
             type="text"
             placeholder="Search courses..."
-            className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5c7d73]"
+            className="w-full pl-10 pr-4 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[--neutral]"
           />
         </div>
         <Button variant="outline" className="flex items-center gap-2">
@@ -102,8 +102,8 @@ export default function Catalog() {
               <Link href={`/workspace/courses/browse`}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="font-semibold text-base sm:text-lg">{category.name}</h3>
-                    <p className="text-xs sm:text-sm text-gray-500">{category.count} courses</p>
+                    <h3 className="font-semibold text-base sm:text-lg text-[--neutral]">{category.name}</h3>
+                    <p className="text-xs sm:text-sm text-[--neutral]">{category.count} courses</p>
                   </div>
                   <category.icon className="w-6 h-6 sm:w-8 sm:h-8 text-[--neutral]" />
                 </div>
@@ -126,16 +126,16 @@ export default function Catalog() {
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
               <div className="absolute top-4 right-4">
-                <Badge variant="secondary" className="bg-white/90">
+                <Badge variant="outline" className="bg-white text-[--neutral]">
                   {course.type}
                 </Badge>
               </div>
             </div>
             <CardHeader>
-              <CardTitle className="text-xl">{course.title}</CardTitle>
+              <CardTitle className="text-xl text-[--neutral]">{course.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4">{course.description}</p>
+              <p className="text-[--neutral] mb-4">{course.description}</p>
               <div className="flex flex-wrap gap-2 mb-4">
                 {course.tags.map((tag) => (
                   <Badge key={tag} variant="outline" className="bg-[#e0f2e9]">
@@ -143,22 +143,22 @@ export default function Catalog() {
                   </Badge>
                 ))}
               </div>
-              <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+              <div className="flex items-center justify-between text-sm text-[--neutral] mb-4">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
+                  <Clock className="w-4 h-4 text-[--neutral]" />
                   {course.duration}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
+                  <Users className="w-4 h-4 text-[--neutral]" />
                   {course.students} students
                 </div>
                 <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-400" />
+                  <Star className="w-4 h-4 text-[--neutral]" />
                   {course.rating}
                 </div>
               </div>
               <Button asChild className="w-full">
-                <Link href={`/workspace/courses/browse`} className="flex items-center justify-center gap-2">
+                <Link href={`/workspace/courses/${course.id}`} className="flex items-center justify-center gap-2">
                   View Course
                   <ArrowRight className="w-4 h-4" />
                 </Link>
