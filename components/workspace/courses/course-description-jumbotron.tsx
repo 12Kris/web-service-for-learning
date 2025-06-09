@@ -57,6 +57,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     if (onSubscriptionChange) {
       onSubscriptionChange();
     }
+    window.location.reload()
   }
 
   async function handleRemoveCourse(id: number) {
@@ -66,6 +67,7 @@ const CourseDescriptionJumbotron: React.FC<CourseDescriptionJumbotronProps> = ({
     if (onSubscriptionChange) {
       onSubscriptionChange();
     }
+    window.location.reload()
   }
 
   const bgColor = color ? hexToRgba(color) : "#a8e6cf";
