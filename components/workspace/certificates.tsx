@@ -39,8 +39,8 @@ export default function Certificates({ certificates }: CertificatesProps) {
                 <div className="mb-2 text-sm font-semibold text-[--neutral]">
                   {certificate.status === "completed" ? "Completed" : "In Progress"}
                 </div>
-                <div className="flex items-center gap-2 text-gray-600 mb-2 text-sm">
-                  <Calendar className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-[--neutral] mb-2 text-sm">
+                  <Calendar className="w-4 h-4 text-[--neutral]" />
                   <span>
                     Completed on{" "}
                     {new Date(certificate.issueDate).toLocaleDateString("en-US", {
@@ -50,7 +50,7 @@ export default function Certificates({ certificates }: CertificatesProps) {
                     })}
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-500 mb-4 text-sm">
+                <div className="flex items-center gap-2 text-[--neutral] mb-4 text-sm">
                   <Award className="w-4 h-4 text-[--neutral]" />
                   <span>Certificate ID: {certificate.certificateId}</span>
                 </div>

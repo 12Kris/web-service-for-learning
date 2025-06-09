@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-[--neutral] mb-4">Privacy Policy</h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[--neutral] max-w-2xl mx-auto">
             Your privacy is important to us. This policy explains how we collect, use, and protect your personal information.
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function PrivacyPolicy() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <p className="text-gray-600 text-lg">{section.content}</p>
+                    <p className="text-[--neutral] text-lg">{section.content}</p>
                   </CardContent>
                 </div>
                 <div className="md:w-1/2 p-8">
