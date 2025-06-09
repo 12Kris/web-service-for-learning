@@ -13,7 +13,7 @@ interface MetricsShowcaseProps {
 
 export function MetricsShowcase({ title, metrics }: MetricsShowcaseProps) {
   return (
-    <section className="w-full bg-[#e8f5eb] py-16 ">
+    <section className="w-full bg-[#c2e5ca] py-16 rounded-[2rem]">
       <div className="container mx-auto px-4 md:flex flex-col md:justify-around md:flex-row items-center">
         <h2 className="mb-12 md:w-1/3 text-center text-3xl font-medium text-[--neutral] md:text-4xl md:mb-0 md:text-left">
           {title}
