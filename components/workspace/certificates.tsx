@@ -20,7 +20,7 @@ export default function Certificates({ certificates, user_full_name }: Certifica
       certificateId: certificate.certificateId,
       issueDate: certificate.issueDate,
       participantName: user_full_name,
-      color: "#52796f",
+      color: certificate.color || "#52796f",
       issuerName: "Memoria",
       issuerEmail: "memoria.app@gmail.com",
     };
