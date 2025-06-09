@@ -23,10 +23,11 @@ const styles = StyleSheet.create({
     color: "#52796f",
   },
   container: {
-    backgroundColor: "#fff5f7",
+    border: "1px solid gray",
     padding: 30,
     borderRadius: 8,
     alignItems: "center",
+    color: "#52796f",
   },
   header: {
     flexDirection: "row",
@@ -41,6 +42,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: 8,
+    border: "1px solid gray",
   },
   logoText: {
     fontSize: 12,
@@ -53,11 +55,9 @@ const styles = StyleSheet.create({
   brandTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#1e293b",
   },
   brandSubtitle: {
     fontSize: 10,
-    color: "#64748b",
   },
   titleContainer: {
     flexDirection: "row",
@@ -65,20 +65,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 10,
     backgroundColor: '#fef9f285',
+    borderRadius: "13px",
   },
   title: {
     fontSize: 15,
     fontWeight: "bold",
-    color: "#1e293b",
     textAlign: "center",
     backgroundColor: "#fef9f285",
     border: "1px solid gray",
     padding: '5px 15px',
-    borderRadius: 13,
+    borderRadius: "13px",
   },
   subtitle: {
     fontSize: 12,
-    color: "#64748b",
     textAlign: "center",
     marginBottom: 10,
   },
@@ -93,14 +92,12 @@ const styles = StyleSheet.create({
   },
   completionText: {
     fontSize: 12,
-    color: "#64748b",
     textAlign: "center",
     marginBottom: 10,
   },
   courseName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#1e293b",
     textAlign: "center",
     backgroundColor: "#fef9f285",
     border: "1px solid gray",
@@ -110,7 +107,6 @@ const styles = StyleSheet.create({
   },
   systemText: {
     fontSize: 10,
-    color: "#9ca3af",
     textAlign: "center",
     marginBottom: 20,
   },
@@ -127,11 +123,9 @@ const styles = StyleSheet.create({
   detailLabel: {
     fontSize: 10,
     fontWeight: "bold",
-    color: "#374151",
   },
   detailValue: {
     fontSize: 10,
-    color: "#64748b",
   },
   footer: {
     alignItems: "center",
@@ -144,12 +138,10 @@ const styles = StyleSheet.create({
   footerTitle: {
     fontSize: 12,
     fontWeight: "bold",
-    color: "#374151",
     marginBottom: 2,
   },
   footerEmail: {
     fontSize: 10,
-    color: "#64748b",
   },
 });
 
@@ -167,11 +159,12 @@ export function CertificatePDF({
   issuerName,
   issuerEmail,
   issueDate,
+  color,
 }: CertificatePDFProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page} orientation="landscape">
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: color }]}>
           <View style={styles.header}>
             <View style={styles.logo}>
               <Text style={styles.logoText}>QR</Text>
