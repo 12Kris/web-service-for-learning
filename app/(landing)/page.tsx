@@ -80,8 +80,11 @@ export default async function Home() {
 
   const totalCreatedCourses = courses.length;
 
-  const totalRatings = courses.reduce((sum, course) => sum + (course.rating || 0), 0);
-  const satisfactionRate = totalCreatedCourses > 0 ? (totalRatings / totalCreatedCourses).toFixed(1) : "0.0";
+  const totalRatings = courses.reduce((sum, course) => {
+    return course.rating && course.rating > 1 ? sum + course.rating : sum;
+  }, 0);
+  const ratedCoursesCount = courses.filter(course => course.rating && course.rating > 1).length;
+  const satisfactionRate = ratedCoursesCount > 0 ? (totalRatings / ratedCoursesCount).toFixed(1) : "0.0";
 
   const metrics = [
     {
