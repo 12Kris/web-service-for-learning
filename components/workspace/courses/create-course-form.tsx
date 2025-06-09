@@ -294,13 +294,13 @@ export default function CreateCourseForm() {
           <div className="flex flex-col gap-4">
             <Button
               type="submit"
-              className="w-1/2 bg-[#5c8d89] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
+              className="w-full md:w-1/2 bg-[--neutral] text-white hover:bg-[#4a7a76] py-6 rounded-full text-lg font-medium flex text-center mx-auto"
             >
               Create Course
             </Button>
             <Button
               type="button"
-              className="w-1/2 bg-transparent text-[#5c8d89] hover:bg-[--neutral] border border-[#5c8d89] py-4 rounded-full text-base font-medium flex text-center mx-auto"
+              className="w-full md:w-1/2 bg-transparent text-[#5c8d89] hover:bg-[--neutral] border border-[#5c8d89] py-4 rounded-full text-base font-medium flex text-center mx-auto"
             >
               <Link href="create-ai" className="w-full text-center">
                 Create course using AI

@@ -1229,21 +1229,46 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
     return { weeks: 0, pointsToAddForWeek: 0 };
   }
 
-  const lastUpdate = profile.last_streak_points_update ? new Date(profile.last_streak_points_update) : null;
   let pointsToAddForWeek = 0;
 
+  // Check if a week was missed
+  const lastUpdate = profile.last_streak_points_update ? new Date(profile.last_streak_points_update) : null;
   if (lastUpdate) {
     const timeDiff = today.getTime() - lastUpdate.getTime();
     const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
     if (daysDiff >= 7) {
-      pointsToAddForWeek = 20;
+      // Clear streak_points_history if a week was missed
+      const { error: deleteError } = await supabase
+        .from("streak_points_history")
+        .delete()
+        .eq("user_id", userId);
+
+      if (deleteError) {
+        console.error("Error clearing streak points history:", deleteError);
+      }
+
+      pointsToAddForWeek = 20; // Reset with new points for the current week
     } else {
       pointsToAddForWeek = 0;
     }
   } else {
-    pointsToAddForWeek = 20;
+    pointsToAddForWeek = 20; // First time streak, award points
   }
 
+  // Fetch streak history to count weeks
+  const { data: streakHistory, error: historyError } = await supabase
+    .from("streak_points_history")
+    .select("week_start")
+    .eq("user_id", userId);
+
+  if (historyError) {
+    console.error("Error fetching streak points history:", historyError);
+    return { weeks: 0, pointsToAddForWeek };
+  }
+
+  const weeks = streakHistory ? streakHistory.length : 0;
+
+  // Award points for the current week if activity exists and not already awarded
   const { data: cardResults, error: cardError } = await supabase
     .from("card_results")
     .select("start_time")
@@ -1252,79 +1277,39 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
 
   if (cardError) {
     console.error("Error fetching card results for streak:", cardError);
-    return { weeks: 0, pointsToAddForWeek };
+    return { weeks, pointsToAddForWeek };
   }
 
-  if (!cardResults || cardResults.length === 0) {
-    return { weeks: 0, pointsToAddForWeek };
-  }
-
-  const eightWeeksAgo = new Date(today);
-  eightWeeksAgo.setDate(eightWeeksAgo.getDate() - 56);
-
-  const recentActivities = cardResults.filter((result) => {
-    const start = new Date(Number(result.start_time));
-    return start >= eightWeeksAgo && !isNaN(start.getTime());
-  });
-
-  if (recentActivities.length === 0) {
-    return { weeks: 0, pointsToAddForWeek };
-  }
-
-  const weeks = new Set<string>();
-  recentActivities.forEach((result) => {
+  const hasActivityThisWeek = cardResults && cardResults.some((result) => {
     const start = new Date(Number(result.start_time));
     const weekStart = new Date(start);
     weekStart.setDate(start.getDate() - start.getDay());
     weekStart.setHours(0, 0, 0, 0);
-    weeks.add(weekStart.toISOString().split("T")[0]);
+    return weekStart.toISOString().split("T")[0] === currentWeekStartStr;
   });
 
-  const streakWeeks = weeks.size;
+  if (hasActivityThisWeek) {
+    const awardedWeeks = new Set(streakHistory.map((entry) => entry.week_start));
+    if (!awardedWeeks.has(currentWeekStartStr)) {
+      pointsToAddForWeek = 20;
+      const { error: insertError } = await supabase
+        .from("streak_points_history")
+        .insert({
+          user_id: userId,
+          week_start: currentWeekStartStr,
+          points_added: 20,
+        });
 
-  if (lastUpdate && lastUpdate >= today) {
-    return { weeks: streakWeeks, pointsToAddForWeek: 0 };
-  }
-
-  const hasActivityThisWeek = weeks.has(currentWeekStartStr);
-
-  if (!hasActivityThisWeek) {
-    return { weeks: streakWeeks, pointsToAddForWeek };
-  }
-
-  const { data: pointsHistory, error: historyError } = await supabase
-    .from("streak_points_history")
-    .select("week_start")
-    .eq("user_id", userId)
-    .eq("week_start", currentWeekStartStr);
-
-  if (historyError) {
-    console.error("Error fetching streak points history:", historyError);
-    return { weeks: streakWeeks, pointsToAddForWeek };
-  }
-
-  const awardedWeeks = new Set(pointsHistory.map((entry) => entry.week_start));
-
-  let pointsToAdd = 0;
-  if (!awardedWeeks.has(currentWeekStartStr)) {
-    pointsToAdd = 20;
-    const { error: insertError } = await supabase
-      .from("streak_points_history")
-      .insert({
-        user_id: userId,
-        week_start: currentWeekStartStr,
-        points_added: 20,
-      });
-
-    if (insertError) {
-      console.error("Error inserting streak points history:", insertError);
+      if (insertError) {
+        console.error("Error inserting streak points history:", insertError);
+      }
     }
   }
 
   const currentTotalPoints = profile.total_points || 0;
-  const newTotalPoints = currentTotalPoints + pointsToAdd;
+  const newTotalPoints = currentTotalPoints + pointsToAddForWeek;
 
-  if (pointsToAdd > 0) {
+  if (pointsToAddForWeek > 0) {
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ total_points: newTotalPoints, last_streak_points_update: today.toISOString() })
@@ -1332,11 +1317,11 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
 
     if (updateError) {
       console.error("Error updating total_points:", updateError);
-      return { weeks: streakWeeks, pointsToAddForWeek };
+      return { weeks, pointsToAddForWeek };
     }
   }
 
-  return { weeks: streakWeeks, pointsToAddForWeek };
+  return { weeks, pointsToAddForWeek };
 }
 
 export async function getUserAnalytics(userId: string) {
