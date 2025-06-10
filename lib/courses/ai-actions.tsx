@@ -1,7 +1,4 @@
-
 "use server";
-
-
 
 import { createCourse } from "@/lib/courses/actions";
 import { createBlock } from "@/lib/tests/actions";
@@ -54,7 +51,6 @@ interface GeneratedCourse {
     }[];
   }[];
 }
-
 
 export interface AiUsed {
   id: number;
@@ -138,7 +134,7 @@ async function generateCourseContent(
 
     const response = await openai.responses.create({
       model: "gpt-4.1-nano-2025-04-14",
-      
+
       input: [{ role: "user", content: prompt }],
       text: {
         format: {
@@ -254,29 +250,33 @@ async function generateCourseContent(
                       type: "array",
                       minItems: testsAmount,
                       maxItems: testsAmount,
-                      description: `Tests related to the module, if applicable. **exactly ${testsAmount} items for each module**`,
+                      description: `Tests related to the module. **exactly ${testsAmount} items for each module**`,
                       items: {
                         type: "object",
                         properties: {
                           question: {
                             type: "string",
-                            description: "The main question of the test.",
+                            description: "The title of the test. Name it like 'Test [x] for Module [x] [Covered topics]'.",
                           },
                           questions: {
                             type: "array",
                             description:
-                              "Sub-questions associated with the test.",
+                              "Test questions associated with the module.",
+                            minItems: 4,
+                            maxItems: 4,
                             items: {
                               type: "object",
                               properties: {
                                 question: {
                                   type: "string",
-                                  description: "The sub-question text.",
+                                  description: "The question text.",
                                 },
                                 answers: {
                                   type: "array",
                                   description:
-                                    "Possible answers for the sub-question.",
+                                    "Possible answers for the questions.",
+                                        minItems: 4,
+                            maxItems: 4,
                                   items: {
                                     type: "object",
                                     properties: {
@@ -486,26 +486,37 @@ export async function createCourseWithAI(
 
       if (generatedModule.tests) {
         for (const generatedTest of generatedModule.tests) {
-          const testData: TestDataWithQuestion = {
+            const testData: TestDataWithQuestion = {
             block_id: blockId,
             question: generatedTest.question || "",
             questions: (generatedTest.questions || []).map((q, idx) => ({
               id: idx + 1,
               question: q.question || "",
-              answers: (q.answers || []).map((opt, i) => ({
+              answers: shuffleArray(
+              (q.answers || []).map((opt, i) => ({
                 id: `${i + 1}`,
                 text: opt.text || "",
                 correct: parseCorrect(opt.correct),
-              })),
+              }))
+              ),
             })),
-            answers: (generatedTest.questions || []).flatMap((q, qi) =>
+            answers: shuffleArray(
+              (generatedTest.questions || []).flatMap((q, qi) =>
               (q.answers || []).map((opt, i) => ({
                 id: `${qi + 1}-${i + 1}`,
                 text: opt.text || "",
                 correct: parseCorrect(opt.correct),
               }))
+              )
             ),
-          };
+            };
+
+            function shuffleArray<T>(array: T[]): T[] {
+            return array
+              .map((item) => ({ item, sort: Math.random() }))
+              .sort((a, b) => a.sort - b.sort)
+              .map(({ item }) => item);
+            }
 
           await createTest(testData);
         }

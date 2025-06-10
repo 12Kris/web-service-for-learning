@@ -39,7 +39,7 @@ export default function CompletedInfo({
 
   return (
     <div className="flex w-full mb-2">
-      <Card key={courseId} className="transition-colors bg-[--primary] flex-1">
+      <Card key={courseId} className="transition-colors bg-[--primary] flex-1 mt-4">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="space-y-1">
