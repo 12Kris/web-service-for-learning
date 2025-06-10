@@ -58,7 +58,6 @@ export default function UserProfile({
     { id: "courses-created", label: "Courses Created" },
     { id: "courses-enrolled", label: "Courses Enrolled" },
     { id: "certificates", label: "Certificates" },
-    // { id: "settings", label: "Settings" },
   ]
 
   return (
@@ -192,14 +191,6 @@ export default function UserProfile({
               <Analytics userData={analyticsData}/>
             </ScrollArea>
           )}
-
-          {/* {activeMenuItem === "settings" && (
-            <ScrollArea className="h-[60vh]">
-              <div className="p-6">
-                <Settings />
-              </div>
-            </ScrollArea>
-          )} */}
 
           {activeMenuItem !== "profile" &&
             activeMenuItem !== "courses-created" &&

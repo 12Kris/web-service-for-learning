@@ -8,10 +8,13 @@ import { getUser } from "@/utils/supabase/server";
 
 function getWeekRange(date: Date): string {
   const startOfWeek = new Date(date);
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+  const dayOfWeek = startOfWeek.getDay();
+  const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  startOfWeek.setDate(startOfWeek.getDate() - daysToMonday);
+
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(endOfWeek.getDate() + 6);
-  
+
   const formatDate = (d: Date) => {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
