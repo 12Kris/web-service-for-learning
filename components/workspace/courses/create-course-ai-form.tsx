@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import { useEffect } from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -14,12 +15,16 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, ChevronLeft, Upload } from "lucide-react"
 import { createCourseWithAI } from "@/lib/courses/ai-actions"
 import Link from "next/link"
+import AILoader from "@/components/ui/ai-loader"
 
 export default function CreateCourseAIForm() {
   const [prompt, setPrompt] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [coursesAmount, setCoursesAmount] = useState<number>(1)
+  const [loadingStage, setLoadingStage] = useState<"analyzing" | "processing" | "generating" | "finalizing">(
+    "analyzing",
+  )
   const [difficultyLevel, setDifficultyLevel] = useState<string>("")
   const [testsAmount, setTestsAmount] = useState<number>(3)
   const [learningMaterialsAmount, setLearningMaterialsAmount] = useState<number>(3)
@@ -57,6 +62,27 @@ export default function CreateCourseAIForm() {
       setIsLoading(false)
     }
   }
+
+    useEffect(() => {
+    if (!isLoading) return
+
+    const stages: Array<"analyzing" | "processing" | "generating" | "finalizing"> = [
+      "analyzing",
+      "processing",
+      "generating",
+      "finalizing",
+    ]
+
+    let currentStageIndex = 0
+    const stageInterval = setInterval(() => {
+      if (currentStageIndex < stages.length - 1) {
+        currentStageIndex++
+        setLoadingStage(stages[currentStageIndex])
+      }
+    }, 3000) // Change stage every 3 seconds
+
+    return () => clearInterval(stageInterval)
+  }, [isLoading])
 
   return (
     <div className="w-full max-w-3xl mx-auto">
@@ -201,6 +227,7 @@ export default function CreateCourseAIForm() {
         </CardFooter>
       </form>
     </Card>
+    <AILoader isVisible={isLoading} stage={loadingStage} />
     </div>
   )
 }
