@@ -105,7 +105,7 @@ export async function saveTestResults(
 
         const userId = user.id;
         const correctAnswers = answers.filter((a) => a.isCorrect).length;
-        const percentCorrect = (correctAnswers / answers.length) * 100;
+        const percentCorrect = Math.round((correctAnswers / answers.length) * 100); // 0‑100 integer
 
         const { data: existingResult, error: fetchError } = await supabase
             .from("user_test_results")
@@ -124,10 +124,10 @@ export async function saveTestResults(
             const { error: updateError } = await supabase
                 .from("user_test_results")
                 .update({
-                    score: correctAnswers,
+                    score: percentCorrect,          // store percentage
                     answers_json: JSON.stringify(answers),
-                    percent_correct: percentCorrect.toFixed(2),
-                    duration: duration.toFixed(2),
+                    percent_correct: percentCorrect,
+                    duration,
                     attempt_number: existingResult.attempt_number + 1,
                 })
                 .eq("id", existingResult.id);
@@ -144,10 +144,10 @@ export async function saveTestResults(
                     {
                         user_id: userId,
                         test_id: testId,
-                        score: correctAnswers,
+                        score: percentCorrect,
                         answers_json: JSON.stringify(answers),
-                        percent_correct: percentCorrect.toFixed(2),
-                        duration: duration.toFixed(2),
+                        percent_correct: percentCorrect,
+                        duration,
                         attempt_number: 1,
                     },
                 ])
@@ -161,7 +161,7 @@ export async function saveTestResults(
             testResultId = inserted.id;
         }
 
-        return { id: testResultId };
+        return { id: testResultId, percentCorrect };
     } catch (error) {
         console.error("Error saving test results:", error);
         return { error: (error as Error).message };

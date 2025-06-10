@@ -69,6 +69,7 @@ export interface AnswerDataQuestion {
 export interface SaveTestResult {
   id?: number;
   error?: string;
+  percentCorrect?: number;
 }
 
 export interface UserTestAnswer {

@@ -136,6 +136,8 @@ export default function CardPage() {
   };
 
   const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+      // Prevent text selection when dragging with the cursor
+    e.preventDefault();
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
     setTouchStart({ x: clientX, y: clientY });
