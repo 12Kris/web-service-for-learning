@@ -164,7 +164,7 @@ export default function AILoader({ isVisible, stage }: AILoaderProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center text-[--neutral]"
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -189,7 +189,7 @@ export default function AILoader({ isVisible, stage }: AILoaderProps) {
                 key={currentStage}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-xl font-bold text-gray-900 dark:text-white mb-2"
+                className="text-xl font-bold dark:text-white mb-2"
               >
                 {stageInfo.title}
               </motion.h2>
@@ -198,14 +198,14 @@ export default function AILoader({ isVisible, stage }: AILoaderProps) {
                 key={`${currentStage}-desc`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="text-gray-600 dark:text-gray-400 text-sm"
+                className="text-sm"
               >
                 {stageInfo.description}
               </motion.p>
             </div>
 
             <div className="relative mb-6 h-32 overflow-hidden rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
-              <svg className="absolute inset-0 w-full h-full text-gray-400 dark:text-gray-500">
+              <svg className="absolute inset-0 w-full h-full">
                 <NeuralConnection
                   x1={20}
                   y1={40}
@@ -317,7 +317,7 @@ export default function AILoader({ isVisible, stage }: AILoaderProps) {
                     className={`w-4 h-4 mb-1 ${
                       activeNodes.includes(index)
                         ? "text-blue-500"
-                        : "text-gray-400 dark:text-gray-500"
+                        : "text-[--neutral]"
                     }`}
                   />
                   <motion.div

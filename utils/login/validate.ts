@@ -43,6 +43,12 @@ export const validateForm = (
         setError?.(error);
         return error;
     }
+
+    if (name.length > 15) {
+        const error = "Name must not exceed 15 characters.";
+        setError?.(error);
+        return error;
+    }
  
     return true;
 };

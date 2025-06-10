@@ -50,6 +50,7 @@ export default function ProfileEdit() {
           name="full_name"
           defaultValue={user?.user_metadata.full_name || ""}
           required
+          maxLength={30}
         />
 
         <Input
@@ -58,6 +59,7 @@ export default function ProfileEdit() {
           label="Display Name"
           name="name"
           defaultValue={user?.user_metadata.displayName || ""}
+          maxLength={30}
         />
 
         <Input
@@ -67,6 +69,7 @@ export default function ProfileEdit() {
           name="email"
           defaultValue={user?.email || ""}
           required
+          maxLength={30}
         />
 
         <Textarea
@@ -75,6 +78,7 @@ export default function ProfileEdit() {
           label="Biography"
           rows={3}
           defaultValue={user?.user_metadata.bio || ""}
+          maxLength={100}
         />
 
         <Input
@@ -83,6 +87,7 @@ export default function ProfileEdit() {
           label="Location"
           name="location"
           defaultValue={user?.user_metadata.location || ""}
+          maxLength={50}
         />
 
         <Button size={"wide"} type="submit">
