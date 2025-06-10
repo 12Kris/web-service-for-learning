@@ -24,7 +24,6 @@ export default function Analytics({ userData }: AnalyticsProps) {
   return (
     <div className="p-6">
       <div className="px-4">
-      {/* <h3 className="text-lg font-medium text-[--neutral] mb-4">Track your learning progress and achievements.</h3> */}
       <div className="mb-8">
         <h3 className="text-xl font-semibold text-[#5c7d73] mb-4">Analytics</h3>
         <p className="text-[#5c7d73]">Track your learning progress and achievements.</p>
@@ -35,7 +34,7 @@ export default function Analytics({ userData }: AnalyticsProps) {
           <CardContent className="p-6">
             <div className="text-sm text-[--neutral] mb-1 flex gap-3 items-center">
               <Clock className="w-4 h-4 text-[--neutral]" />
-              <span>Total Study Time</span>
+              <span>Month Total Study Time</span>
               </div>
             <div className="text-3xl font-bold">{data?.totalStudyTime ?? 0} Hours</div>
             <div className={`text-sm mt-1 ${(data?.studyTimeChange ?? 0) >= 0 ? "text-[--neutral]" : "text-red-500"}`}>
