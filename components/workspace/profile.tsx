@@ -117,7 +117,6 @@ export default function UserProfile({
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {createdCourses?.map((course) => (
                     <Link key={course.id} href={`/workspace/courses/${course.id}`}>
-                      {/* <Card className="shadow-md hover:shadow-lg transition-shadow" style={{backgroundColor: course.color, opacity: 0.8}}> */}
                       <Card className="shadow-md hover:shadow-lg transition-shadow border-2" style={{borderColor: course.color}}>
                         <CardHeader>
                           <CardTitle className="text-xl truncate">{course.name}</CardTitle>

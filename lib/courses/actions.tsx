@@ -1231,13 +1231,11 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
 
   let pointsToAddForWeek = 0;
 
-  // Check if a week was missed
   const lastUpdate = profile.last_streak_points_update ? new Date(profile.last_streak_points_update) : null;
   if (lastUpdate) {
     const timeDiff = today.getTime() - lastUpdate.getTime();
     const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
     if (daysDiff >= 7) {
-      // Clear streak_points_history if a week was missed
       const { error: deleteError } = await supabase
         .from("streak_points_history")
         .delete()
@@ -1247,15 +1245,14 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
         console.error("Error clearing streak points history:", deleteError);
       }
 
-      pointsToAddForWeek = 20; // Reset with new points for the current week
+      pointsToAddForWeek = 20;
     } else {
       pointsToAddForWeek = 0;
     }
   } else {
-    pointsToAddForWeek = 20; // First time streak, award points
+    pointsToAddForWeek = 20;
   }
 
-  // Fetch streak history to count weeks
   const { data: streakHistory, error: historyError } = await supabase
     .from("streak_points_history")
     .select("week_start")
@@ -1268,7 +1265,6 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
 
   const weeks = streakHistory ? streakHistory.length : 0;
 
-  // Award points for the current week if activity exists and not already awarded
   const { data: cardResults, error: cardError } = await supabase
     .from("card_results")
     .select("start_time")
@@ -1433,7 +1429,14 @@ export async function getUserAnalytics(userId: string) {
       const start = new Date(Number(session.start_time));
       const end = new Date(Number(session.end_time));
       if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
-        const hour = start.getHours();
+        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Helsinki";
+        const hour = parseInt(
+          start.toLocaleString("en-US", {
+            timeZone: userTimeZone,
+            hour: "2-digit",
+            hour12: false,
+          })
+        );
         const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60);
         dailyStudyData[hour].minutes += Math.floor(durationMinutes);
       }
