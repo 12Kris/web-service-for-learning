@@ -79,7 +79,7 @@ export default function CreateCourseAIForm() {
         currentStageIndex++
         setLoadingStage(stages[currentStageIndex])
       }
-    }, 3000) // Change stage every 3 seconds
+    }, 6000)
 
     return () => clearInterval(stageInterval)
   }, [isLoading])
