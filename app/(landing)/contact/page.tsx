@@ -29,6 +29,7 @@ export default function ContactPage() {
     setIsSubmitting(true)
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
+    alert("Message sent!");
 
     setFormData({ name: "", email: "", message: "" })
     setIsSubmitting(false)
@@ -57,7 +58,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-medium text-[--neutral]">Email</h3>
-                      <p className="text-[--neutral] mt-1">contact@memoria.com</p>
+                      <p className="text-[--neutral] mt-1">memoria.app@gmail.com</p>
                     </div>
                   </div>
 
