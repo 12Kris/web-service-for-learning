@@ -80,9 +80,9 @@ export async function recordAiUsage(): Promise<void> {
   if (countError) {
     console.error("Error counting AI usage:", countError);
   }
-  if ((count ?? 0) >= 3) {
+  if ((count ?? 0) >= 5) {
     throw new Error(
-      "You have exceeded 3 AI uses in the last 8 hours. Please try again later."
+      "You have exceeded 5 AI uses in the last 8 hours. Please try again later."
     );
   }
   const { error } = await supabase
@@ -256,7 +256,7 @@ async function generateCourseContent(
                         properties: {
                           question: {
                             type: "string",
-                            description: "The title of the test. Name it like 'Test [x] for Module [x] [Covered topics]'.",
+                            description: "The title of the test. Name it like 'Test [Covered topics in test]'.",
                           },
                           questions: {
                             type: "array",
