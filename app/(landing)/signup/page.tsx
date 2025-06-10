@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
 import { FaFacebook, FaGoogle, FaTwitter } from "react-icons/fa";
-import {signInWithProvider} from "@/lib/auth/oauth";
-import {validateForm} from "@/utils/login/validate";
+import { signInWithProvider } from "@/lib/auth/oauth";
+import { validateForm } from "@/utils/login/validate";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,7 +32,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = formData;
-    if(!validateForm(setError, formData)) return;
+    if (!validateForm(setError, formData)) return;
     try {
       const { data, reg_error } = await registerUser(
         name,
@@ -48,7 +48,6 @@ export default function RegisterPage() {
       if (data) {
         router.push(`/login`);
       }
-
     } catch (err) {
       setError((err as Error).message);
       console.error("Registration failed:", err);
@@ -72,6 +71,7 @@ export default function RegisterPage() {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                maxLength={15}
                 className="pl-10 border-[#517970] focus-visible:ring-[#517970]"
                 icon={<User className="h-5 w-5 text-[#517970]" />}
               />
@@ -164,7 +164,7 @@ export default function RegisterPage() {
 
             <div className="mt-6 flex justify-center gap-4">
               <button
-                  onClick={() => signInWithProvider("google")}
+                onClick={() => signInWithProvider("google")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
@@ -174,7 +174,7 @@ export default function RegisterPage() {
                 />
               </button>
               <button
-                  onClick={() => signInWithProvider("facebook")}
+                onClick={() => signInWithProvider("facebook")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
@@ -184,7 +184,7 @@ export default function RegisterPage() {
                 />
               </button>
               <button
-                  onClick={() => signInWithProvider("twitter")}
+                onClick={() => signInWithProvider("twitter")}
                 type="button"
                 className="p-2 border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#517970]"
               >
