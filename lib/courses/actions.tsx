@@ -1110,24 +1110,6 @@ export async function getTotalStudents(): Promise<number> {
   }
 }
 
-// export async function getTotalStudents(): Promise<number> {
-//   const supabase = await createClient();
-//   try {
-//     const { data, error } = await supabase.from("UserCourse").select("user_id");
-
-//     if (error) {
-//       console.error("Error fetching total students:", error);
-//       return 0;
-//     }
-
-//     const uniqueUserIds = new Set(data.map((item) => item.user_id));
-//     return uniqueUserIds.size;
-//   } catch (error) {
-//     console.error("Error in getTotalStudents:", error);
-//     return 0;
-//   }
-// }
-
 export async function getCompletedCoursesCount(): Promise<number> {
   const supabase = await createClient();
   const user = await getUser();
@@ -1320,7 +1302,7 @@ export async function calculateStreakAndPoints(userId: string): Promise<{
   return { weeks, pointsToAddForWeek };
 }
 
-export async function getUserAnalytics(userId: string) {
+export async function getUserAnalytics(userId: string, userTimeZone: string = "Europe/Helsinki") {
   const supabase = await createClient();
 
   const { data: profile, error: profileError } = await supabase
@@ -1429,7 +1411,6 @@ export async function getUserAnalytics(userId: string) {
       const start = new Date(Number(session.start_time));
       const end = new Date(Number(session.end_time));
       if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
-        const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Helsinki";
         const hour = parseInt(
           start.toLocaleString("en-US", {
             timeZone: userTimeZone,

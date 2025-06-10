@@ -19,9 +19,11 @@ export default async function Page() {
     total_points: 0,
   };
 
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Helsinki";
+
   const createdCourses = await getUserCreatedCourses(0, 10000);
   const studyingCourses = await getUserCourses(0, 10000);
-  const analyticsData = await getUserAnalytics(currentUser.id);
+  const analyticsData = await getUserAnalytics(currentUser.id, userTimeZone);
   const certificates = await getUserCertificates(currentUser.id);
 
   return (
